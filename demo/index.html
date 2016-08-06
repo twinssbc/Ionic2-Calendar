@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <script src="system.js"></script>
+    <script src="typescript.js"></script>
+    <!--<script src="https://code.angularjs.org/tools/system.js"></script>-->
+    <!--<script src="https://code.angularjs.org/tools/typescript.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reflect-metadata/0.1.3/Reflect.js"></script>
+    <script src="https://cdn.rawgit.com/angular/zone.js/master/dist/zone.min.js"></script>
+    <!--<script src="zone.min.js"></script>-->
+    <script src="config.js"></script>
+    <script src="https://npmcdn.com/ionic-angular@2.0.0-beta.10/bundles/ionic.system.js"></script>
+    <!--<script src="ionic.system.js"></script>-->
+    <link href="https://npmcdn.com/ionic-angular@2.0.0-beta.10/bundles/ionic.css" rel="stylesheet">
+    <!--<link href="ionic.css" rel="stylesheet">-->
+    <link href="style.css" rel="stylesheet">
 </head>
-<body>
 
+<body>
+<!-- this Ionic's root component and where the app will load -->
+<ion-app></ion-app>
+
+<script>
+    System.import('app.ts')
+</script>
 </body>
+
 </html>

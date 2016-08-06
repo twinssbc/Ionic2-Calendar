@@ -1,0 +1,19 @@
+<ion-header>
+    <ion-navbar primary>
+        <ion-title>{{viewTitle}}</ion-title>
+        <ion-buttons end>
+            <button class="button" [disabled]="isToday()" (click)="today()">Today</button>
+            <button class="button" (click)="changeMode('month')">M</button>
+            <button class="button" (click)="changeMode('week')">W</button>
+            <button class="button" (click)="changeMode('day')">D</button>
+            <button class="button" (click)="loadEvents()">Load Events</button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="has-header">
+    <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [(currentDate)]="calendar.currentDate"
+              (onRangeChanged)="reloadSource(startTime, endTime)"
+              (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)"
+              (onTimeSelected)="onTimeSelected($event)" step="30"></calendar>
+</ion-content>

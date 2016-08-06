@@ -53,12 +53,132 @@ import {CalendarService} from './calendar.service';
                     <span class="event-detail">  |  {{event.title}}</span>
                 </ion-item>
                 <ion-item *ngIf="!selectedDate?.events">
-                    <td class="no-events-label">{{noEventsLabel}}></td>
+                    <td class="no-events-label">{{noEventsLabel}}</td>
                 </ion-item>
             </ion-list>
         </div>
     `,
-    styleUrls: ['build/css/calendar/calendar.css']
+    styles: [`
+        .scrollable {
+          width: 100%;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+
+        .text-muted {
+          color: #999;
+        }
+
+        .table-fixed {
+          table-layout: fixed;
+        }
+
+        .table {
+          width: 100%;
+          max-width: 100%;
+          background-color: transparent;
+        }
+
+        .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td,
+        .table > tbody > tr > td, .table > tfoot > tr > td {
+          padding: 8px;
+          line-height: 20px;
+          vertical-align: top;
+        }
+
+        .table > thead > tr > th {
+          vertical-align: bottom;
+          border-bottom: 2px solid #ddd;
+        }
+
+        .table > thead:first-child > tr:first-child > th, .table > thead:first-child > tr:first-child > td {
+          border-top: 0
+        }
+
+        .table > tbody + tbody {
+          border-top: 2px solid #ddd;
+        }
+
+        .table-bordered {
+          border: 1px solid #ddd;
+        }
+
+        .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th,
+        .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+          border: 1px solid #ddd;
+        }
+
+        .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+          border-bottom-width: 2px;
+        }
+
+        .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+          background-color: #f9f9f9
+        }
+
+        .no-event-label {
+          font-weight: bold;
+          color: darkgrey;
+          text-align: center;
+        }
+
+        .event-detail-container {
+          border-top: 2px darkgrey solid;
+          margin-top: 262px;
+        }
+
+        .event-detail {
+          cursor: pointer;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .monthview-primary-with-event {
+          background-color: #3a87ad;
+          color: white;
+        }
+
+        .monthview-current {
+          background-color: lightgrey;
+        }
+
+        .monthview-selected {
+          background-color: #009900;
+          color: white;
+        }
+
+        .monthview-eventdetail-timecolumn {
+          width: 110px;
+          overflow: hidden;
+        }
+
+        .monthview-datetable th {
+          text-align: center;
+        }
+
+        .monthview-datetable td {
+          cursor: pointer;
+          text-align: center;
+        }
+
+        .monthview-secondary-with-event {
+          background-color: #d9edf7;
+        }
+
+        ::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+          display: none;
+        }
+
+        @media (max-width: 750px) {
+          .table > tbody > tr > td.calendar-hour-column {
+            padding-left: 0;
+            padding-right: 0;
+            vertical-align: middle;
+            line-height: 12px;
+          }
+        }
+    `]
 })
 export class MonthViewComponent implements OnInit, OnChanges {
     @ViewChild('monthSlider') slider:Slides;

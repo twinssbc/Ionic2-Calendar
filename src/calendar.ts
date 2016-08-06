@@ -23,7 +23,9 @@ import {CalendarService} from "./calendar.service";
             </dayview>
         </div>
     `,
-    styleUrls: ['build/css/calendar/calendar.css'],
+    styles: [`
+        .calendar-container {height: 100%;}
+    `],
     directives: [MonthViewComponent, WeekViewComponent, DayViewComponent],
     providers: [CalendarService]
 })
