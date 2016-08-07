@@ -81,8 +81,8 @@ Users will need to implement their custom loading data logic in this function, a
 Default value: 'local'
 * step    
 It can be set to 15 or 30, so that the event can be displayed at more accurate position in weekview or dayview.
-* onRangeChanged
-The callback function triggered when the range or mode is changed if the queryMode is set to 'remote'
+* onRangeChanged    
+The callback function triggered when the range or mode is changed if the queryMode is set to 'remote'    
 The ev parameter contains two fields, startTime and endTime.
 
         <calendar ... (onRangeChanged)="onRangeChanged($event)"></calendar>
@@ -94,7 +94,7 @@ The ev parameter contains two fields, startTime and endTime.
             });
         };
 
-* onEventSelected
+* onEventSelected    
 The callback function triggered when an event is clicked
 
         <calendar ... (onEventSelected)="onEventSelected($event)"></calendar>
@@ -103,8 +103,8 @@ The callback function triggered when an event is clicked
             console.log(event.title);
         };
 
-* onTimeSelected
-The callback function triggered when a date is selected in the monthview.
+* onTimeSelected    
+The callback function triggered when a date is selected in the monthview.    
 The ev parameter contains two fields, selectedTime and events, if there's no event at the selected time, the events field will be either undefined or empty array
 
         <calendar ... (onTimeSelected)="onTimeSelected($event)"></calendar>
@@ -113,7 +113,7 @@ The ev parameter contains two fields, selectedTime and events, if there's no eve
             console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0));
         };
 
-* onTitleChanged
+* onTitleChanged    
 The callback function triggered when the view title is changed
 
         <calendar ... (onTitleChanged)="onViewTitleChanged($event)”></calendar>
@@ -141,10 +141,5 @@ For example, if an allDay event ending to 2014-05-10, then endTime is
 
 * allDay    
 Indicates the event is allDay event or regular event
-
-**Note**
-In the current version, the calendar controller only watches for the eventSource reference as it's the least expensive.
-That means only you manually reassign the eventSource value, the controller get notified, and this is usually fit to the scenario when the range is changed, you load a new data set from the backend.
-In case you want to manually insert/remove/update the element in the eventSource array, you can call broadcast the 'eventSourceChanged' event to notify the controller manually.
 
 # Known issue
