@@ -13,7 +13,6 @@
 
 <ion-content class="has-header">
     <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [(currentDate)]="calendar.currentDate"
-              (onRangeChanged)="reloadSource(startTime, endTime)"
               (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)"
               (onTimeSelected)="onTimeSelected($event)" step="30"></calendar>
 </ion-content>

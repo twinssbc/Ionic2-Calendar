@@ -7,11 +7,10 @@
     "removeComments": true,
     "sourceMap": true,
     "target": "es5",
-    "declaration": true,
-    "outDir": "dist"
+    "declaration": true
   },
   "files": [
-    "src/index.ts",
+    "ionic2-calendar.ts",
     "typings/globals/es6-shim/index.d.ts"
   ],
   "exclude": [

@@ -1,9 +1,9 @@
 import { NavController } from 'ionic-angular/index';
 import { Component } from "@angular/core";
-import {CalendarComponent} from 'calendar/index';
+import {CalendarComponent} from 'ionic2-calendar/index';
 
 @Component({
-    templateUrl:"home.html",
+    templateUrl: "home.html",
     directives: [CalendarComponent]
 })
 export class HomePage {
@@ -36,7 +36,7 @@ export class HomePage {
         this.calendar.mode = mode;
     }
 
-    today () {
+    today() {
         this.calendar.currentDate = new Date();
     }
 
