@@ -347,10 +347,16 @@ export class WeekViewComponent implements OnInit, OnChanges {
                 currentViewIndex = me.currentViewIndex;
 
             currentSlideIndex = (currentSlideIndex + 2) % 3;
-            if (currentSlideIndex - currentViewIndex === 1 || (currentSlideIndex === 0 && currentViewIndex === 2)) {
+            if (currentSlideIndex - currentViewIndex === 1) {
                 direction = 1;
-            } else if (currentViewIndex - currentSlideIndex === 1 || (currentSlideIndex === 2 && currentViewIndex === 0)) {
+            } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
+                direction = 1;
+                me.slider.slideTo(1, 0, false);
+            } else if (currentViewIndex - currentSlideIndex === 1) {
                 direction = -1;
+            } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
+                direction = -1;
+                me.slider.slideTo(3, 0, false);
             }
             me.currentViewIndex = currentSlideIndex;
             me.move(direction);

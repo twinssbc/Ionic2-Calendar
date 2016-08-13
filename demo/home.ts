@@ -89,4 +89,8 @@ export class HomePage {
         }
         return events;
     }
+
+    onRangeChanged(ev) {
+        console.log('range changed: startTime: ' + ev.startTime + ', endTime: ' + ev.endTime);
+    }
 }

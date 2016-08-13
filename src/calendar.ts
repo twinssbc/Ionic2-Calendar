@@ -56,6 +56,7 @@ export class CalendarComponent implements OnInit, OnChanges {
 
     hourParts:number = 1;
     inited = false;
+    currentDateChangeFromChild = false;
 
     constructor(private elementRef:ElementRef, private calendarService:CalendarService) {
         var native = this.elementRef.nativeElement;
@@ -81,7 +82,6 @@ export class CalendarComponent implements OnInit, OnChanges {
         this.calendarMode = this.calendarMode || 'month';
         if (!this.currentDate) {
             this.currentDate = new Date();
-            this.currentDateChange.emit(this.currentDate);
         }
         this.calendarService.setCurrentCalendarDate(this.currentDate, true);
         this.step = parseInt(this.step);
@@ -94,6 +94,7 @@ export class CalendarComponent implements OnInit, OnChanges {
 
         this.calendarService.currentCalendarDateChangedFromChildren$.subscribe(
             currentDate => {
+                this.currentDateChangeFromChild = true;
                 this.currentDate = currentDate;
                 this.currentDateChange.emit(currentDate);
             });
@@ -105,7 +106,11 @@ export class CalendarComponent implements OnInit, OnChanges {
         }
         var currentDate = changes['currentDate'];
         if (currentDate && currentDate.currentValue) {
-            this.calendarService.setCurrentCalendarDate(currentDate.currentValue, true);
+            if (this.currentDateChangeFromChild) {
+                this.currentDateChangeFromChild = false;
+            } else {
+                this.calendarService.setCurrentCalendarDate(currentDate.currentValue, true);
+            }
         }
     }
 

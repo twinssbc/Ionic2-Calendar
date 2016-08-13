@@ -1,11 +1,5 @@
-/**
- * PLUNKER VERSION (based on systemjs.config.js in angular.io)
- * System configuration for Angular 2 samples
- * Adjust as necessary for your application needs.
- * Override at the last minute with global.filterSystemConfig (as plunkers do)
- */
 (function (global) {
-    var ngVer = '@2.0.0-rc.3'; // lock in the angular package version; do not let it float to current!
+    var ngVer = '@2.0.0-rc.4'; // lock in the angular package version; do not let it float to current!
 
     //map tells the System loader where to look for things
     var map = {

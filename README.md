@@ -143,3 +143,7 @@ For example, if an allDay event ending to 2014-05-10, then endTime is
 Indicates the event is allDay event or regular event
 
 # Known issue
+This component updates the ion-slide dynamically so that only 3 looped slides are needed.
+The ion-slide in Ionic2 uses Swiper. It seems in the Swiper implementation, the next slide after the end of looped slide is a separate cached slide, instead of the first slide.
+I can't find out a way to force refresh that cached slide, so you will notice that when sliding from the third month to the forth month, the preview month is not the forth month, but the first month.
+Once the sliding is over, the slide will be forced to render the forth month.
