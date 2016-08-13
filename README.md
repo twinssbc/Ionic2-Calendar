@@ -1,4 +1,4 @@
-# Ionic2-Calendar directive
+# Ionic2-Calendar directive (Unstable)
 
 Ionic2 calendar directive
 
