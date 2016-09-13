@@ -15,7 +15,8 @@ import {CalendarService} from './calendar.service';
                             <table class="table table-bordered dayview-allday-content-table">
                                 <tbody>
                                 <tr>
-                                    <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':allDayEvents}"
+                                    <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':view.allDayEvents.length>0}"
+                                        [ngStyle]="{height: 25*view.allDayEvents.length+'px'}"
                                         *ngIf="viewIndex===currentViewIndex">
                                         <div *ngFor="let displayEvent of view.allDayEvents; let eventIndex=index"
                                              class="calendar-event"

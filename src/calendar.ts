@@ -69,6 +69,7 @@ export class CalendarComponent implements OnInit, OnChanges {
         this.setAttributeValue(native, 'formatWeekViewDayHeader');
         this.setAttributeValue(native, 'formatHourColumn');
         this.setAttributeValue(native, 'showEventDetail');
+        this.showEventDetail = this.showEventDetail.toString() == 'true';
         this.setAttributeValue(native, 'startingDayMonth');
         this.setAttributeValue(native, 'startingDayWeek');
         this.setAttributeValue(native, 'allDayLabel');
