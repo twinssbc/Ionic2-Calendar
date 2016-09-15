@@ -19,7 +19,7 @@ import {CalendarService} from './calendar.service';
                         </thead>
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
-                            <td *ngFor="let col of [0,1,2,3,4,5,6]" (click)="select(view.dates[row*7+col].date)"
+                            <td *ngFor="let col of [0,1,2,3,4,5,6]" (click)="select(view.dates[row*7+col].date, view.dates[row*7+col].events)"
                                 [ngClass]="getHighlightClass(view.dates[row*7+col])">{{view.dates[row*7+col].label}}
                             </td>
                         </tr>
