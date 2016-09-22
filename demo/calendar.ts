@@ -1,24 +1,22 @@
-import { NavController } from 'ionic-angular/index';
-import { Component } from "@angular/core";
-import {CalendarComponent} from 'ionic2-calendar/index';
+import { Component } from '@angular/core';
+import { CalendarComponent } from 'ionic2-calendar';
 
 @Component({
-    templateUrl: "home.html",
+    templateUrl: 'calendar.html',
     directives: [CalendarComponent]
 })
-export class HomePage {
+export class CalendarPage {
     eventSource;
     viewTitle;
 
+    isToday: boolean;
     now = new Date();
     calendar = {
         mode: '',
         currentDate: null
     };
 
-    constructor(private navController:NavController) {
-
-    }
+    constructor() {}
 
     loadEvents() {
         this.eventSource = this.createRandomEvents();
@@ -40,17 +38,15 @@ export class HomePage {
         this.calendar.currentDate = new Date();
     }
 
-    isToday() {
-        var today = new Date(),
-            currentCalendarDate = new Date(this.calendar.currentDate);
-
-        today.setHours(0, 0, 0, 0);
-        currentCalendarDate.setHours(0, 0, 0, 0);
-        return today.getTime() === currentCalendarDate.getTime();
-    }
-
     onTimeSelected(ev) {
         console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0));
+    }
+
+    onCurrentDateChanged(event: Date) {
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        event.setHours(0, 0, 0, 0);
+        this.isToday = today.getTime() === event.getTime();
     }
 
     createRandomEvents() {

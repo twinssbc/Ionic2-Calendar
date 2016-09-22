@@ -1,14 +1,16 @@
-import { Component } from "@angular/core";
-import { ionicBootstrap, Platform } from 'ionic-angular/index';
-import { TabsPage } from './tabs.ts';
+import { Component } from '@angular/core';
+import { ionicBootstrap } from 'ionic-angular/index';
+import { CalendarPage } from './calendar';
 
 
 @Component({
     template: '<ion-nav [root]="rootPage"></ion-nav>'
 })
 export class MyApp {
-    constructor(private platform: Platform) {
-        this.rootPage = TabsPage;
+    public rootPage;
+
+    constructor() {
+        this.rootPage = CalendarPage;
     }
 }
 
