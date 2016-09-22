@@ -12,7 +12,7 @@ Install: `npm install ionic2-calendar --save`
 Import the ionic2-calendar component for your page and add it to your page's directives.:
 
 ```
-import {CalendarComponent} from 'ionic2-calendar/ionic2-calendar'
+import { CalendarComponent } from 'ionic2-calendar';
 
 @Component({
     templateUrl: 'build/pages/home/home.html',

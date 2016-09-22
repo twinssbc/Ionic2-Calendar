@@ -1,16 +1,22 @@
 {
-  "version": "0.0.1",
   "compilerOptions": {
+    "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
     "removeComments": true,
     "sourceMap": true,
-    "target": "es5",
-    "declaration": true
+    "target": "es5"
   },
   "files": [
-    "ionic2-calendar.ts",
+    "src/calendar.ts",
+    "src/calendar.service.ts",
+    "src/dayview.ts",
+    "src/index.ts",
+    "src/monthview.ts",
+    "src/weekview.ts",
     "typings/globals/es6-shim/index.d.ts"
   ],
   "exclude": [
