@@ -1,75 +1,72 @@
-import {Injectable} from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
+import { Injectable } from '@angular/core';
+import { Subject, Observable } from 'rxjs/rx';
+
+import { ICalendarComponent, IView, CalendarMode, QueryMode } from './calendar';
 
 @Injectable()
 export class CalendarService {
-    currentCalendarDate:Date;
-    queryMode;
-    private currentCalendarDateChangedFromChildren = new Subject<Date>();
-    private currentCalendarDateChangedFromParent = new Subject<Date>();
+    queryMode: QueryMode;
+    currentDateChanged$: Observable<Date>;
 
-    currentCalendarDateChangedFromChildren$ = this.currentCalendarDateChangedFromChildren.asObservable();
-    currentCalendarDateChangedFromParent$ = this.currentCalendarDateChangedFromParent.asObservable();
+    private _currentDate: Date;
+    private currentDateChanged = new Subject<Date>();
 
-    setCurrentCalendarDate(calendarDate:Date, fromParent:boolean = false) {
-        this.currentCalendarDate = calendarDate;
-        if (fromParent) {
-            this.currentCalendarDateChangedFromParent.next(calendarDate);
-        } else {
-            this.currentCalendarDateChangedFromChildren.next(calendarDate);
-        }
+    constructor() {
+        this.currentDateChanged$ = this.currentDateChanged.asObservable();
     }
 
-    rangeChanged(component) {
+    get currentDate(): Date {
+        return this._currentDate;
+    }
+    set currentDate(val: Date) {
+        this._currentDate = val;
+        this.currentDateChanged.next(val);
+    }
+
+    rangeChanged(component: ICalendarComponent) {
         if (this.queryMode === 'local') {
             if (component.eventSource && component.onDataLoaded) {
                 component.onDataLoaded();
             }
         } else if (this.queryMode === 'remote') {
-            component.onRangeChanged.emit({
-                startTime: component.range.startTime,
-                endTime: component.range.endTime
-            });
+            component.onRangeChanged.emit(component.range);
         }
     }
 
-    getAdjacentCalendarDate(mode:String, direction) {
-        var step;
+    private getStep(mode: CalendarMode): { years: number; months: number; days: number; } {
         switch (mode) {
             case 'month':
-                step = {
+                return {
                     years: 0,
                     months: 1,
                     days: 0
                 };
-                break;
             case 'week':
-                step = {
+                return {
                     years: 0,
                     months: 0,
                     days: 7
                 };
-                break;
             case 'day':
-                step = {
+                return {
                     years: 0,
                     months: 0,
                     days: 1
                 };
-                break;
-            default:
-                throw new Error('Unsupported mode');
         }
-        var calculateCalendarDate = new Date(this.currentCalendarDate.getTime()),
-            year = calculateCalendarDate.getFullYear() + direction * (step.years || 0),
-            month = calculateCalendarDate.getMonth() + direction * (step.months || 0),
-            date = calculateCalendarDate.getDate() + direction * (step.days || 0);
+    }
+
+    getAdjacentCalendarDate(mode: CalendarMode, direction: number): Date {
+        let step = this.getStep(mode);
+        let calculateCalendarDate = new Date(this.currentDate.getTime()),
+            year = calculateCalendarDate.getFullYear() + direction * step.years,
+            month = calculateCalendarDate.getMonth() + direction * step.months,
+            date = calculateCalendarDate.getDate() + direction * step.days;
 
         calculateCalendarDate.setFullYear(year, month, date);
 
         if (mode === 'month') {
-            var firstDayInNextMonth = new Date(year, month + 1, 1);
+            let firstDayInNextMonth = new Date(year, month + 1, 1);
             if (firstDayInNextMonth.getTime() <= calculateCalendarDate.getTime()) {
                 calculateCalendarDate = new Date(firstDayInNextMonth.getTime() - 24 * 60 * 60 * 1000);
             }
@@ -77,16 +74,15 @@ export class CalendarService {
         return calculateCalendarDate;
     }
 
-
-    getAdjacentViewStartTime(component, direction) {
-        var adjacentCalendarDate = this.getAdjacentCalendarDate(component.mode, direction);
+    getAdjacentViewStartTime(component: ICalendarComponent, direction: number): Date {
+        let adjacentCalendarDate = this.getAdjacentCalendarDate(component.mode, direction);
         return component.getRange(adjacentCalendarDate).startTime;
     };
 
-    populateAdjacentViews(component) {
-        var currentViewStartDate,
-            currentViewData,
-            toUpdateViewIndex,
+    populateAdjacentViews(component: ICalendarComponent) {
+        let currentViewStartDate: Date,
+            currentViewData: IView[],
+            toUpdateViewIndex: number,
             currentViewIndex = component.currentViewIndex;
 
         if (component.direction === 1) {

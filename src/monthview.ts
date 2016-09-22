@@ -1,7 +1,9 @@
-import {Component, OnInit, OnChanges, Input, Output, EventEmitter, ViewChild} from '@angular/core';
-import {DatePipe} from '@angular/common';
-import {Slides} from 'ionic-angular';
-import {CalendarService} from './calendar.service';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Slides } from 'ionic-angular';
+
+import { ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode } from './calendar';
+import { CalendarService } from './calendar.service';
 
 @Component({
     selector: 'monthview',
@@ -180,124 +182,123 @@ import {CalendarService} from './calendar.service';
         }
     `]
 })
-export class MonthViewComponent implements OnInit, OnChanges {
-    @ViewChild('monthSlider') slider:Slides;
-    @Input()formatDay:String;
-    @Input()formatDayHeader:String;
-    @Input()formatMonthTitle:string;
-    @Input() eventSource;
-    @Input() startingDayMonth:number;
-    @Input() showEventDetail:boolean;
-    @Input() noEventsLabel:String;
-    @Output() onRangeChanged = new EventEmitter(true);
-    @Output() onEventSelected = new EventEmitter(true);
-    @Output() onTimeSelected = new EventEmitter(true);
-    @Output() onTitleChanged = new EventEmitter<string>(true);
+export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges {
+    @ViewChild('monthSlider') slider: Slides;
 
-    inited:boolean = false;
-    range;
-    views = [];
-    mode:String = 'month';
-    currentViewIndex = 0;
-    selectedDate;
-    private direction = 0;
-    moveOnSelected = false;
-    slideOption = {
+    @Input() formatDay: string;
+    @Input() formatDayHeader: string;
+    @Input() formatMonthTitle: string;
+    @Input() eventSource: IEvent[];
+    @Input() startingDayMonth: number;
+    @Input() showEventDetail: boolean;
+    @Input() noEventsLabel: string;
+
+    @Output() onRangeChanged = new EventEmitter<IRange>();
+    @Output() onEventSelected = new EventEmitter<IEvent>();
+    @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
+    @Output() onTitleChanged = new EventEmitter<string>();
+
+    public slideOption = {
         runCallbacksOnInit: false,
         loop: true
     };
+    public views: IMonthView[] = [];
+    public currentViewIndex = 0;
+    public selectedDate: IMonthViewRow;
+    public range: IRange;
+    public mode: CalendarMode = 'month';
+    public direction = 0;
 
-    constructor(private calendarService:CalendarService) {
-    }
+    private moveOnSelected = false;
+    private inited = false;
+
+    constructor(private calendarService: CalendarService) {}
 
     ngOnInit() {
-        var me = this;
         this.inited = true;
         this.refreshView();
 
-        this.calendarService.currentCalendarDateChangedFromParent$.subscribe(
-            currentDate => {
-                me.refreshView();
-            });
+        this.calendarService.currentDateChanged$.subscribe(currentDate => {
+            this.refreshView();
+        });
     }
 
-    ngOnChanges(changes) {
-        if (!this.inited) {
-            return;
-        }
-        var eventSourceChange = changes['eventSource'];
+    ngOnChanges(changes: SimpleChanges) {
+        if (!this.inited) return;
+
+        let eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
     }
 
     onSlideChanged() {
-        let me = this;
-        setTimeout(function () {
-            let currentSlideIndex = me.slider.getActiveIndex(),
+        setTimeout(() => {
+            let currentSlideIndex = this.slider.getActiveIndex(),
                 direction = 0,
-                currentViewIndex = me.currentViewIndex;
+                currentViewIndex = this.currentViewIndex;
 
             currentSlideIndex = (currentSlideIndex + 2) % 3;
             if (currentSlideIndex - currentViewIndex === 1) {
                 direction = 1;
             } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
                 direction = 1;
-                me.slider.slideTo(1, 0, false);
+                this.slider.slideTo(1, 0, false);
             } else if (currentViewIndex - currentSlideIndex === 1) {
                 direction = -1;
             } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
                 direction = -1;
-                me.slider.slideTo(3, 0, false);
+                this.slider.slideTo(3, 0, false);
             }
-            me.currentViewIndex = currentSlideIndex;
-            me.move(direction);
+            this.currentViewIndex = currentSlideIndex;
+            this.move(direction);
         }, 200);
     }
 
-    move(direction) {
-        if (direction == 0) {
-            return;
-        }
+    move(direction: number) {
+        if (direction === 0) return;
+
         this.direction = direction;
         if (this.moveOnSelected) {
             this.moveOnSelected = false;
         } else {
-            this.calendarService.setCurrentCalendarDate(this.calendarService.getAdjacentCalendarDate(this.mode, direction));
+            let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
+            this.calendarService.currentDate = adjacentDate;
         }
-        this.refreshView();
         this.direction = 0;
     }
 
-    static createDateObject(date, format) {
+    static createDateObject(date: Date, format: string): IMonthViewRow {
         return {
             date: date,
+            events: [],
             label: new DatePipe().transform(date, format),
             secondary: false
         };
     }
 
-    static getDates(startDate, n) {
-        var dates = new Array(n),
-            current = new Date(startDate),
+    static getDates(startDate: Date, n: number): Date[] {
+        let dates = new Array(n),
+            current = new Date(startDate.getTime()),
             i = 0;
         current.setHours(12); // Prevent repeated dates because of timezone bug
         while (i < n) {
-            dates[i++] = new Date(current.toString());
+            dates[i++] = new Date(current.getTime());
             current.setDate(current.getDate() + 1);
         }
         return dates;
     }
 
-    getViewData(startTime:Date) {
-        var startDate = startTime,
+    getViewData(startTime: Date): IMonthView {
+        let startDate = startTime,
             date = startDate.getDate(),
             month = (startDate.getMonth() + (date !== 1 ? 1 : 0)) % 12;
 
-        var days = MonthViewComponent.getDates(startDate, 42);
-        for (var i = 0; i < 42; i++) {
-            var dateObject = MonthViewComponent.createDateObject(days[i], this.formatDay);
-            dateObject.secondary = days[i].getMonth() !== month;
+        let dates = MonthViewComponent.getDates(startDate, 42);
+        let days: IMonthViewRow[] = [];
+        for (let i = 0; i < 42; i++) {
+            let dateObject = MonthViewComponent.createDateObject(dates[i], this.formatDay);
+            dateObject.secondary = dates[i].getMonth() !== month;
             days[i] = dateObject;
         }
 
@@ -306,8 +307,8 @@ export class MonthViewComponent implements OnInit, OnChanges {
         };
     }
 
-    getHighlightClass(date) {
-        var className = '';
+    getHighlightClass(date: IMonthViewRow): string {
+        let className = '';
 
         if (date.hasEvent) {
             if (date.secondary) {
@@ -340,20 +341,19 @@ export class MonthViewComponent implements OnInit, OnChanges {
         return className;
     }
 
-    getRange(currentDate) {
-        var year = currentDate.getFullYear(),
+    getRange(currentDate: Date): IRange {
+        let year = currentDate.getFullYear(),
             month = currentDate.getMonth(),
             firstDayOfMonth = new Date(year, month, 1),
             difference = this.startingDayMonth - firstDayOfMonth.getDay(),
             numDisplayedFromPreviousMonth = (difference > 0) ? 7 - difference : -difference,
-            startDate = new Date(firstDayOfMonth.getTime()),
-            endDate;
+            startDate = new Date(firstDayOfMonth.getTime());
 
         if (numDisplayedFromPreviousMonth > 0) {
             startDate.setDate(-numDisplayedFromPreviousMonth + 1);
         }
 
-        endDate = new Date(startDate.getTime());
+        let endDate = new Date(startDate.getTime());
         endDate.setDate(endDate.getDate() + 42);
 
         return {
@@ -363,7 +363,7 @@ export class MonthViewComponent implements OnInit, OnChanges {
     }
 
     onDataLoaded() {
-        var range = this.range,
+        let range = this.range,
             eventSource = this.eventSource,
             len = eventSource ? eventSource.length : 0,
             startTime = range.startTime,
@@ -376,19 +376,19 @@ export class MonthViewComponent implements OnInit, OnChanges {
             oneDay = 86400000,
             eps = 0.001;
 
-        for (var r = 0; r < 42; r += 1) {
+        for (let r = 0; r < 42; r += 1) {
             if (dates[r].hasEvent) {
                 dates[r].hasEvent = false;
                 dates[r].events = [];
             }
         }
 
-        for (var i = 0; i < len; i += 1) {
-            var event = eventSource[i];
-            var eventStartTime = new Date(event.startTime);
-            var eventEndTime = new Date(event.endTime);
-            var st;
-            var et;
+        for (let i = 0; i < len; i += 1) {
+            let event = eventSource[i],
+                eventStartTime = new Date(event.startTime.getTime()),
+                eventEndTime = new Date(event.endTime.getTime()),
+                st: Date,
+                et: Date;
 
             if (event.allDay) {
                 if (eventEndTime <= utcStartTime || eventStartTime >= utcEndTime) {
@@ -406,25 +406,24 @@ export class MonthViewComponent implements OnInit, OnChanges {
                 }
             }
 
-            var timeDifferenceStart;
+            let timeDifferenceStart: number;
             if (eventStartTime <= st) {
                 timeDifferenceStart = 0;
             } else {
                 timeDifferenceStart = (eventStartTime.getTime() - st.getTime()) / oneDay;
             }
 
-            var timeDifferenceEnd;
+            let timeDifferenceEnd: number;
             if (eventEndTime >= et) {
                 timeDifferenceEnd = (et.getTime() - st.getTime()) / oneDay;
             } else {
                 timeDifferenceEnd = (eventEndTime.getTime() - st.getTime()) / oneDay;
             }
 
-            var index = Math.floor(timeDifferenceStart);
-            var eventSet;
+            let index = Math.floor(timeDifferenceStart);
             while (index < timeDifferenceEnd - eps) {
                 dates[index].hasEvent = true;
-                eventSet = dates[index].events;
+                let eventSet = dates[index].events;
                 if (eventSet) {
                     eventSet.push(event);
                 } else {
@@ -436,14 +435,14 @@ export class MonthViewComponent implements OnInit, OnChanges {
             }
         }
 
-        for (r = 0; r < 42; r += 1) {
+        for (let r = 0; r < 42; r += 1) {
             if (dates[r].hasEvent) {
                 dates[r].events.sort(this.compareEvent);
             }
         }
 
-        var findSelected = false;
-        for (r = 0; r < 42; r += 1) {
+        let findSelected = false;
+        for (let r = 0; r < 42; r += 1) {
             if (dates[r].selected) {
                 this.selectedDate = dates[r];
                 findSelected = true;
@@ -456,8 +455,8 @@ export class MonthViewComponent implements OnInit, OnChanges {
     };
 
     refreshView() {
-        this.range = this.getRange(this.calendarService.currentCalendarDate);
-        var title = this.getTitle();
+        this.range = this.getRange(this.calendarService.currentDate);
+        let title = this.getTitle();
         this.onTitleChanged.emit(title);
 
         this.calendarService.populateAdjacentViews(this);
@@ -465,8 +464,8 @@ export class MonthViewComponent implements OnInit, OnChanges {
         this.calendarService.rangeChanged(this);
     }
 
-    getTitle() {
-        var currentViewStartDate = this.range.startTime,
+    getTitle(): string {
+        let currentViewStartDate = this.range.startTime,
             date = currentViewStartDate.getDate(),
             month = (currentViewStartDate.getMonth() + (date !== 1 ? 1 : 0)) % 12,
             year = currentViewStartDate.getFullYear() + (date !== 1 && month === 0 ? 1 : 0),
@@ -474,7 +473,7 @@ export class MonthViewComponent implements OnInit, OnChanges {
         return new DatePipe().transform(headerDate, this.formatMonthTitle);
     }
 
-    private compareEvent(event1, event2) {
+    private compareEvent(event1: IEvent, event2: IEvent): number {
         if (event1.allDay) {
             return 1;
         } else if (event2.allDay) {
@@ -484,49 +483,47 @@ export class MonthViewComponent implements OnInit, OnChanges {
         }
     }
 
-    select(selectedDate, events) {
-        var views = this.views,
-            dates,
-            r;
-        if (views) {
-            dates = views[this.currentViewIndex].dates;
-            var currentCalendarDate = this.calendarService.currentCalendarDate;
-            var currentMonth = currentCalendarDate.getMonth();
-            var currentYear = currentCalendarDate.getFullYear();
-            var selectedMonth = selectedDate.getMonth();
-            var selectedYear = selectedDate.getFullYear();
-            var direction = 0;
-            if (currentYear === selectedYear) {
-                if (currentMonth !== selectedMonth) {
-                    direction = currentMonth < selectedMonth ? 1 : -1;
-                }
-            } else {
-                direction = currentYear < selectedYear ? 1 : -1;
+    select(selectedDate: Date, events: IEvent[]) {
+        if (!this.views) return;
+
+        let dates = this.views[this.currentViewIndex].dates,
+            currentCalendarDate = this.calendarService.currentDate,
+            currentMonth = currentCalendarDate.getMonth(),
+            currentYear = currentCalendarDate.getFullYear(),
+            selectedMonth = selectedDate.getMonth(),
+            selectedYear = selectedDate.getFullYear(),
+            direction = 0;
+
+        if (currentYear === selectedYear) {
+            if (currentMonth !== selectedMonth) {
+                direction = currentMonth < selectedMonth ? 1 : -1;
             }
-
-            this.calendarService.setCurrentCalendarDate(selectedDate);
-            if (direction === 0) {
-                var currentViewStartDate = this.range.startTime,
-                    oneDay = 86400000,
-                    selectedDayDifference = Math.floor((selectedDate.getTime() - currentViewStartDate.getTime()) / oneDay);
-                for (r = 0; r < 42; r += 1) {
-                    dates[r].selected = false;
-                }
-
-                if (selectedDayDifference >= 0 && selectedDayDifference < 42) {
-                    dates[selectedDayDifference].selected = true;
-                    this.selectedDate = dates[selectedDayDifference];
-                }
-            } else {
-                this.moveOnSelected = true;
-                this.slideView(direction);
-            }
-
-            this.onTimeSelected.emit({selectedTime: selectedDate, events: events});
+        } else {
+            direction = currentYear < selectedYear ? 1 : -1;
         }
+
+        this.calendarService.currentDate = selectedDate;
+        if (direction === 0) {
+            let currentViewStartDate = this.range.startTime,
+                oneDay = 86400000,
+                selectedDayDifference = Math.floor((selectedDate.getTime() - currentViewStartDate.getTime()) / oneDay);
+            for (let r = 0; r < 42; r += 1) {
+                dates[r].selected = false;
+            }
+
+            if (selectedDayDifference >= 0 && selectedDayDifference < 42) {
+                dates[selectedDayDifference].selected = true;
+                this.selectedDate = dates[selectedDayDifference];
+            }
+        } else {
+            this.moveOnSelected = true;
+            this.slideView(direction);
+        }
+
+        this.onTimeSelected.emit({ selectedTime: selectedDate, events: events });
     }
 
-    slideView(direction) {
+    slideView(direction: number) {
         if (direction === 1) {
             this.slider.slideNext();
         } else if (direction === -1) {
@@ -534,15 +531,14 @@ export class MonthViewComponent implements OnInit, OnChanges {
         }
     }
 
-    updateCurrentView(currentViewStartDate, view) {
-        var currentCalendarDate = this.calendarService.currentCalendarDate,
+    updateCurrentView(currentViewStartDate: Date, view: IMonthView) {
+        let currentCalendarDate = this.calendarService.currentDate,
             today = new Date(),
             oneDay = 86400000,
-            r,
             selectedDayDifference = Math.floor((currentCalendarDate.getTime() - currentViewStartDate.getTime()) / oneDay),
             currentDayDifference = Math.floor((today.getTime() - currentViewStartDate.getTime()) / oneDay);
 
-        for (r = 0; r < 42; r += 1) {
+        for (let r = 0; r < 42; r += 1) {
             view.dates[r].selected = false;
         }
 
@@ -551,7 +547,10 @@ export class MonthViewComponent implements OnInit, OnChanges {
             this.selectedDate = view.dates[selectedDayDifference];
         } else {
             this.selectedDate = {
-                events: []
+                date: null,
+                events: [],
+                label: null,
+                secondary: null
             };
         }
 
@@ -560,7 +559,7 @@ export class MonthViewComponent implements OnInit, OnChanges {
         }
     }
 
-    eventSelected(event) {
+    eventSelected(event: IEvent) {
         this.onEventSelected.emit(event);
     }
 }
