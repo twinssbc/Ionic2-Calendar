@@ -1,6 +1,6 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
+import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -8,7 +8,6 @@ import { CalendarService } from './calendar.service';
 @Component({
     selector: 'weekview',
     template: `
-        <div class="weekview">
             <ion-slides #weekSlider [options]="slideOption" (ionDidChange)="onSlideChanged()">
                 <ion-slide *ngFor="let view of views; let viewIndex=index">
                     <table class="table table-bordered table-fixed weekview-header">
@@ -94,7 +93,6 @@ import { CalendarService } from './calendar.service';
                     </div>
                 </ion-slide>
             </ion-slides>
-        </div>
     `,
     styles: [`
         .scrollable {
@@ -289,10 +287,11 @@ import { CalendarService } from './calendar.service';
           }
         }
     `],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @ViewChild('weekSlider') slider: Slides;
+    @HostBinding('class.weekview') class = true;
 
     @Input() formatWeekTitle: string;
     @Input() formatWeekViewDayHeader: string;

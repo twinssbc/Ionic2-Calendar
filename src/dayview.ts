@@ -1,6 +1,6 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
+import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -8,7 +8,6 @@ import { CalendarService } from './calendar.service';
 @Component({
     selector: 'dayview',
     template: `
-        <div class="dayview">
             <ion-slides #daySlider [options]="slideOption" (ionDidChange)="onSlideChanged()">
                 <ion-slide *ngFor="let view of views; let viewIndex=index">
                     <div class="dayview-allday-table">
@@ -69,7 +68,6 @@ import { CalendarService } from './calendar.service';
                     </ion-scroll>
                 </ion-slide>
             </ion-slides>
-        </div>
     `,
     styles: [`
         .scrollable {
@@ -252,10 +250,11 @@ import { CalendarService } from './calendar.service';
           }
         }
     `],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @ViewChild('daySlider') slider: Slides;
+    @HostBinding('class.dayview') class = true;
 
     @Input() formatHourColumn: string;
     @Input() formatDayTitle: string;
