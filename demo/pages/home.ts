@@ -1,22 +1,22 @@
-import { Component } from '@angular/core';
-import { CalendarComponent } from 'ionic2-calendar';
+import { NavController } from 'ionic-angular/index';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 
 @Component({
-    templateUrl: 'calendar.html',
-    directives: [CalendarComponent]
+    templateUrl: "pages/home.html"
 })
-export class CalendarPage {
+export class HomePage {
     eventSource;
     viewTitle;
 
     isToday: boolean;
-    now = new Date();
     calendar = {
-        mode: '',
-        currentDate: null
+        mode: 'month',
+        currentDate: new Date()
     };
 
-    constructor() {}
+    constructor(private navController:NavController) {
+
+    }
 
     loadEvents() {
         this.eventSource = this.createRandomEvents();

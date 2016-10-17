@@ -1,21 +1,24 @@
 (function (global) {
-    var ngVer = '@2.0.0-rc.4'; // lock in the angular package version; do not let it float to current!
+    var ngVer = '@2.0.0'; // lock in the angular package version; do not let it float to current!
 
     //map tells the System loader where to look for things
     var map = {
-        'app': 'src', // 'dist',
-        'rxjs': 'https://unpkg.com/rxjs@5.0.0-beta.6',
+        'app': 'app', // 'dist',
+        'rxjs': 'https://unpkg.com/rxjs@5.0.0-beta.12',
         'angular2-in-memory-web-api': 'https://unpkg.com/angular2-in-memory-web-api', // get latest
-        'ionic2-calendar': '../src'
+        'ionic2-calendar': '../src',
+        'ionic-angular': 'https://unpkg.com/ionic-angular@2.0.0-rc.1',
+        'pages': 'pages'
     };
 
     //packages tells the System loader how to load when no filename and/or no extension
     var packages = {
-        'app': {main: 'app.ts', defaultExtension: 'ts'},
+        'app': {main: './main.ts', defaultExtension: 'ts'},
         'rxjs': {defaultExtension: 'js'},
         'angular2-in-memory-web-api': {defaultExtension: 'js'},
-        'ionic2-calendar': {main: 'index.js', defaultExtension: 'ts'},
-        'ionic-angular': {main: 'index.js'}
+        'ionic2-calendar': {main: './index.ts', defaultExtension: 'ts'},
+        'ionic-angular': {main: 'index.js'},
+        'pages': {defaultExtension: 'ts'}
     };
 
     var packageNames = [
@@ -24,6 +27,7 @@
         '@angular/core',
         '@angular/http',
         '@angular/router',
+        '@angular/forms',
         '@angular/platform-browser',
         '@angular/platform-browser-dynamic',
         '@angular/router-deprecated',

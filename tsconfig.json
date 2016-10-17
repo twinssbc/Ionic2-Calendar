@@ -14,10 +14,11 @@
   "files": [
     "src/calendar.ts",
     "src/calendar.service.ts",
-    "src/dayview.ts",
     "src/index.ts",
+    "src/calendar.module.ts",
     "src/monthview.ts",
     "src/weekview.ts",
+    "src/dayview.ts",
     "typings/globals/es6-shim/index.d.ts"
   ],
   "exclude": [

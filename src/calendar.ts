@@ -1,8 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { MonthViewComponent } from './monthview';
-import { WeekViewComponent } from './weekview';
-import { DayViewComponent } from './dayview';
 import { CalendarService } from './calendar.service';
 
 export interface IEvent {
@@ -10,14 +7,14 @@ export interface IEvent {
     endTime: Date;
     startTime: Date;
     title: string;
-};
+}
 
 export interface IRange {
     startTime: Date;
     endTime: Date;
-};
+}
 
-export interface IView {};
+export interface IView {}
 
 export interface IDayView extends IView {
     allDayEvents: IDisplayAllDayEvent[];
@@ -88,7 +85,7 @@ export interface ICalendarComponent {
 export interface ITimeSelected {
     events: IEvent[];
     selectedTime: Date;
-};
+}
 
 export type CalendarMode = 'day' | 'month' | 'week';
 
@@ -98,7 +95,7 @@ export enum Step {
     QuarterHour = 15,
     HalfHour = 30,
     Hour = 60
-};
+}
 
 @Component({
     selector: 'calendar',
@@ -146,7 +143,6 @@ export enum Step {
     styles: [`
         :host > div { height: 100%; }
     `],
-    directives: [MonthViewComponent, WeekViewComponent, DayViewComponent],
     providers: [CalendarService]
 })
 export class CalendarComponent implements OnInit {
@@ -176,7 +172,7 @@ export class CalendarComponent implements OnInit {
     @Input() queryMode: QueryMode = 'local';
     @Input() step: Step = Step.Hour;
 
-    @Output() currentDateChanged = new EventEmitter<Date>();
+    @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
@@ -193,7 +189,7 @@ export class CalendarComponent implements OnInit {
 
         this.calendarService.currentDateChanged$.subscribe(currentDate => {
             this._currentDate = currentDate;
-            this.currentDateChanged.emit(currentDate);
+            this.onCurrentDateChanged.emit(currentDate);
         });
     }
 

@@ -95,12 +95,6 @@ import { CalendarService } from './calendar.service';
             </ion-slides>
     `,
     styles: [`
-        .scrollable {
-          width: 100%;
-          overflow-x: hidden;
-          overflow-y: auto;
-        }
-
         .table-fixed {
           table-layout: fixed;
         }

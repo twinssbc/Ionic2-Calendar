@@ -61,12 +61,6 @@ import { CalendarService } from './calendar.service';
         </div>
     `,
     styles: [`
-        .scrollable {
-          width: 100%;
-          overflow-x: hidden;
-          overflow-y: auto;
-        }
-
         .text-muted {
           color: #999;
         }

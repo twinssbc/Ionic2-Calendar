@@ -9,16 +9,29 @@ https://twinssbc.github.io/Ionic2-Calendar/demo/
 
 Install: `npm install ionic2-calendar --save`
 
-Import the ionic2-calendar component for your page and add it to your page's directives.:
+Import the ionic2-calendar module:
 
 ```
-import { CalendarComponent } from 'ionic2-calendar';
+import { NgModule } from '@angular/core';
+import { IonicApp, IonicModule } from 'ionic-angular';
+import { MyApp } from './app/app.component';
+import { NgCalendarModule  } from 'ionic2-calendar';
 
-@Component({
-    templateUrl: 'build/pages/home/home.html',
-    directives: [CalendarComponent]
+
+@NgModule({
+    declarations: [
+        MyApp
+    ],
+    imports: [
+        NgCalendarModule,
+        IonicModule.forRoot(MyApp)
+    ],
+    bootstrap: [IonicApp],
+    entryComponents: [
+        MyApp
+    ]
 })
-export class HomePage {}
+export class AppModule {}
 ```
 
 Add the directive in the html page

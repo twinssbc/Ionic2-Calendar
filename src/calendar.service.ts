@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs/rx';
+import { Subject, Observable } from 'rxjs/Rx';
 
 import { ICalendarComponent, IView, CalendarMode, QueryMode } from './calendar';
 
