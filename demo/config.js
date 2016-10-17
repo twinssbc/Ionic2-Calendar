@@ -14,7 +14,7 @@
         'app': {main: 'app.ts', defaultExtension: 'ts'},
         'rxjs': {defaultExtension: 'js'},
         'angular2-in-memory-web-api': {defaultExtension: 'js'},
-        'ionic2-calendar': {main: '../../src/index.ts', defaultExtension: 'ts'},
+        'ionic2-calendar': {main: 'index.js', defaultExtension: 'ts'},
         'ionic-angular': {main: 'index.js'}
     };
 

@@ -1,9 +1,4 @@
 /typings
 /node_modules
 
-/src/*.d.ts
-/src/*.js
-/src/*.js.map
-/ionic2-calendar.d.ts
-/ionic2-calendar.js
-/ionic2-calendar.js.map
+/dist

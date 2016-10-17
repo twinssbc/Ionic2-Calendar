@@ -2,7 +2,7 @@
     <ion-navbar primary>
         <ion-title>{{viewTitle}}</ion-title>
         <ion-buttons end>
-            <button class="button" [disabled]="isToday()" (click)="today()">Today</button>
+            <button class="button" [disabled]="isToday" (click)="today()">Today</button>
             <button class="button" (click)="changeMode('month')">M</button>
             <button class="button" (click)="changeMode('week')">W</button>
             <button class="button" (click)="changeMode('day')">D</button>
@@ -11,8 +11,14 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content class="has-header">
-    <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [(currentDate)]="calendar.currentDate"
-              (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)"
-              (onTimeSelected)="onTimeSelected($event)" step="30"></calendar>
+<ion-content>
+    <calendar [eventSource]="eventSource"
+        [calendarMode]="calendar.mode"
+        [currentDate]="calendar.currentDate"
+        (onCurrentDateChanged)="onCurrentDateChanged($event)"
+        (onEventSelected)="onEventSelected($event)"
+        (onTitleChanged)="onViewTitleChanged($event)"
+        (onTimeSelected)="onTimeSelected($event)"
+        step="30">
+    </calendar>
 </ion-content>

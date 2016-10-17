@@ -1,12 +1,13 @@
-import {Component, OnInit, OnChanges, Input, Output, EventEmitter, ViewChild, ViewEncapsulation} from '@angular/core';
-import {DatePipe} from '@angular/common';
-import {Slides} from 'ionic-angular';
-import {CalendarService} from './calendar.service';
+import { DatePipe } from '@angular/common';
+import { Slides } from 'ionic-angular';
+import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+
+import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode } from './calendar';
+import { CalendarService } from './calendar.service';
 
 @Component({
     selector: 'dayview',
     template: `
-        <div class="dayview">
             <ion-slides #daySlider [options]="slideOption" (ionDidChange)="onSlideChanged()">
                 <ion-slide *ngFor="let view of views; let viewIndex=index">
                     <div class="dayview-allday-table">
@@ -67,7 +68,6 @@ import {CalendarService} from './calendar.service';
                     </ion-scroll>
                 </ion-slide>
             </ion-slides>
-        </div>
     `,
     styles: [`
         .scrollable {
@@ -250,116 +250,114 @@ import {CalendarService} from './calendar.service';
           }
         }
     `],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
-export class DayViewComponent implements OnInit, OnChanges {
-    @ViewChild('daySlider') slider:Slides;
-    @Input() formatHourColumn:String;
-    @Input() formatDayTitle:string;
-    @Input() allDayLabel:String;
-    @Input() hourParts:number;
-    @Input() eventSource;
-    @Output() onRangeChanged = new EventEmitter(true);
-    @Output() onEventSelected = new EventEmitter(true);
-    @Output() onTimeSelected = new EventEmitter(true);
-    @Output() onTitleChanged = new EventEmitter<string>(true);
+export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
+    @ViewChild('daySlider') slider: Slides;
+    @HostBinding('class.dayview') class = true;
 
-    inited:boolean = false;
-    range;
-    views = [];
-    currentViewIndex = 0;
-    private direction = 0;
-    slideOption = {
+    @Input() formatHourColumn: string;
+    @Input() formatDayTitle: string;
+    @Input() allDayLabel: string;
+    @Input() hourParts: number;
+    @Input() eventSource: IEvent[];
+
+    @Output() onRangeChanged = new EventEmitter<IRange>();
+    @Output() onEventSelected = new EventEmitter<IEvent>();
+    @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
+    @Output() onTitleChanged = new EventEmitter<string>();
+
+    public slideOption = {
         runCallbacksOnInit: false,
         loop: true
     };
-    changeDetectorRef;
-    mode:String = 'day';
+    public views: IDayView[] = [];
+    public currentViewIndex = 0;
+    public direction = 0;
+    public mode: CalendarMode = 'day';
+    public range: IRange;
 
-    constructor(private calendarService:CalendarService) {
-    }
+    private inited = false;
+
+    constructor(private calendarService: CalendarService) {}
 
     ngOnInit() {
-        var me = this;
         this.inited = true;
         this.refreshView();
 
-        this.calendarService.currentCalendarDateChangedFromParent$.subscribe(
-            currentDate => {
-                me.refreshView();
-            });
+        this.calendarService.currentDateChanged$.subscribe(currentDate => {
+            this.refreshView();
+        });
     }
 
-    ngOnChanges(changes) {
-        if (!this.inited) {
-            return;
-        }
-        var eventSourceChange = changes['eventSource'];
+    ngOnChanges(changes: SimpleChanges) {
+        if (!this.inited) return;
+
+        let eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
     }
 
     onSlideChanged() {
-        let me = this;
-        setTimeout(function () {
-            let currentSlideIndex = me.slider.getActiveIndex(),
+        setTimeout(() => {
+            let currentSlideIndex = this.slider.getActiveIndex(),
                 direction = 0,
-                currentViewIndex = me.currentViewIndex;
+                currentViewIndex = this.currentViewIndex;
 
             currentSlideIndex = (currentSlideIndex + 2) % 3;
             if (currentSlideIndex - currentViewIndex === 1) {
                 direction = 1;
             } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
                 direction = 1;
-                me.slider.slideTo(1, 0, false);
+                this.slider.slideTo(1, 0, false);
             } else if (currentViewIndex - currentSlideIndex === 1) {
                 direction = -1;
             } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
                 direction = -1;
-                me.slider.slideTo(3, 0, false);
+                this.slider.slideTo(3, 0, false);
             }
-            me.currentViewIndex = currentSlideIndex;
-            me.move(direction);
+            this.currentViewIndex = currentSlideIndex;
+            this.move(direction);
         }, 200);
     }
 
-    move(direction) {
-        if (direction == 0) {
-            return;
-        }
+    move(direction: number) {
+        if (direction === 0) return;
+
         this.direction = direction;
-        this.calendarService.setCurrentCalendarDate(this.calendarService.getAdjacentCalendarDate(this.mode, direction));
-        this.refreshView();
+        let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
+        this.calendarService.currentDate = adjacentDate;
         this.direction = 0;
     }
 
-    static createDateObjects(startTime) {
-        var rows = [],
-            time,
+    static createDateObjects(startTime: Date): IDayViewRow[] {
+        let rows: IDayViewRow[] = [],
+            time: Date,
             currentHour = startTime.getHours(),
             currentDate = startTime.getDate();
 
-        for (var hour = 0; hour < 24; hour += 1) {
+        for (let hour = 0; hour < 24; hour += 1) {
             time = new Date(startTime.getTime());
             time.setHours(currentHour + hour);
             time.setDate(currentDate);
             rows.push({
-                time: time
+                time: time,
+                events: []
             });
         }
         return rows;
     }
 
-    getViewData(startTime:Date) {
+    getViewData(startTime: Date): IDayView {
         return {
             rows: DayViewComponent.createDateObjects(startTime),
             allDayEvents: []
         };
     }
 
-    getRange(currentDate) {
-        var year = currentDate.getFullYear(),
+    getRange(currentDate: Date): IRange {
+        let year = currentDate.getFullYear(),
             month = currentDate.getMonth(),
             date = currentDate.getDate(),
             startTime = new Date(year, month, date),
@@ -372,8 +370,7 @@ export class DayViewComponent implements OnInit, OnChanges {
     }
 
     onDataLoaded() {
-        var eventSource = this.eventSource,
-            hour,
+        let eventSource = this.eventSource,
             len = eventSource ? eventSource.length : 0,
             startTime = this.range.startTime,
             endTime = this.range.endTime,
@@ -382,20 +379,19 @@ export class DayViewComponent implements OnInit, OnChanges {
             utcEndTime = new Date(endTime.getTime() + timeZoneOffset * 60 * 1000),
             currentViewIndex = this.currentViewIndex,
             rows = this.views[currentViewIndex].rows,
-            allDayEvents = this.views[currentViewIndex].allDayEvents = [],
+            allDayEvents = this.views[currentViewIndex].allDayEvents,
             oneHour = 3600000,
             eps = 0.016,
-            eventSet,
             normalEventInRange = false;
 
-        for (hour = 0; hour < 24; hour += 1) {
+        for (let hour = 0; hour < 24; hour += 1) {
             rows[hour].events = [];
         }
 
-        for (var i = 0; i < len; i += 1) {
-            var event = eventSource[i];
-            var eventStartTime = new Date(event.startTime);
-            var eventEndTime = new Date(event.endTime);
+        for (let i = 0; i < len; i += 1) {
+            let event = eventSource[i];
+            let eventStartTime = new Date(event.startTime.getTime());
+            let eventEndTime = new Date(event.endTime.getTime());
 
             if (event.allDay) {
                 if (eventEndTime <= utcStartTime || eventStartTime >= utcEndTime) {
@@ -412,30 +408,30 @@ export class DayViewComponent implements OnInit, OnChanges {
                     normalEventInRange = true;
                 }
 
-                var timeDifferenceStart;
+                let timeDifferenceStart: number;
                 if (eventStartTime <= startTime) {
                     timeDifferenceStart = 0;
                 } else {
                     timeDifferenceStart = (eventStartTime.getTime() - startTime.getTime()) / oneHour;
                 }
 
-                var timeDifferenceEnd;
+                let timeDifferenceEnd: number;
                 if (eventEndTime >= endTime) {
                     timeDifferenceEnd = (endTime.getTime() - startTime.getTime()) / oneHour;
                 } else {
                     timeDifferenceEnd = (eventEndTime.getTime() - startTime.getTime()) / oneHour;
                 }
 
-                var startIndex = Math.floor(timeDifferenceStart);
-                var endIndex = Math.ceil(timeDifferenceEnd - eps);
-                var startOffset = 0;
-                var endOffset = 0;
+                let startIndex = Math.floor(timeDifferenceStart);
+                let endIndex = Math.ceil(timeDifferenceEnd - eps);
+                let startOffset = 0;
+                let endOffset = 0;
                 if (this.hourParts !== 1) {
                     startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
                     endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
                 }
 
-                var displayEvent = {
+                let displayEvent = {
                     event: event,
                     startIndex: startIndex,
                     endIndex: endIndex,
@@ -443,7 +439,7 @@ export class DayViewComponent implements OnInit, OnChanges {
                     endOffset: endOffset
                 };
 
-                eventSet = rows[startIndex].events;
+                let eventSet = rows[startIndex].events;
                 if (eventSet) {
                     eventSet.push(displayEvent);
                 } else {
@@ -455,8 +451,8 @@ export class DayViewComponent implements OnInit, OnChanges {
         }
 
         if (normalEventInRange) {
-            var orderedEvents = [];
-            for (hour = 0; hour < 24; hour += 1) {
+            let orderedEvents: IDisplayEvent[] = [];
+            for (let hour = 0; hour < 24; hour += 1) {
                 if (rows[hour].events) {
                     rows[hour].events.sort(DayViewComponent.compareEventByStartOffset);
 
@@ -470,49 +466,41 @@ export class DayViewComponent implements OnInit, OnChanges {
     }
 
     refreshView() {
-        this.range = this.getRange(this.calendarService.currentCalendarDate);
-        var title = this.getTitle();
+        this.range = this.getRange(this.calendarService.currentDate);
+        let title = this.getTitle();
         this.onTitleChanged.emit(title);
 
         this.calendarService.populateAdjacentViews(this);
         this.calendarService.rangeChanged(this);
     }
 
-    getTitle() {
-        var startingDate = this.range.startTime;
+    getTitle(): string {
+        let startingDate = this.range.startTime;
         return new DatePipe().transform(startingDate, this.formatDayTitle);
     }
 
-    private static getISO8601WeekNumber(date) {
-        var checkDate = new Date(date);
-        checkDate.setDate(checkDate.getDate() + 4 - (checkDate.getDay() || 7)); // Thursday
-        var time = checkDate.getTime();
-        checkDate.setMonth(0); // Compare with Jan 1
-        checkDate.setDate(1);
-        return Math.floor(Math.round((time - checkDate.getTime()) / 86400000) / 7) + 1;
-
-    }
-
-    private static compareEventByStartOffset(eventA, eventB) {
+    private static compareEventByStartOffset(eventA: IDisplayEvent, eventB: IDisplayEvent) {
         return eventA.startOffset - eventB.startOffset;
     }
 
-
-    select(selectedTime, events) {
-        this.onTimeSelected.emit({selectedTime: selectedTime, events: events});
+    select(selectedTime: Date, events: IDisplayEvent[]) {
+        this.onTimeSelected.emit({
+            selectedTime: selectedTime,
+            events: events.map(e => e.event)
+        });
     }
 
-    placeEvents(orderedEvents) {
+    placeEvents(orderedEvents: IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
         DayViewComponent.calculateWidth(orderedEvents);
     }
 
-    placeAllDayEvents(orderedEvents) {
+    placeAllDayEvents(orderedEvents: IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
     }
 
-    overlap(event1, event2) {
-        var earlyEvent = event1,
+    overlap(event1: IDisplayEvent, event2: IDisplayEvent): boolean {
+        let earlyEvent = event1,
             lateEvent = event2;
         if (event1.startIndex > event2.startIndex || (event1.startIndex === event2.startIndex && event1.startOffset > event2.startOffset)) {
             earlyEvent = event2;
@@ -526,19 +514,17 @@ export class DayViewComponent implements OnInit, OnChanges {
         }
     }
 
-    calculatePosition(events) {
-        var i,
-            j,
-            len = events.length,
+    calculatePosition(events: IDisplayEvent[]) {
+        let len = events.length,
             maxColumn = 0,
-            col,
-            isForbidden = new Array(len);
+            col: number,
+            isForbidden: boolean[] = new Array(len);
 
-        for (i = 0; i < len; i += 1) {
+        for (let i = 0; i < len; i += 1) {
             for (col = 0; col < maxColumn; col += 1) {
                 isForbidden[col] = false;
             }
-            for (j = 0; j < i; j += 1) {
+            for (let j = 0; j < i; j += 1) {
                 if (this.overlap(events[i], events[j])) {
                     isForbidden[events[j].position] = true;
                 }
@@ -556,52 +542,45 @@ export class DayViewComponent implements OnInit, OnChanges {
         }
     }
 
-    private static calculateWidth(orderedEvents) {
-        var cells = new Array(24),
-            event,
-            index,
-            i,
-            j,
-            len,
-            eventCountInCell,
-            currentEventInCell;
+    private static calculateWidth(orderedEvents: IDisplayEvent[]) {
+        let cells: { calculated: boolean; events: IDisplayEvent[]; }[] = new Array(24);
 
-        //sort by position in descending order, the right most columns should be calculated first
-        orderedEvents.sort(function (eventA, eventB) {
+        // sort by position in descending order, the right most columns should be calculated first
+        orderedEvents.sort((eventA, eventB) => {
             return eventB.position - eventA.position;
         });
-        for (i = 0; i < 24; i += 1) {
+        for (let i = 0; i < 24; i += 1) {
             cells[i] = {
                 calculated: false,
                 events: []
             };
         }
-        len = orderedEvents.length;
-        for (i = 0; i < len; i += 1) {
-            event = orderedEvents[i];
-            index = event.startIndex;
+        let len = orderedEvents.length;
+        for (let i = 0; i < len; i += 1) {
+            let event = orderedEvents[i];
+            let index = event.startIndex;
             while (index < event.endIndex) {
                 cells[index].events.push(event);
                 index += 1;
             }
         }
 
-        i = 0;
+        let i = 0;
         while (i < len) {
-            event = orderedEvents[i];
+            let event = orderedEvents[i];
             if (!event.overlapNumber) {
-                var overlapNumber = event.position + 1;
+                let overlapNumber = event.position + 1;
                 event.overlapNumber = overlapNumber;
-                var eventQueue = [event];
+                let eventQueue = [event];
                 while ((event = eventQueue.shift())) {
-                    index = event.startIndex;
+                    let index = event.startIndex;
                     while (index < event.endIndex) {
                         if (!cells[index].calculated) {
                             cells[index].calculated = true;
                             if (cells[index].events) {
-                                eventCountInCell = cells[index].events.length;
-                                for (j = 0; j < eventCountInCell; j += 1) {
-                                    currentEventInCell = cells[index].events[j];
+                                let eventCountInCell = cells[index].events.length;
+                                for (let j = 0; j < eventCountInCell; j += 1) {
+                                    let currentEventInCell = cells[index].events[j];
                                     if (!currentEventInCell.overlapNumber) {
                                         currentEventInCell.overlapNumber = overlapNumber;
                                         eventQueue.push(currentEventInCell);
@@ -617,7 +596,7 @@ export class DayViewComponent implements OnInit, OnChanges {
         }
     }
 
-    eventSelected(event) {
+    eventSelected(event: IEvent) {
         this.onEventSelected.emit(event);
     }
 }
