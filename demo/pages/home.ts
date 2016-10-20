@@ -68,7 +68,8 @@ export class HomePage {
                     title: 'All Day - ' + i,
                     startTime: startTime,
                     endTime: endTime,
-                    allDay: true
+                    allDay: true,
+                    event_class:"custom-class"
                 });
             } else {
                 var startMinute = Math.floor(Math.random() * 24 * 60);
@@ -79,7 +80,8 @@ export class HomePage {
                     title: 'Event - ' + i,
                     startTime: startTime,
                     endTime: endTime,
-                    allDay: false
+                    allDay: false,
+                    event_class:"custom-class"
                 });
             }
         }
