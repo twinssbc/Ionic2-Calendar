@@ -1,6 +1,6 @@
 {
     "name": "ionic2-calendar",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
@@ -16,7 +16,7 @@
     },
     "scripts": {
         "build": "rm -rf dist && tsc && npm run copy_package",
-        "copy_package": "cp package.json dist/package.json",
+        "copy_package": "cp -r package.json README.md LICENSE tsconfig.json typings.json typings dist/",
         "dev": "tsc --watch",
         "postinstall": "typings install"
     },

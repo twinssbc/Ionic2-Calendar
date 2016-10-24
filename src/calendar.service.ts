@@ -15,6 +15,10 @@ export class CalendarService {
         this.currentDateChanged$ = this.currentDateChanged.asObservable();
     }
 
+    setCurrentDateWithoutEvent(val: Date) {
+        this._currentDate = val;
+    }
+
     get currentDate(): Date {
         return this._currentDate;
     }

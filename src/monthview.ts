@@ -257,8 +257,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             this.moveOnSelected = false;
         } else {
             let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
-            this.calendarService.currentDate = adjacentDate;
+            this.calendarService.setCurrentDateWithoutEvent(adjacentDate);
         }
+        this.refreshView();
         this.direction = 0;
     }
 
@@ -362,9 +363,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             len = eventSource ? eventSource.length : 0,
             startTime = range.startTime,
             endTime = range.endTime,
-            timeZoneOffset = -new Date().getTimezoneOffset(),
-            utcStartTime = new Date(startTime.getTime() + timeZoneOffset * 60 * 1000),
-            utcEndTime = new Date(endTime.getTime() + timeZoneOffset * 60 * 1000),
+            utcStartTime = new Date(Date.UTC(startTime.getFullYear(), startTime.getMonth(), startTime.getDate())),
+            utcEndTime = new Date(Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate())),
             currentViewIndex = this.currentViewIndex,
             dates = this.views[currentViewIndex].dates,
             oneDay = 86400000,
@@ -496,7 +496,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             direction = currentYear < selectedYear ? 1 : -1;
         }
 
-        this.calendarService.currentDate = selectedDate;
+        this.calendarService.setCurrentDateWithoutEvent(selectedDate);
         if (direction === 0) {
             let currentViewStartDate = this.range.startTime,
                 oneDay = 86400000,
