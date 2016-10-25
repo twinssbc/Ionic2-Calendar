@@ -401,18 +401,22 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                     normalEventInRange = true;
                 }
 
+                let timeDiff: number;
                 let timeDifferenceStart: number;
                 if (eventStartTime <= startTime) {
                     timeDifferenceStart = 0;
                 } else {
-                    timeDifferenceStart = (eventStartTime.getTime() - startTime.getTime()) / oneHour;
+                    timeDiff = eventStartTime.getTime() - startTime.getTime() - (eventStartTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
+                    timeDifferenceStart = timeDiff / oneHour;
                 }
 
                 let timeDifferenceEnd: number;
                 if (eventEndTime >= endTime) {
-                    timeDifferenceEnd = (endTime.getTime() - startTime.getTime()) / oneHour;
+                    timeDiff = endTime.getTime() - startTime.getTime() - (endTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
+                    timeDifferenceEnd = timeDiff / oneHour;
                 } else {
-                    timeDifferenceEnd = (eventEndTime.getTime() - startTime.getTime()) / oneHour;
+                    timeDiff = eventEndTime.getTime() - startTime.getTime() - (eventEndTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
+                    timeDifferenceEnd = timeDiff / oneHour;
                 }
 
                 let startIndex = Math.floor(timeDifferenceStart);

@@ -400,18 +400,31 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
                 }
             }
 
+            let timeDiff: number;
             let timeDifferenceStart: number;
             if (eventStartTime <= st) {
                 timeDifferenceStart = 0;
             } else {
-                timeDifferenceStart = (eventStartTime.getTime() - st.getTime()) / oneDay;
+                timeDiff = eventStartTime.getTime() - st.getTime();
+                if(!event.allDay) {
+                    timeDiff = timeDiff - (eventStartTime.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
+                }
+                timeDifferenceStart = timeDiff / oneDay;
             }
 
             let timeDifferenceEnd: number;
             if (eventEndTime >= et) {
-                timeDifferenceEnd = (et.getTime() - st.getTime()) / oneDay;
+                timeDiff = et.getTime() - st.getTime();
+                if(!event.allDay) {
+                    timeDiff = timeDiff - (et.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
+                }
+                timeDifferenceEnd = timeDiff / oneDay;
             } else {
-                timeDifferenceEnd = (eventEndTime.getTime() - st.getTime()) / oneDay;
+                timeDiff = eventEndTime.getTime() - st.getTime();
+                if(!event.allDay) {
+                    timeDiff = timeDiff - (eventEndTime.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
+                }
+                timeDifferenceEnd = timeDiff / oneDay;
             }
 
             let index = Math.floor(timeDifferenceStart);
