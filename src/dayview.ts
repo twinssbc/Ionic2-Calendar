@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
-import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Inject, LOCALE_ID, Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -273,7 +273,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
     private inited = false;
 
-    constructor(private calendarService: CalendarService) {}
+    constructor(@Inject(LOCALE_ID) private locale: string, private calendarService: CalendarService) {}
 
     ngOnInit() {
         this.inited = true;
@@ -473,7 +473,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
     getTitle(): string {
         let startingDate = this.range.startTime;
-        return new DatePipe().transform(startingDate, this.formatDayTitle);
+        return new DatePipe(this.locale).transform(startingDate, this.formatDayTitle);
     }
 
     private static compareEventByStartOffset(eventA: IDisplayEvent, eventB: IDisplayEvent) {

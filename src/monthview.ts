@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
+import { Inject, LOCALE_ID, Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
 
@@ -206,7 +206,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     private moveOnSelected = false;
     private inited = false;
 
-    constructor(private calendarService: CalendarService) {}
+    constructor(@Inject(LOCALE_ID) private locale: string, private calendarService: CalendarService) {}
 
     ngOnInit() {
         this.inited = true;
@@ -263,11 +263,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.direction = 0;
     }
 
-    static createDateObject(date: Date, format: string): IMonthViewRow {
+    createDateObject(date: Date, format: string): IMonthViewRow {
         return {
             date: date,
             events: [],
-            label: new DatePipe().transform(date, format),
+            label: new DatePipe(this.locale).transform(date, format),
             secondary: false
         };
     }
@@ -292,7 +292,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         let dates = MonthViewComponent.getDates(startDate, 42);
         let days: IMonthViewRow[] = [];
         for (let i = 0; i < 42; i++) {
-            let dateObject = MonthViewComponent.createDateObject(dates[i], this.formatDay);
+            let dateObject = this.createDateObject(dates[i], this.formatDay);
             dateObject.secondary = dates[i].getMonth() !== month;
             days[i] = dateObject;
         }
@@ -477,7 +477,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             month = (currentViewStartDate.getMonth() + (date !== 1 ? 1 : 0)) % 12,
             year = currentViewStartDate.getFullYear() + (date !== 1 && month === 0 ? 1 : 0),
             headerDate = new Date(year, month, 1);
-        return new DatePipe().transform(headerDate, this.formatMonthTitle);
+        return new DatePipe(this.locale).transform(headerDate, this.formatMonthTitle);
     }
 
     private compareEvent(event1: IEvent, event2: IEvent): number {

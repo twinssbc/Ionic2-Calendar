@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
-import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Inject, LOCALE_ID, Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -312,7 +312,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
     private inited = false;
 
-    constructor(private calendarService: CalendarService) {}
+    constructor(@Inject(LOCALE_ID) private locale: string, private calendarService: CalendarService) {}
 
     ngOnInit() {
         this.inited = true;
@@ -605,7 +605,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         let firstDayOfWeek = this.range.startTime,
             weekFormat = '$n',
             weekNumberIndex = this.formatWeekTitle.indexOf(weekFormat),
-            title = new DatePipe().transform(firstDayOfWeek, this.formatWeekTitle);
+            title = new DatePipe(this.locale).transform(firstDayOfWeek, this.formatWeekTitle);
 
         if (weekNumberIndex !== -1) {
             let weekNumber = String(WeekViewComponent.getISO8601WeekNumber(firstDayOfWeek));

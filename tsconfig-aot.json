@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "declaration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "module": "es2015",
+        "moduleResolution": "node",
+        "removeComments": true,
+        "sourceMap": true,
+        "target": "es5",
+        "stripInternal": true,
+        "inlineSources": true,
+        "skipLibCheck": true,
+        "rootDir": "./src",
+        "outDir": "./aot",
+        "baseUrl": "."
+
+    },
+    "files": [
+        "src/index.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+    "angularCompilerOptions": {
+        "skipMetadataEmit" : true,
+        "genDir": "./aot/waste"
+    }
+}

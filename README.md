@@ -62,6 +62,22 @@ import { enableProdMode } from '@angular/core';
 enableProdMode();
 ```
 
+# Note for Ionic Build/Run command
+ionic serve uses tsc to compile the code, while ionic build/run uses ngc to compile the code.    
+It requires explicit dependency on the compiled ngfactory files for each component.    
+I couldn’t find a way to configure the build command includes the ngfactory of the child components automatically.    
+So the workaround is to import them explicitly.    
+Add below lines in *main.prod.ts*
+
+
+```
+import { CalendarComponent } from 'ionic2-calendar/calendar';
+import { MonthViewComponent } from 'ionic2-calendar/monthview';
+import { WeekViewComponent } from 'ionic2-calendar/weekview';
+import { DayViewComponent } from 'ionic2-calendar/dayview';
+```
+
+
 # Options
 
 * formatDay    
