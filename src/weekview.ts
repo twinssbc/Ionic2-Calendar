@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
-import { Inject, LOCALE_ID, Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -284,16 +284,16 @@ import { CalendarService } from './calendar.service';
     encapsulation: ViewEncapsulation.None
 })
 export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('weekSlider') slider: Slides;
+    @ViewChild('weekSlider') slider:Slides;
     @HostBinding('class.weekview') class = true;
 
-    @Input() formatWeekTitle: string;
-    @Input() formatWeekViewDayHeader: string;
-    @Input() formatHourColumn: string;
-    @Input() startingDayWeek: number;
-    @Input() allDayLabel: string;
-    @Input() hourParts: number;
-    @Input() eventSource: IEvent[];
+    @Input() formatWeekTitle:string;
+    @Input() formatWeekViewDayHeader:string;
+    @Input() formatHourColumn:string;
+    @Input() startingDayWeek:number;
+    @Input() allDayLabel:string;
+    @Input() hourParts:number;
+    @Input() eventSource:IEvent[];
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -304,15 +304,16 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         runCallbacksOnInit: false,
         loop: true
     };
-    public views: IWeekView[] = [];
+    public views:IWeekView[] = [];
     public currentViewIndex = 0;
-    public range: IRange;
+    public range:IRange;
     public direction = 0;
-    public mode: CalendarMode = 'week';
+    public mode:CalendarMode = 'week';
 
     private inited = false;
 
-    constructor(@Inject(LOCALE_ID) private locale: string, private calendarService: CalendarService) {}
+    constructor(private calendarService:CalendarService) {
+    }
 
     ngOnInit() {
         this.inited = true;
@@ -323,7 +324,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         });
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges(changes:SimpleChanges) {
         if (!this.inited) return;
 
         let eventSourceChange = changes['eventSource'];
@@ -333,29 +334,27 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     onSlideChanged() {
-        setTimeout(() => {
-            let currentSlideIndex = this.slider.getActiveIndex(),
-                direction = 0,
-                currentViewIndex = this.currentViewIndex;
+        let currentSlideIndex = this.slider.getActiveIndex(),
+            direction = 0,
+            currentViewIndex = this.currentViewIndex;
 
-            currentSlideIndex = (currentSlideIndex + 2) % 3;
-            if (currentSlideIndex - currentViewIndex === 1) {
-                direction = 1;
-            } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
-                direction = 1;
-                this.slider.slideTo(1, 0, false);
-            } else if (currentViewIndex - currentSlideIndex === 1) {
-                direction = -1;
-            } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
-                direction = -1;
-                this.slider.slideTo(3, 0, false);
-            }
-            this.currentViewIndex = currentSlideIndex;
-            this.move(direction);
-        }, 200);
+        currentSlideIndex = (currentSlideIndex + 2) % 3;
+        if (currentSlideIndex - currentViewIndex === 1) {
+            direction = 1;
+        } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
+            direction = 1;
+            this.slider.slideTo(1, 0, false);
+        } else if (currentViewIndex - currentSlideIndex === 1) {
+            direction = -1;
+        } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
+            direction = -1;
+            this.slider.slideTo(3, 0, false);
+        }
+        this.currentViewIndex = currentSlideIndex;
+        this.move(direction);
     }
 
-    move(direction: number) {
+    move(direction:number) {
         if (direction === 0) {
             return;
         }
@@ -365,13 +364,13 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         this.direction = 0;
     }
 
-    static createDateObjects(startTime: Date): IWeekViewRow[][] {
-        let times: IWeekViewRow[][] = [],
+    static createDateObjects(startTime:Date):IWeekViewRow[][] {
+        let times:IWeekViewRow[][] = [],
             currentHour = startTime.getHours(),
             currentDate = startTime.getDate();
 
         for (let hour = 0; hour < 24; hour += 1) {
-            let row: IWeekViewRow[] = [];
+            let row:IWeekViewRow[] = [];
             for (let day = 0; day < 7; day += 1) {
                 let time = new Date(startTime.getTime());
                 time.setHours(currentHour + hour);
@@ -386,7 +385,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         return times;
     }
 
-    static getDates(startTime: Date, n: number): IWeekViewDateRow[] {
+    static getDates(startTime:Date, n:number):IWeekViewDateRow[] {
         let dates = new Array(n),
             current = new Date(startTime.getTime()),
             i = 0;
@@ -401,14 +400,14 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         return dates;
     }
 
-    getViewData(startTime: Date): IWeekView {
+    getViewData(startTime:Date):IWeekView {
         return {
             rows: WeekViewComponent.createDateObjects(startTime),
             dates: WeekViewComponent.getDates(startTime, 7)
         };
     }
 
-    getRange(currentDate: Date): IRange {
+    getRange(currentDate:Date):IRange {
         let year = currentDate.getFullYear(),
             month = currentDate.getMonth(),
             date = currentDate.getDate(),
@@ -440,7 +439,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
             dates = this.views[currentViewIndex].dates,
             oneHour = 3600000,
             oneDay = 86400000,
-            // add allday eps
+        // add allday eps
             eps = 0.016,
             allDayEventInRange = false,
             normalEventInRange = false;
@@ -465,21 +464,21 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                 } else {
                     allDayEventInRange = true;
 
-                    let allDayStartIndex: number;
+                    let allDayStartIndex:number;
                     if (eventStartTime <= utcStartTime) {
                         allDayStartIndex = 0;
                     } else {
                         allDayStartIndex = Math.floor((eventStartTime.getTime() - utcStartTime.getTime()) / oneDay);
                     }
 
-                    let allDayEndIndex: number;
+                    let allDayEndIndex:number;
                     if (eventEndTime >= utcEndTime) {
                         allDayEndIndex = Math.ceil((utcEndTime.getTime() - utcStartTime.getTime()) / oneDay);
                     } else {
                         allDayEndIndex = Math.ceil((eventEndTime.getTime() - utcStartTime.getTime()) / oneDay);
                     }
 
-                    let displayAllDayEvent: IDisplayEvent = {
+                    let displayAllDayEvent:IDisplayEvent = {
                         event: event,
                         startIndex: allDayStartIndex,
                         endIndex: allDayEndIndex
@@ -500,8 +499,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                 } else {
                     normalEventInRange = true;
 
-                    let timeDiff: number;
-                    let timeDifferenceStart: number;
+                    let timeDiff:number;
+                    let timeDifferenceStart:number;
                     if (eventStartTime <= startTime) {
                         timeDifferenceStart = 0;
                     } else {
@@ -509,7 +508,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                         timeDifferenceStart = timeDiff / oneHour;
                     }
 
-                    let timeDifferenceEnd: number;
+                    let timeDifferenceEnd:number;
                     if (eventEndTime >= endTime) {
                         timeDiff = endTime.getTime() - startTime.getTime() - (endTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
                         timeDifferenceEnd = timeDiff / oneHour;
@@ -532,7 +531,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
                     do {
                         endOfDay += 24;
-                        let endRowIndex: number;
+                        let endRowIndex:number;
                         if (endOfDay <= endIndex) {
                             endRowIndex = 24;
                         } else {
@@ -566,7 +565,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
         if (normalEventInRange) {
             for (let day = 0; day < 7; day += 1) {
-                let orderedEvents: IDisplayEvent[] = [];
+                let orderedEvents:IDisplayEvent[] = [];
                 for (let hour = 0; hour < 24; hour += 1) {
                     if (rows[hour][day].events) {
                         rows[hour][day].events.sort(WeekViewComponent.compareEventByStartOffset);
@@ -580,7 +579,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         }
 
         if (allDayEventInRange) {
-            let orderedAllDayEvents: IDisplayEvent[] = [];
+            let orderedAllDayEvents:IDisplayEvent[] = [];
             for (let day = 0; day < 7; day += 1) {
                 if (dates[day].events) {
                     orderedAllDayEvents = orderedAllDayEvents.concat(dates[day].events);
@@ -601,11 +600,11 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         this.calendarService.rangeChanged(this);
     }
 
-    getTitle(): string {
+    getTitle():string {
         let firstDayOfWeek = this.range.startTime,
             weekFormat = '$n',
             weekNumberIndex = this.formatWeekTitle.indexOf(weekFormat),
-            title = new DatePipe(this.locale).transform(firstDayOfWeek, this.formatWeekTitle);
+            title = new DatePipe(undefined).transform(firstDayOfWeek, this.formatWeekTitle);
 
         if (weekNumberIndex !== -1) {
             let weekNumber = String(WeekViewComponent.getISO8601WeekNumber(firstDayOfWeek));
@@ -615,7 +614,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         return title;
     }
 
-    private static getISO8601WeekNumber(date: Date): number {
+    private static getISO8601WeekNumber(date:Date):number {
         let checkDate = new Date(date.getTime());
         checkDate.setDate(checkDate.getDate() + 4 - (checkDate.getDay() || 7)); // Thursday
         let time = checkDate.getTime();
@@ -624,27 +623,27 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         return Math.floor(Math.round((time - checkDate.getTime()) / 86400000) / 7) + 1;
     }
 
-    private static compareEventByStartOffset(eventA: IDisplayEvent, eventB: IDisplayEvent): number {
+    private static compareEventByStartOffset(eventA:IDisplayEvent, eventB:IDisplayEvent):number {
         return eventA.startOffset - eventB.startOffset;
     }
 
-    select(selectedTime: Date, events: IDisplayEvent[]) {
+    select(selectedTime:Date, events:IDisplayEvent[]) {
         this.onTimeSelected.emit({
             selectedTime: selectedTime,
             events: events.map(e => e.event)
         });
     }
 
-    placeEvents(orderedEvents: IDisplayEvent[]) {
+    placeEvents(orderedEvents:IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
         WeekViewComponent.calculateWidth(orderedEvents);
     }
 
-    placeAllDayEvents(orderedEvents: IDisplayEvent[]) {
+    placeAllDayEvents(orderedEvents:IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
     }
 
-    overlap(event1: IDisplayEvent, event2: IDisplayEvent): boolean {
+    overlap(event1:IDisplayEvent, event2:IDisplayEvent):boolean {
         let earlyEvent = event1,
             lateEvent = event2;
         if (event1.startIndex > event2.startIndex || (event1.startIndex === event2.startIndex && event1.startOffset > event2.startOffset)) {
@@ -659,13 +658,13 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         }
     }
 
-    calculatePosition(events: IDisplayEvent[]) {
+    calculatePosition(events:IDisplayEvent[]) {
         let len = events.length,
             maxColumn = 0,
             isForbidden = new Array(len);
 
         for (let i = 0; i < len; i += 1) {
-            let col: number;
+            let col:number;
             for (col = 0; col < maxColumn; col += 1) {
                 isForbidden[col] = false;
             }
@@ -687,7 +686,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         }
     }
 
-    private static calculateWidth(orderedEvents: IDisplayEvent[]) {
+    private static calculateWidth(orderedEvents:IDisplayEvent[]) {
         let cells = new Array(24);
 
         // sort by position in descending order, the right most columns should be calculated first
@@ -741,7 +740,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         }
     }
 
-    eventSelected(event: IEvent) {
+    eventSelected(event:IEvent) {
         this.onEventSelected.emit(event);
     }
 }

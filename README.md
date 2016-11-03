@@ -5,6 +5,10 @@ Ionic2 calendar directive
 # Demo
 https://twinssbc.github.io/Ionic2-Calendar/demo/
 
+# Dependency
+The latest version has dependency on Angular 2.0.1, due to below issue        
+https://github.com/angular/angular/issues/11896
+
 # Usage
 
 Install: `npm install ionic2-calendar --save`

@@ -1,4 +1,4 @@
-import { Inject, LOCALE_ID, Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
 
@@ -177,15 +177,15 @@ import { CalendarService } from './calendar.service';
     `]
 })
 export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('monthSlider') slider: Slides;
+    @ViewChild('monthSlider') slider:Slides;
 
-    @Input() formatDay: string;
-    @Input() formatDayHeader: string;
-    @Input() formatMonthTitle: string;
-    @Input() eventSource: IEvent[];
-    @Input() startingDayMonth: number;
-    @Input() showEventDetail: boolean;
-    @Input() noEventsLabel: string;
+    @Input() formatDay:string;
+    @Input() formatDayHeader:string;
+    @Input() formatMonthTitle:string;
+    @Input() eventSource:IEvent[];
+    @Input() startingDayMonth:number;
+    @Input() showEventDetail:boolean;
+    @Input() noEventsLabel:string;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -196,17 +196,18 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         runCallbacksOnInit: false,
         loop: true
     };
-    public views: IMonthView[] = [];
+    public views:IMonthView[] = [];
     public currentViewIndex = 0;
-    public selectedDate: IMonthViewRow;
-    public range: IRange;
-    public mode: CalendarMode = 'month';
+    public selectedDate:IMonthViewRow;
+    public range:IRange;
+    public mode:CalendarMode = 'month';
     public direction = 0;
 
     private moveOnSelected = false;
     private inited = false;
 
-    constructor(@Inject(LOCALE_ID) private locale: string, private calendarService: CalendarService) {}
+    constructor(private calendarService:CalendarService) {
+    }
 
     ngOnInit() {
         this.inited = true;
@@ -217,7 +218,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         });
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges(changes:SimpleChanges) {
         if (!this.inited) return;
 
         let eventSourceChange = changes['eventSource'];
@@ -227,29 +228,27 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     }
 
     onSlideChanged() {
-        setTimeout(() => {
-            let currentSlideIndex = this.slider.getActiveIndex(),
-                direction = 0,
-                currentViewIndex = this.currentViewIndex;
+        let currentSlideIndex = this.slider.getActiveIndex(),
+            direction = 0,
+            currentViewIndex = this.currentViewIndex;
 
-            currentSlideIndex = (currentSlideIndex + 2) % 3;
-            if (currentSlideIndex - currentViewIndex === 1) {
-                direction = 1;
-            } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
-                direction = 1;
-                this.slider.slideTo(1, 0, false);
-            } else if (currentViewIndex - currentSlideIndex === 1) {
-                direction = -1;
-            } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
-                direction = -1;
-                this.slider.slideTo(3, 0, false);
-            }
-            this.currentViewIndex = currentSlideIndex;
-            this.move(direction);
-        }, 200);
+        currentSlideIndex = (currentSlideIndex + 2) % 3;
+        if (currentSlideIndex - currentViewIndex === 1) {
+            direction = 1;
+        } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
+            direction = 1;
+            this.slider.slideTo(1, 0, false);
+        } else if (currentViewIndex - currentSlideIndex === 1) {
+            direction = -1;
+        } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
+            direction = -1;
+            this.slider.slideTo(3, 0, false);
+        }
+        this.currentViewIndex = currentSlideIndex;
+        this.move(direction);
     }
 
-    move(direction: number) {
+    move(direction:number) {
         if (direction === 0) return;
 
         this.direction = direction;
@@ -263,16 +262,16 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.direction = 0;
     }
 
-    createDateObject(date: Date, format: string): IMonthViewRow {
+    createDateObject(date:Date, format:string):IMonthViewRow {
         return {
             date: date,
             events: [],
-            label: new DatePipe(this.locale).transform(date, format),
+            label: new DatePipe('en-US').transform(date, format),
             secondary: false
         };
     }
 
-    static getDates(startDate: Date, n: number): Date[] {
+    static getDates(startDate:Date, n:number):Date[] {
         let dates = new Array(n),
             current = new Date(startDate.getTime()),
             i = 0;
@@ -284,13 +283,13 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         return dates;
     }
 
-    getViewData(startTime: Date): IMonthView {
+    getViewData(startTime:Date):IMonthView {
         let startDate = startTime,
             date = startDate.getDate(),
             month = (startDate.getMonth() + (date !== 1 ? 1 : 0)) % 12;
 
         let dates = MonthViewComponent.getDates(startDate, 42);
-        let days: IMonthViewRow[] = [];
+        let days:IMonthViewRow[] = [];
         for (let i = 0; i < 42; i++) {
             let dateObject = this.createDateObject(dates[i], this.formatDay);
             dateObject.secondary = dates[i].getMonth() !== month;
@@ -302,7 +301,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         };
     }
 
-    getHighlightClass(date: IMonthViewRow): string {
+    getHighlightClass(date:IMonthViewRow):string {
         let className = '';
 
         if (date.hasEvent) {
@@ -336,7 +335,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         return className;
     }
 
-    getRange(currentDate: Date): IRange {
+    getRange(currentDate:Date):IRange {
         let year = currentDate.getFullYear(),
             month = currentDate.getMonth(),
             firstDayOfMonth = new Date(year, month, 1),
@@ -381,8 +380,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             let event = eventSource[i],
                 eventStartTime = new Date(event.startTime.getTime()),
                 eventEndTime = new Date(event.endTime.getTime()),
-                st: Date,
-                et: Date;
+                st:Date,
+                et:Date;
 
             if (event.allDay) {
                 if (eventEndTime <= utcStartTime || eventStartTime >= utcEndTime) {
@@ -400,28 +399,28 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
                 }
             }
 
-            let timeDiff: number;
-            let timeDifferenceStart: number;
+            let timeDiff:number;
+            let timeDifferenceStart:number;
             if (eventStartTime <= st) {
                 timeDifferenceStart = 0;
             } else {
                 timeDiff = eventStartTime.getTime() - st.getTime();
-                if(!event.allDay) {
+                if (!event.allDay) {
                     timeDiff = timeDiff - (eventStartTime.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
                 }
                 timeDifferenceStart = timeDiff / oneDay;
             }
 
-            let timeDifferenceEnd: number;
+            let timeDifferenceEnd:number;
             if (eventEndTime >= et) {
                 timeDiff = et.getTime() - st.getTime();
-                if(!event.allDay) {
+                if (!event.allDay) {
                     timeDiff = timeDiff - (et.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
                 }
                 timeDifferenceEnd = timeDiff / oneDay;
             } else {
                 timeDiff = eventEndTime.getTime() - st.getTime();
-                if(!event.allDay) {
+                if (!event.allDay) {
                     timeDiff = timeDiff - (eventEndTime.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
                 }
                 timeDifferenceEnd = timeDiff / oneDay;
@@ -471,16 +470,16 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.calendarService.rangeChanged(this);
     }
 
-    getTitle(): string {
+    getTitle():string {
         let currentViewStartDate = this.range.startTime,
             date = currentViewStartDate.getDate(),
             month = (currentViewStartDate.getMonth() + (date !== 1 ? 1 : 0)) % 12,
             year = currentViewStartDate.getFullYear() + (date !== 1 && month === 0 ? 1 : 0),
             headerDate = new Date(year, month, 1);
-        return new DatePipe(this.locale).transform(headerDate, this.formatMonthTitle);
+        return new DatePipe(undefined).transform(headerDate, this.formatMonthTitle);
     }
 
-    private compareEvent(event1: IEvent, event2: IEvent): number {
+    private compareEvent(event1:IEvent, event2:IEvent):number {
         if (event1.allDay) {
             return 1;
         } else if (event2.allDay) {
@@ -490,7 +489,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
     }
 
-    select(selectedDate: Date, events: IEvent[]) {
+    select(selectedDate:Date, events:IEvent[]) {
         if (!this.views) return;
 
         let dates = this.views[this.currentViewIndex].dates,
@@ -527,10 +526,10 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             this.slideView(direction);
         }
 
-        this.onTimeSelected.emit({ selectedTime: selectedDate, events: events });
+        this.onTimeSelected.emit({selectedTime: selectedDate, events: events});
     }
 
-    slideView(direction: number) {
+    slideView(direction:number) {
         if (direction === 1) {
             this.slider.slideNext();
         } else if (direction === -1) {
@@ -538,7 +537,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
     }
 
-    updateCurrentView(currentViewStartDate: Date, view: IMonthView) {
+    updateCurrentView(currentViewStartDate:Date, view:IMonthView) {
         let currentCalendarDate = this.calendarService.currentDate,
             today = new Date(),
             oneDay = 86400000,
@@ -566,7 +565,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
     }
 
-    eventSelected(event: IEvent) {
+    eventSelected(event:IEvent) {
         this.onEventSelected.emit(event);
     }
 }

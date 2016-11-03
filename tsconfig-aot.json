@@ -24,7 +24,7 @@
         "node_modules"
     ],
     "angularCompilerOptions": {
-        "skipMetadataEmit" : true,
+        "skipMetadataEmit" : false,
         "genDir": "./aot/waste"
     }
 }
