@@ -6,8 +6,10 @@ Ionic2 calendar directive
 https://twinssbc.github.io/Ionic2-Calendar/demo/
 
 # Dependency
-The latest version has dependency on Angular 2.0.1, due to below issue        
-https://github.com/angular/angular/issues/11896
+The latest version has below dependency:    
+Angular 2.0.1, due to issue https://github.com/angular/angular/issues/11896    
+intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
+
 
 # Usage
 
