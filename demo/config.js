@@ -8,7 +8,8 @@
         'angular2-in-memory-web-api': 'https://unpkg.com/angular2-in-memory-web-api', // get latest
         'ionic2-calendar': '../src',
         'ionic-angular': 'https://unpkg.com/ionic-angular@2.0.0-rc.1',
-        'pages': 'pages'
+        'pages': 'pages',
+        'intl': 'https://unpkg.com/intl@1.2.5'
     };
 
     //packages tells the System loader how to load when no filename and/or no extension
@@ -18,7 +19,8 @@
         'angular2-in-memory-web-api': {defaultExtension: 'js'},
         'ionic2-calendar': {main: './index.ts', defaultExtension: 'ts'},
         'ionic-angular': {main: 'index.js'},
-        'pages': {defaultExtension: 'ts'}
+        'pages': {defaultExtension: 'ts'},
+        'intl': {main: 'index.js', defaultExtension: 'js'}
     };
 
     var packageNames = [
