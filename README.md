@@ -1,4 +1,4 @@
-# Ionic2-Calendar directive (Unstable)
+# Ionic2-Calendar directive
 
 Ionic2 calendar directive
 
@@ -53,19 +53,6 @@ Add the directive in the html page
         (onTimeSelected)="onTimeSelected($event)"
         step="30">
       </calendar>
-```
-
-Note: In the current version, if running in dev mode, it will throw below error when switching between month/week/day views.    
-
-```
-EXCEPTION: Error in ./HomePage class HomePage - inline template:2:15 caused by: Expression has changed after it was checked. Previous value: 'October 2016'. Current value: 'October 2016, Week 40'.
-```
-
-Add below lines in main.dev.ts to suppress the error.
-
-```
-import { enableProdMode } from '@angular/core';
-enableProdMode();
 ```
 
 # Note for Ionic Build/Run command

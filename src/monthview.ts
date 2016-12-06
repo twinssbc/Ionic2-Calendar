@@ -210,8 +210,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     }
 
     ngOnInit() {
-        this.inited = true;
         this.refreshView();
+        this.inited = true;
 
         this.calendarService.currentDateChanged$.subscribe(currentDate => {
             this.refreshView();
@@ -226,6 +226,15 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             this.onDataLoaded();
         }
     }
+
+    ngAfterViewInit() {
+        var me = this;
+        let title = this.getTitle();
+        setTimeout(function () {
+            me.onTitleChanged.emit(title);
+        }, 0);
+    }
+
 
     onSlideChanged() {
         let currentSlideIndex = this.slider.getActiveIndex(),
@@ -462,9 +471,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
 
     refreshView() {
         this.range = this.getRange(this.calendarService.currentDate);
-        let title = this.getTitle();
-        this.onTitleChanged.emit(title);
 
+        if (this.inited) {
+            let title = this.getTitle();
+            this.onTitleChanged.emit(title);
+        }
         this.calendarService.populateAdjacentViews(this);
         this.updateCurrentView(this.range.startTime, this.views[this.currentViewIndex]);
         this.calendarService.rangeChanged(this);
