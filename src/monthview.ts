@@ -467,6 +467,10 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
                 break;
             }
         }
+
+        if (findSelected) {
+            this.onTimeSelected.emit({selectedTime: this.selectedDate.date, events: this.selectedDate.events});
+        }
     };
 
     refreshView() {
