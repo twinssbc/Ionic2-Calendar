@@ -189,8 +189,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
-    @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
-    @Output() onTitleChanged = new EventEmitter<string>();
+    @Output() onTimeSelected = new EventEmitter<ITimeSelected>(true);
+    @Output() onTitleChanged = new EventEmitter<string>(true);
 
     public slideOption = {
         runCallbacksOnInit: false,
@@ -228,13 +228,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     }
 
     ngAfterViewInit() {
-        var me = this;
         let title = this.getTitle();
-        setTimeout(function () {
-            me.onTitleChanged.emit(title);
-        }, 0);
+        this.onTitleChanged.emit(title);
     }
-
 
     onSlideChanged() {
         let currentSlideIndex = this.slider.getActiveIndex(),
