@@ -124,6 +124,16 @@ Default value: 'local'
 * step    
 It can be set to 15 or 30, so that the event can be displayed at more accurate position in weekview or dayview.    
 Default value: 60
+* markDisabled    
+The callback function used to determine if the time should be marked as disabled.    
+
+        <calendar ... [markDisabled]=“markDisabled”></calendar>
+
+        markDisabled = (date: Date) => {
+            var current = new Date();
+            return date < current;
+        };
+
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
 

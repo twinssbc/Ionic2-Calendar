@@ -21,7 +21,7 @@ import { CalendarService } from './calendar.service';
                         </thead>
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
-                            <td *ngFor="let col of [0,1,2,3,4,5,6]" (click)="select(view.dates[row*7+col].date, view.dates[row*7+col].events)"
+                            <td *ngFor="let col of [0,1,2,3,4,5,6]" (click)="select(view.dates[row*7+col])"
                                 [ngClass]="getHighlightClass(view.dates[row*7+col])">{{view.dates[row*7+col].label}}
                             </td>
                         </tr>
@@ -143,6 +143,11 @@ import { CalendarService } from './calendar.service';
           color: white;
         }
 
+        .monthview-datetable td.monthview-disabled {
+            color: lightgrey;
+            cursor: default;
+        }
+
         .monthview-eventdetail-timecolumn {
           width: 110px;
           overflow: hidden;
@@ -186,6 +191,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() startingDayMonth:number;
     @Input() showEventDetail:boolean;
     @Input() noEventsLabel:string;
+    @Input() markDisabled:(date:Date) => boolean;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -268,11 +274,17 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     }
 
     createDateObject(date:Date, format:string):IMonthViewRow {
+        var disabled = false;
+        if (this.markDisabled) {
+            disabled = this.markDisabled(date);
+        }
+
         return {
             date: date,
             events: [],
             label: new DatePipe('en-US').transform(date, format),
-            secondary: false
+            secondary: false,
+            disabled: disabled
         };
     }
 
@@ -336,6 +348,13 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
                 className += ' ';
             }
             className += 'text-muted';
+        }
+
+        if (date.disabled) {
+            if (className) {
+                className += ' ';
+            }
+            className += 'monthview-disabled';
         }
         return className;
     }
@@ -465,7 +484,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
 
         if (findSelected) {
-            this.onTimeSelected.emit({selectedTime: this.selectedDate.date, events: this.selectedDate.events});
+            this.onTimeSelected.emit({
+                selectedTime: this.selectedDate.date,
+                events: this.selectedDate.events,
+                disabled: this.selectedDate.disabled
+            });
         }
     };
 
@@ -500,10 +523,12 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
     }
 
-    select(selectedDate:Date, events:IEvent[]) {
+    select(viewDate:IMonthViewRow) {
         if (!this.views) return;
 
-        let dates = this.views[this.currentViewIndex].dates,
+        let selectedDate = viewDate.date,
+            events = viewDate.events,
+            dates = this.views[this.currentViewIndex].dates,
             currentCalendarDate = this.calendarService.currentDate,
             currentMonth = currentCalendarDate.getMonth(),
             currentYear = currentCalendarDate.getFullYear(),
@@ -537,7 +562,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             this.slideView(direction);
         }
 
-        this.onTimeSelected.emit({selectedTime: selectedDate, events: events});
+        this.onTimeSelected.emit({selectedTime: selectedDate, events: events, disabled: viewDate.disabled});
     }
 
     slideView(direction:number) {
@@ -567,7 +592,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
                 date: null,
                 events: [],
                 label: null,
-                secondary: null
+                secondary: null,
+                disabled: false
             };
         }
 

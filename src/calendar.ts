@@ -38,6 +38,7 @@ export interface IMonthViewRow {
     label: string;
     secondary: boolean;
     selected?: boolean;
+    disabled: boolean;
 }
 
 export interface IWeekView extends IView {
@@ -85,6 +86,7 @@ export interface ICalendarComponent {
 export interface ITimeSelected {
     events: IEvent[];
     selectedTime: Date;
+    disabled: boolean;
 }
 
 export type CalendarMode = 'day' | 'month' | 'week';
@@ -109,6 +111,7 @@ export enum Step {
                 [showEventDetail]="showEventDetail"
                 [noEventsLabel]="noEventsLabel"
                 [eventSource]="eventSource"
+                [markDisabled]="markDisabled"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -122,6 +125,7 @@ export enum Step {
                 [allDayLabel]="allDayLabel"
                 [hourParts]="hourParts"
                 [eventSource]="eventSource"
+                [markDisabled]="markDisabled"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -133,6 +137,7 @@ export enum Step {
                 [allDayLabel]="allDayLabel"
                 [hourParts]="hourParts"
                 [eventSource]="eventSource"
+                [markDisabled]="markDisabled"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -171,6 +176,7 @@ export class CalendarComponent implements OnInit {
     @Input() noEventsLabel: string = 'No Events';
     @Input() queryMode: QueryMode = 'local';
     @Input() step: Step = Step.Hour;
+    @Input() markDisabled: (date: Date) => boolean;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();

@@ -8,7 +8,7 @@ export class HomePage {
     eventSource;
     viewTitle;
 
-    isToday: boolean;
+    isToday:boolean;
     calendar = {
         mode: 'month',
         currentDate: new Date()
@@ -39,10 +39,11 @@ export class HomePage {
     }
 
     onTimeSelected(ev) {
-        console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0));
+        console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' +
+            (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
     }
 
-    onCurrentDateChanged(event: Date) {
+    onCurrentDateChanged(event:Date) {
         var today = new Date();
         today.setHours(0, 0, 0, 0);
         event.setHours(0, 0, 0, 0);
@@ -89,4 +90,9 @@ export class HomePage {
     onRangeChanged(ev) {
         console.log('range changed: startTime: ' + ev.startTime + ', endTime: ' + ev.endTime);
     }
+
+    markDisabled = (date:Date) => {
+        var current = new Date();
+        return date < current;
+    };
 }

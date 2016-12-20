@@ -255,6 +255,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() allDayLabel:string;
     @Input() hourParts:number;
     @Input() eventSource:IEvent[];
+    @Input() markDisabled:(date:Date) => boolean;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -487,9 +488,15 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     }
 
     select(selectedTime:Date, events:IDisplayEvent[]) {
+        var disabled = false;
+        if (this.markDisabled) {
+            disabled = this.markDisabled(selectedTime);
+        }
+
         this.onTimeSelected.emit({
             selectedTime: selectedTime,
-            events: events.map(e => e.event)
+            events: events.map(e => e.event),
+            disabled: disabled
         });
     }
 
