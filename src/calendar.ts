@@ -102,7 +102,7 @@ export enum Step {
 @Component({
     selector: 'calendar',
     template: `
-        <div [ngSwitch]="calendarMode">
+        <div [ngSwitch]="calendarMode" class="{{calendarMode}}view-container">
             <monthview *ngSwitchCase="'month'"
                 [formatDay]="formatDay"
                 [formatDayHeader]="formatDayHeader"

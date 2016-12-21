@@ -527,8 +527,10 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (!this.views) return;
 
         let selectedDate = viewDate.date,
-            events = viewDate.events,
-            dates = this.views[this.currentViewIndex].dates,
+            events = viewDate.events;
+
+        if (!viewDate.disabled) {
+            let dates = this.views[this.currentViewIndex].dates,
             currentCalendarDate = this.calendarService.currentDate,
             currentMonth = currentCalendarDate.getMonth(),
             currentYear = currentCalendarDate.getFullYear(),
@@ -536,30 +538,31 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             selectedYear = selectedDate.getFullYear(),
             direction = 0;
 
-        if (currentYear === selectedYear) {
-            if (currentMonth !== selectedMonth) {
-                direction = currentMonth < selectedMonth ? 1 : -1;
-            }
-        } else {
-            direction = currentYear < selectedYear ? 1 : -1;
-        }
-
-        this.calendarService.setCurrentDateWithoutEvent(selectedDate);
-        if (direction === 0) {
-            let currentViewStartDate = this.range.startTime,
-                oneDay = 86400000,
-                selectedDayDifference = Math.floor((selectedDate.getTime() - currentViewStartDate.getTime()) / oneDay);
-            for (let r = 0; r < 42; r += 1) {
-                dates[r].selected = false;
+            if (currentYear === selectedYear) {
+                if (currentMonth !== selectedMonth) {
+                    direction = currentMonth < selectedMonth ? 1 : -1;
+                }
+            } else {
+                direction = currentYear < selectedYear ? 1 : -1;
             }
 
-            if (selectedDayDifference >= 0 && selectedDayDifference < 42) {
-                dates[selectedDayDifference].selected = true;
-                this.selectedDate = dates[selectedDayDifference];
+            this.calendarService.setCurrentDateWithoutEvent(selectedDate);
+            if (direction === 0) {
+                let currentViewStartDate = this.range.startTime,
+                    oneDay = 86400000,
+                    selectedDayDifference = Math.floor((selectedDate.getTime() - currentViewStartDate.getTime()) / oneDay);
+                for (let r = 0; r < 42; r += 1) {
+                    dates[r].selected = false;
+                }
+
+                if (selectedDayDifference >= 0 && selectedDayDifference < 42) {
+                    dates[selectedDayDifference].selected = true;
+                    this.selectedDate = dates[selectedDayDifference];
+                }
+            } else {
+                this.moveOnSelected = true;
+                this.slideView(direction);
             }
-        } else {
-            this.moveOnSelected = true;
-            this.slideView(direction);
         }
 
         this.onTimeSelected.emit({selectedTime: selectedDate, events: events, disabled: viewDate.disabled});
