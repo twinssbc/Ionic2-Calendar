@@ -135,7 +135,7 @@ import { CalendarService } from './calendar.service';
         }
 
         .monthview-current {
-          background-color: lightgrey;
+          background-color: #f0f0f0;
         }
 
         .monthview-selected {
@@ -587,7 +587,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             view.dates[r].selected = false;
         }
 
-        if (selectedDayDifference >= 0 && selectedDayDifference < 42) {
+        if (selectedDayDifference >= 0 && selectedDayDifference < 42 && !view.dates[selectedDayDifference].disabled) {
             view.dates[selectedDayDifference].selected = true;
             this.selectedDate = view.dates[selectedDayDifference];
         } else {
