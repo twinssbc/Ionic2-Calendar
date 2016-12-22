@@ -33,7 +33,7 @@ import { CalendarService } from './calendar.service';
                                                 <div *ngFor="let displayEvent of day.events" class="calendar-event"
                                                      (click)="eventSelected(displayEvent.event)"
                                                      [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
-                                                    <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+                                                    <div class="calendar-event-inner {{displayEvent.event.event_class}}">{{displayEvent.event.title}}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -54,7 +54,7 @@ import { CalendarService } from './calendar.service';
                                             <div *ngFor="let displayEvent of tm.events" class="calendar-event"
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
-                                                <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+                                                <div class="calendar-event-inner {{displayEvent.event.event_class}}">{{displayEvent.event.title}}</div>
                                             </div>
                                         </div>
                                     </td>
