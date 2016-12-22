@@ -93,6 +93,7 @@ export class HomePage {
 
     markDisabled = (date:Date) => {
         var current = new Date();
+        current.setHours(0, 0, 0);
         return date < current;
     };
 }
