@@ -1,9 +1,10 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild, TemplateRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
 
 import { ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode } from './calendar';
 import { CalendarService } from './calendar.service';
+import { IMonthViewDisplayEventTemplateContext } from "./calendar";
 
 @Component({
     selector: 'monthview',
@@ -22,7 +23,10 @@ import { CalendarService } from './calendar.service';
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
                             <td *ngFor="let col of [0,1,2,3,4,5,6]" (click)="select(view.dates[row*7+col])"
-                                [ngClass]="getHighlightClass(view.dates[row*7+col])">{{view.dates[row*7+col].label}}
+                                [ngClass]="getHighlightClass(view.dates[row*7+col])">
+                                <template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
+                                [ngOutletContext]="{view: view, row: row, col: col}">
+                                </template>
                             </td>
                         </tr>
                         </tbody>
@@ -45,19 +49,9 @@ import { CalendarService } from './calendar.service';
                     </table>
                 </ion-slide>
             </ion-slides>
-            <ion-list class="event-detail-container2" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false">
-                <ion-item *ngFor="let event of selectedDate?.events" (click)="eventSelected(event)">
-                        <span *ngIf="!event.allDay" class="monthview-eventdetail-timecolumn">{{event.startTime|date: 'HH:mm'}}
-                            -
-                            {{event.endTime|date: 'HH:mm'}}
-                        </span>
-                    <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
-                    <span class="event-detail">  |  {{event.title}}</span>
-                </ion-item>
-                <ion-item *ngIf="!selectedDate?.events">
-                    <td class="no-events-label">{{noEventsLabel}}</td>
-                </ion-item>
-            </ion-list>
+            <template [ngTemplateOutlet]="monthviewEventDetailTemplate"
+            [ngOutletContext]="{showEventDetail:showEventDetail, selectedDate: selectedDate, noEventsLabel: noEventsLabel}">
+            </template>
         </div>
     `,
     styles: [`
@@ -112,23 +106,6 @@ import { CalendarService } from './calendar.service';
           background-color: #f9f9f9
         }
 
-        .no-event-label {
-          font-weight: bold;
-          color: darkgrey;
-          text-align: center;
-        }
-
-        .event-detail-container {
-          border-top: 2px darkgrey solid;
-          margin-top: 262px;
-        }
-
-        .event-detail {
-          cursor: pointer;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-
         .monthview-primary-with-event {
           background-color: #3a87ad;
           color: white;
@@ -148,11 +125,6 @@ import { CalendarService } from './calendar.service';
             cursor: default;
         }
 
-        .monthview-eventdetail-timecolumn {
-          width: 110px;
-          overflow: hidden;
-        }
-
         .monthview-datetable th {
           text-align: center;
         }
@@ -170,19 +142,13 @@ import { CalendarService } from './calendar.service';
         *::-webkit-scrollbar {
           display: none;
         }
-
-        @media (max-width: 750px) {
-          .table > tbody > tr > td.calendar-hour-column {
-            padding-left: 0;
-            padding-right: 0;
-            vertical-align: middle;
-            line-height: 12px;
-          }
-        }
     `]
 })
 export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @ViewChild('monthSlider') slider:Slides;
+
+    @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
 
     @Input() formatDay:string;
     @Input() formatDayHeader:string;
@@ -531,12 +497,12 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
 
         if (!viewDate.disabled) {
             let dates = this.views[this.currentViewIndex].dates,
-            currentCalendarDate = this.calendarService.currentDate,
-            currentMonth = currentCalendarDate.getMonth(),
-            currentYear = currentCalendarDate.getFullYear(),
-            selectedMonth = selectedDate.getMonth(),
-            selectedYear = selectedDate.getFullYear(),
-            direction = 0;
+                currentCalendarDate = this.calendarService.currentDate,
+                currentMonth = currentCalendarDate.getMonth(),
+                currentYear = currentCalendarDate.getFullYear(),
+                selectedMonth = selectedDate.getMonth(),
+                selectedYear = selectedDate.getFullYear(),
+                direction = 0;
 
             if (currentYear === selectedYear) {
                 if (currentMonth !== selectedMonth) {
