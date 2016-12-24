@@ -187,8 +187,8 @@ The callback function triggered when the view title is changed
 # View Customization Option
 Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation.    
 
-* monthviewDisplayEventTemplate
-Type: TemplateRef<IMonthViewDisplayEventTemplateContext>    
+* monthviewDisplayEventTemplate    
+Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the monthview
 
         <template #template let-view="view" let-row="row" let-col="col">
@@ -197,8 +197,8 @@ The template provides customized view for event displayed in the monthview
 
         <calendar ... [monthviewDisplayEventTemplate]=“template”></calendar>
 
-* monthviewEventDetailTemplate
-Type: TemplateRef<IMonthViewEventDetailTemplateContext>    
+* monthviewEventDetailTemplate    
+Type: TemplateRef\<IMonthViewEventDetailTemplateContext\>    
 The template provides customized view for event detail section in the monthview
 
         <template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
@@ -207,8 +207,8 @@ The template provides customized view for event detail section in the monthview
 
         <calendar ... [monthviewEventDetailTemplate]=“template”></calendar>
 
-* weekviewAllDayEventTemplate
-Type: TemplateRef<IDisplayAllDayEvent>    
+* weekviewAllDayEventTemplate    
+Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the weekview
 
         <template #template let-displayEvent="displayEvent">
@@ -217,8 +217,8 @@ The template provides customized view for all day event in the weekview
 
         <calendar ... [weekviewAllDayEventTemplate]=“template”></calendar>
 
-* weekviewNormalEventTemplate
-Type: TemplateRef<IDisplayEvent>    
+* weekviewNormalEventTemplate    
+Type: TemplateRef\<IDisplayEvent\>    
 The template provides customized view for normal event in the weekview
 
         <template #template let-displayEvent="displayEvent">
@@ -227,8 +227,8 @@ The template provides customized view for normal event in the weekview
 
         <calendar ... [weekviewNormalEventTemplate]=“template”></calendar>
 
-* dayviewAllDayEventTemplate
-Type: TemplateRef<IDisplayAllDayEvent>    
+* dayviewAllDayEventTemplate    
+Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the dayview
 
         <template #template let-displayEvent="displayEvent">
@@ -237,8 +237,8 @@ The template provides customized view for all day event in the dayview
 
         <calendar ... [dayviewAllDayEventTemplate]=“template”></calendar>
 
-* dayviewNormalEventTemplate
-Type: TemplateRef<IDisplayEvent>    
+* dayviewNormalEventTemplate    
+Type: TemplateRef\<IDisplayEvent\>    
 The template provides customized view for normal event in the dayview
 
         <template #template let-displayEvent="displayEvent">
