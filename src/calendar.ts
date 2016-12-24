@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 
 import { CalendarService } from './calendar.service';
 
@@ -14,7 +14,8 @@ export interface IRange {
     endTime: Date;
 }
 
-export interface IView {}
+export interface IView {
+}
 
 export interface IDayView extends IView {
     allDayEvents: IDisplayAllDayEvent[];
@@ -74,8 +75,8 @@ export interface ICalendarComponent {
     currentViewIndex: number;
     direction: number;
     eventSource: IEvent[];
-    getRange: { (date: Date): IRange; };
-    getViewData: { (date: Date): IView };
+    getRange: { (date:Date): IRange; };
+    getViewData: { (date:Date): IView };
     mode: CalendarMode;
     range: IRange;
     views: IView[];
@@ -87,6 +88,17 @@ export interface ITimeSelected {
     events: IEvent[];
     selectedTime: Date;
     disabled: boolean;
+}
+
+export interface IMonthViewDisplayEventTemplateContext {
+    view: IView,
+    row: number,
+    col: number
+}
+
+export interface IMonthViewEventDetailTemplateContext {
+    selectedDate: ITimeSelected,
+    noEventsLabel: string
 }
 
 export type CalendarMode = 'day' | 'month' | 'week';
@@ -102,6 +114,31 @@ export enum Step {
 @Component({
     selector: 'calendar',
     template: `
+        <template #monthviewDefaultDisplayEventTemplate let-view="view" let-row="row" let-col="col">
+            {{view.dates[row*7+col].label}}
+        </template>
+        <template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+            <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false">
+                <ion-item *ngFor="let event of selectedDate?.events" (click)="eventSelected(event)">
+                        <span *ngIf="!event.allDay" class="monthview-eventdetail-timecolumn">{{event.startTime|date: 'HH:mm'}}
+                            -
+                            {{event.endTime|date: 'HH:mm'}}
+                        </span>
+                    <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
+                    <span class="event-detail">  |  {{event.title}}</span>
+                </ion-item>
+                <ion-item *ngIf="selectedDate?.events.length==0">
+                    <div class="no-events-label">{{noEventsLabel}}</div>
+                </ion-item>
+            </ion-list>
+        </template>
+        <template #defaultAllDayEventTemplate let-displayEvent="displayEvent">
+            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+        </template>
+        <template #defaultNormalEventTemplate let-displayEvent="displayEvent">
+            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+        </template>
+
         <div [ngSwitch]="calendarMode" class="{{calendarMode}}view-container">
             <monthview *ngSwitchCase="'month'"
                 [formatDay]="formatDay"
@@ -112,6 +149,8 @@ export enum Step {
                 [noEventsLabel]="noEventsLabel"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
+                [monthviewDisplayEventTemplate]="monthviewDisplayEventTemplate||monthviewDefaultDisplayEventTemplate"
+                [monthviewEventDetailTemplate]="monthviewEventDetailTemplate||monthviewDefaultEventDetailTemplate"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -126,6 +165,8 @@ export enum Step {
                 [hourParts]="hourParts"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
+                [weekviewAllDayEventTemplate]="weekviewAllDayEventTemplate||defaultAllDayEventTemplate"
+                [weekviewNormalEventTemplate]="weekviewNormalEventTemplate||defaultNormalEventTemplate"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -138,6 +179,8 @@ export enum Step {
                 [hourParts]="hourParts"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
+                [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
+                [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -147,36 +190,80 @@ export enum Step {
     `,
     styles: [`
         :host > div { height: 100%; }
+
+        .event-detail-container {
+          border-top: 2px darkgrey solid;
+        }
+
+        .no-events-label {
+          font-weight: bold;
+          color: darkgrey;
+          text-align: center;
+        }
+
+        .event-detail {
+          cursor: pointer;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .monthview-eventdetail-timecolumn {
+          width: 110px;
+          overflow: hidden;
+        }
+
+        .calendar-event-inner {
+          overflow: hidden;
+          background-color: #3a87ad;
+          color: white;
+          height: 100%;
+          width: 100%;
+          padding: 2px;
+          line-height: 15px;
+        }
+
+        @media (max-width: 750px) {
+          .calendar-event-inner {
+            font-size: 12px;
+          }
+        }
     `],
     providers: [CalendarService]
 })
 export class CalendarComponent implements OnInit {
     @Input()
-    get currentDate(): Date {
+    get currentDate():Date {
         return this._currentDate;
     }
-    set currentDate(val: Date) {
+
+    set currentDate(val:Date) {
         this._currentDate = val;
         this.calendarService.currentDate = this.currentDate;
     }
 
-    @Input() eventSource: IEvent[] = [];
-    @Input() calendarMode: CalendarMode = 'month';
-    @Input() formatDay: string = 'd';
-    @Input() formatDayHeader: string = 'EEE';
-    @Input() formatDayTitle: string = 'MMMM dd, yyyy';
-    @Input() formatWeekTitle: string = 'MMMM yyyy, Week $n';
-    @Input() formatMonthTitle: string = 'MMMM yyyy';
-    @Input() formatWeekViewDayHeader: string = 'EEE d';
-    @Input() formatHourColumn: string = 'ha';
-    @Input() showEventDetail: boolean = true;
-    @Input() startingDayMonth: number = 0;
-    @Input() startingDayWeek: number = 0;
-    @Input() allDayLabel: string = 'all day';
-    @Input() noEventsLabel: string = 'No Events';
-    @Input() queryMode: QueryMode = 'local';
-    @Input() step: Step = Step.Hour;
-    @Input() markDisabled: (date: Date) => boolean;
+    @Input() eventSource:IEvent[] = [];
+    @Input() calendarMode:CalendarMode = 'month';
+    @Input() formatDay:string = 'd';
+    @Input() formatDayHeader:string = 'EEE';
+    @Input() formatDayTitle:string = 'MMMM dd, yyyy';
+    @Input() formatWeekTitle:string = 'MMMM yyyy, Week $n';
+    @Input() formatMonthTitle:string = 'MMMM yyyy';
+    @Input() formatWeekViewDayHeader:string = 'EEE d';
+    @Input() formatHourColumn:string = 'ha';
+    @Input() showEventDetail:boolean = true;
+    @Input() startingDayMonth:number = 0;
+    @Input() startingDayWeek:number = 0;
+    @Input() allDayLabel:string = 'all day';
+    @Input() noEventsLabel:string = 'No Events';
+    @Input() queryMode:QueryMode = 'local';
+    @Input() step:Step = Step.Hour;
+    @Input() markDisabled:(date:Date) => boolean;
+    @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewEventDetailTemplateContext>;
+    @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
+    @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
+    @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
+    @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();
@@ -184,10 +271,11 @@ export class CalendarComponent implements OnInit {
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
     @Output() onTitleChanged = new EventEmitter<string>();
 
-    private _currentDate: Date;
+    private _currentDate:Date;
     private hourParts = 1;
 
-    constructor(private calendarService: CalendarService) {}
+    constructor(private calendarService:CalendarService) {
+    }
 
     ngOnInit() {
         this.hourParts = 60 / this.step;
@@ -199,19 +287,19 @@ export class CalendarComponent implements OnInit {
         });
     }
 
-    rangeChanged(range: IRange) {
+    rangeChanged(range:IRange) {
         this.onRangeChanged.emit(range);
     }
 
-    eventSelected(event: IEvent) {
+    eventSelected(event:IEvent) {
         this.onEventSelected.emit(event);
     }
 
-    timeSelected(timeSelected: ITimeSelected) {
+    timeSelected(timeSelected:ITimeSelected) {
         this.onTimeSelected.emit(timeSelected);
     }
 
-    titleChanged(title: string) {
+    titleChanged(title:string) {
         this.onTitleChanged.emit(title);
     }
 }

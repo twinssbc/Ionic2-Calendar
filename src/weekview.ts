@@ -1,60 +1,42 @@
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
-import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef } from '@angular/core';
 
 import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode } from './calendar';
 import { CalendarService } from './calendar.service';
+import { IDisplayAllDayEvent } from "./calendar";
 
 @Component({
     selector: 'weekview',
     template: `
-            <ion-slides #weekSlider [options]="slideOption" (ionDidChange)="onSlideChanged()">
-                <ion-slide *ngFor="let view of views; let viewIndex=index">
-                    <table class="table table-bordered table-fixed weekview-header">
-                        <thead>
-                        <tr>
-                            <th class="calendar-hour-column"></th>
-                            <th class="weekview-header text-center" *ngFor="let dt of view.dates">{{dt.date|date:
-                                formatWeekViewDayHeader}}
-                            </th>
-                        </tr>
-                        </thead>
-                    </table>
-                    <div *ngIf="viewIndex===currentViewIndex">
-                        <div class="weekview-allday-table">
-                            <div class="weekview-allday-label">{{allDayLabel}}</div>
-                            <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
-                                <table class="table table-fixed weekview-allday-content-table">
-                                    <tbody>
-                                    <tr>
-                                        <td *ngFor="let day of view.dates" class="calendar-cell">
-                                            <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
-                                                 [ngStyle]="{height: 25*day.events.length+'px'}">
-                                                <div *ngFor="let displayEvent of day.events" class="calendar-event"
-                                                     (click)="eventSelected(displayEvent.event)"
-                                                     [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
-                                                    <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </ion-scroll>
-                        </div>
-                        <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
-                            <table class="table table-bordered table-fixed weekview-normal-event-table">
+        <ion-slides #weekSlider [options]="slideOption" (ionDidChange)="onSlideChanged()">
+            <ion-slide *ngFor="let view of views; let viewIndex=index">
+                <table class="table table-bordered table-fixed weekview-header">
+                    <thead>
+                    <tr>
+                        <th class="calendar-hour-column"></th>
+                        <th class="weekview-header text-center" *ngFor="let dt of view.dates">{{dt.date|date:
+                            formatWeekViewDayHeader}}
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+                <div *ngIf="viewIndex===currentViewIndex">
+                    <div class="weekview-allday-table">
+                        <div class="weekview-allday-label">{{allDayLabel}}</div>
+                        <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
+                            <table class="table table-fixed weekview-allday-content-table">
                                 <tbody>
-                                <tr *ngFor="let row of view.rows">
-                                    <td class="calendar-hour-column text-center">
-                                        {{row[0].time | date: formatHourColumn}}
-                                    </td>
-                                    <td *ngFor="let tm of row" class="calendar-cell" (click)="select(tm.time, tm.events)">
-                                        <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                            <div *ngFor="let displayEvent of tm.events" class="calendar-event"
+                                <tr>
+                                    <td *ngFor="let day of view.dates" class="calendar-cell">
+                                        <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
+                                             [ngStyle]="{height: 25*day.events.length+'px'}">
+                                            <div *ngFor="let displayEvent of day.events" class="calendar-event"
                                                  (click)="eventSelected(displayEvent.event)"
-                                                 [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
-                                                <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+                                                 [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
+                                                <template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
+                                                    [ngOutletContext]="{displayEvent:displayEvent}">
+                                                </template>
                                             </div>
                                         </div>
                                     </td>
@@ -63,36 +45,59 @@ import { CalendarService } from './calendar.service';
                             </table>
                         </ion-scroll>
                     </div>
-                    <div *ngIf="viewIndex!==currentViewIndex">
-                        <div class="weekview-allday-table">
-                            <div class="weekview-allday-label">{{allDayLabel}}</div>
-                            <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
-                                <table class="table table-fixed weekview-allday-content-table">
-                                    <tbody>
-                                    <tr>
-                                        <td *ngFor="let day of views[1].dates" class="calendar-cell">
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </ion-scroll>
-                        </div>
-                        <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
-                            <table class="table table-bordered table-fixed weekview-normal-event-table">
+                    <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
+                        <table class="table table-bordered table-fixed weekview-normal-event-table">
+                            <tbody>
+                            <tr *ngFor="let row of view.rows">
+                                <td class="calendar-hour-column text-center">
+                                    {{row[0].time | date: formatHourColumn}}
+                                </td>
+                                <td *ngFor="let tm of row" class="calendar-cell" (click)="select(tm.time, tm.events)">
+                                    <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event"
+                                             (click)="eventSelected(displayEvent.event)"
+                                             [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                                             <template [ngTemplateOutlet]="weekviewNormalEventTemplate"
+                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                             </template>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ion-scroll>
+                </div>
+                <div *ngIf="viewIndex!==currentViewIndex">
+                    <div class="weekview-allday-table">
+                        <div class="weekview-allday-label">{{allDayLabel}}</div>
+                        <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
+                            <table class="table table-fixed weekview-allday-content-table">
                                 <tbody>
-                                <tr *ngFor="let row of views[1].rows">
-                                    <td class="calendar-hour-column text-center">
-                                        {{row[0].time | date: formatHourColumn}}
-                                    </td>
-                                    <td *ngFor="let tm of row" class="calendar-cell">
+                                <tr>
+                                    <td *ngFor="let day of views[1].dates" class="calendar-cell">
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </ion-scroll>
                     </div>
-                </ion-slide>
-            </ion-slides>
+                    <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
+                        <table class="table table-bordered table-fixed weekview-normal-event-table">
+                            <tbody>
+                            <tr *ngFor="let row of views[1].rows">
+                                <td class="calendar-hour-column text-center">
+                                    {{row[0].time | date: formatHourColumn}}
+                                </td>
+                                <td *ngFor="let tm of row" class="calendar-cell">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ion-scroll>
+                </div>
+            </ion-slide>
+        </ion-slides>
     `,
     styles: [`
         .table-fixed {
@@ -160,16 +165,6 @@ import { CalendarService } from './calendar.service';
           z-index: 10000;
         }
 
-        .calendar-event-inner {
-          overflow: hidden;
-          background-color: #3a87ad;
-          color: white;
-          height: 100%;
-          width: 100%;
-          padding: 2px;
-          line-height: 15px;
-        }
-
         .calendar-cell {
           padding: 0 !important;
           height: 37px;
@@ -196,10 +191,6 @@ import { CalendarService } from './calendar.service';
         .weekview-allday-content-table td {
           border-left: 1px solid #ddd;
           border-right: 1px solid #ddd;
-        }
-
-        .weekview {
-          height: 100%;
         }
 
         .weekview-header th {
@@ -275,10 +266,6 @@ import { CalendarService } from './calendar.service';
           .weekview-allday-content-wrapper {
             margin-left: 31px;
           }
-
-          .calendar-event-inner {
-            font-size: 12px;
-          }
         }
     `],
     encapsulation: ViewEncapsulation.None
@@ -286,6 +273,9 @@ import { CalendarService } from './calendar.service';
 export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @ViewChild('weekSlider') slider:Slides;
     @HostBinding('class.weekview') class = true;
+
+    @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
+    @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
 
     @Input() formatWeekTitle:string;
     @Input() formatWeekViewDayHeader:string;
