@@ -613,12 +613,11 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     private static getISO8601WeekNumber(date:Date):number {
-        let checkDate = new Date(date.getTime());
-        checkDate.setDate(checkDate.getDate() + 4 - (checkDate.getDay() || 7)); // Thursday
-        let time = checkDate.getTime();
-        checkDate.setMonth(0); // Compare with Jan 1
-        checkDate.setDate(1);
-        return Math.floor(Math.round((time - checkDate.getTime()) / 86400000) / 7) + 1;
+        let dayOfWeekOnFirst = (new Date(date.getFullYear(), 0, 1)).getDay();
+        let firstThurs = new Date(date.getFullYear(), 0, ((dayOfWeekOnFirst <= 4) ? 5 : 12) - dayOfWeekOnFirst);
+        let thisThurs = new Date(date.getFullYear(), date.getMonth(), date.getDate() + (4 - date.getDay()));
+        let diff = +thisThurs - +firstThurs;
+        return (1 + Math.round(diff / 6.048e8)); // 6.048e8 ms per week
     }
 
     private static compareEventByStartOffset(eventA:IDisplayEvent, eventB:IDisplayEvent):number {
