@@ -29,6 +29,7 @@ export interface IDayViewRow {
 
 export interface IMonthView extends IView {
     dates: IMonthViewRow[];
+    dayHeaders: string[];
 }
 
 export interface IMonthViewRow {
@@ -45,6 +46,7 @@ export interface IMonthViewRow {
 export interface IWeekView extends IView {
     dates: IWeekViewDateRow[];
     rows: IWeekViewRow[][];
+    dayHeaders: string[];
 }
 
 export interface IWeekViewDateRow {
