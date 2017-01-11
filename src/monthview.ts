@@ -15,8 +15,8 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                     <table *ngIf="viewIndex===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
                         <tr>
-                            <th *ngFor="let day of view.dates.slice(0,7)">
-                                <small>{{day.date | date: formatDayHeader}}</small>
+                            <th *ngFor="let dayHeader of view.dayHeaders">
+                                <small>{{dayHeader}}</small>
                             </th>
                         </tr>
                         </thead>
@@ -34,8 +34,8 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                     <table *ngIf="viewIndex!==currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
                         <tr class="text-center">
-                            <th *ngFor="let day of view.dates.slice(0,7)">
-                                <small>{{day.date | date: formatDayHeader}}</small>
+                            <th *ngFor="let dayHeader of view.dayHeaders">
+                                <small>{{dayHeader}}</small>
                             </th>
                         </tr>
                         </thead>
@@ -279,8 +279,13 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             days[i] = dateObject;
         }
 
+        let dayHeaders:string[] = [];
+        for (let i = 0; i < 7; i++) {
+            dayHeaders.push(new DatePipe(undefined).transform(days[i].date, this.formatDayHeader));
+        }
         return {
-            dates: days
+            dates: days,
+            dayHeaders: dayHeaders
         };
     }
 

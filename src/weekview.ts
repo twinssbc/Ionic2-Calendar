@@ -15,8 +15,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <thead>
                     <tr>
                         <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let dt of view.dates">{{dt.date|date:
-                            formatWeekViewDayHeader}}
+                        <th class="weekview-header text-center" *ngFor="let dayHeader of view.dayHeaders">{{dayHeader}}
                         </th>
                     </tr>
                     </thead>
@@ -397,9 +396,16 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     getViewData(startTime:Date):IWeekView {
+        let dates = WeekViewComponent.getDates(startTime, 7);
+        let dayHeaders:string[] = [];
+        for (let i = 0; i < 7; i++) {
+            dayHeaders.push(new DatePipe(undefined).transform(dates[i].date, this.formatWeekViewDayHeader));
+        }
+
         return {
             rows: WeekViewComponent.createDateObjects(startTime),
-            dates: WeekViewComponent.getDates(startTime, 7)
+            dates: dates,
+            dayHeaders: dayHeaders
         };
     }
 
