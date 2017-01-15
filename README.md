@@ -8,7 +8,7 @@ https://twinssbc.github.io/Ionic2-Calendar/demo/
 # Dependency
 The latest version has below dependency:    
 Angular 2.0.1, due to issue https://github.com/angular/angular/issues/11896    
-intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
+intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333    
 Ionic, the calendar is not compatible with the latest Ionic 2.0.0-rc.5 due to the breaking change in the slides API. 
 
 # Usage
