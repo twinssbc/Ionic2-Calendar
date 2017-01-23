@@ -1,5 +1,5 @@
 (function (global) {
-    var ngVer = '@2.0.1'; // lock in the angular package version; do not let it float to current!
+    var ngVer = '@2.2.1'; // lock in the angular package version; do not let it float to current!
 
     //map tells the System loader where to look for things
     var map = {
@@ -7,7 +7,7 @@
         'rxjs': 'https://unpkg.com/rxjs@5.0.0-beta.12',
         'angular2-in-memory-web-api': 'https://unpkg.com/angular2-in-memory-web-api', // get latest
         'ionic2-calendar': '../src',
-        'ionic-angular': 'https://unpkg.com/ionic-angular@2.0.0-rc.1',
+        'ionic-angular': 'https://unpkg.com/ionic-angular@2.0.0-rc.5',
         'pages': 'pages',
         'intl': 'https://unpkg.com/intl@1.2.5'
     };
