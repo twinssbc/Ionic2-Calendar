@@ -9,18 +9,18 @@ import { IDisplayAllDayEvent } from "./calendar";
 @Component({
     selector: 'dayview',
     template: `
-        <ion-slides #daySlider [options]="slideOption" (ionDidChange)="onSlideChanged()">
-            <ion-slide *ngFor="let view of views; let viewIndex=index">
+        <ion-slides #daySlider [loop]="true" (ionSlideDidChange)="onSlideChanged()">
+            <ion-slide>
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
                     <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
                         <table class="table table-bordered dayview-allday-content-table">
                             <tbody>
                             <tr>
-                                <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':view.allDayEvents.length>0}"
-                                    [ngStyle]="{height: 25*view.allDayEvents.length+'px'}"
-                                    *ngIf="viewIndex===currentViewIndex">
-                                    <div *ngFor="let displayEvent of view.allDayEvents; let eventIndex=index"
+                                <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[0].allDayEvents.length>0}"
+                                    [ngStyle]="{height: 25*views[0].allDayEvents.length+'px'}"
+                                    *ngIf="0===currentViewIndex">
+                                    <div *ngFor="let displayEvent of views[0].allDayEvents; let eventIndex=index"
                                          class="calendar-event"
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
@@ -29,7 +29,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                         </template>
                                     </div>
                                 </td>
-                                <td class="calendar-cell" *ngIf="viewIndex!==currentViewIndex">
+                                <td class="calendar-cell" *ngIf="0!==currentViewIndex">
                                 </td>
                             </tr>
                             </tbody>
@@ -38,9 +38,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                 </div>
                 <ion-scroll scrollY="true" class="dayview-normal-event-container">
                     <table class="table table-bordered table-fixed dayview-normal-event-table"
-                           *ngIf="viewIndex===currentViewIndex">
+                           *ngIf="0===currentViewIndex">
                         <tbody>
-                        <tr *ngFor="let tm of view.rows">
+                        <tr *ngFor="let tm of views[0].rows">
                             <td class="calendar-hour-column text-center">
                                 {{tm.time | date: formatHourColumn}}
                             </td>
@@ -59,9 +59,133 @@ import { IDisplayAllDayEvent } from "./calendar";
                         </tbody>
                     </table>
                     <table class="table table-bordered table-fixed dayview-normal-event-table"
-                           *ngIf="viewIndex!==currentViewIndex">
+                           *ngIf="0!==currentViewIndex">
                         <tbody>
-                        <tr *ngFor="let tm of view.rows">
+                        <tr *ngFor="let tm of views[0].rows">
+                            <td class="calendar-hour-column text-center">
+                                {{tm.time | date: formatHourColumn}}
+                            </td>
+                            <td class="calendar-cell">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </ion-scroll>
+            </ion-slide>
+            <ion-slide>
+                <div class="dayview-allday-table">
+                    <div class="dayview-allday-label">{{allDayLabel}}</div>
+                    <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
+                        <table class="table table-bordered dayview-allday-content-table">
+                            <tbody>
+                            <tr>
+                                <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[1].allDayEvents.length>0}"
+                                    [ngStyle]="{height: 25*views[1].allDayEvents.length+'px'}"
+                                    *ngIf="1===currentViewIndex">
+                                    <div *ngFor="let displayEvent of views[1].allDayEvents; let eventIndex=index"
+                                         class="calendar-event"
+                                         (click)="eventSelected(displayEvent.event)"
+                                         [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
+                                        <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
+                                            [ngOutletContext]="{displayEvent:displayEvent}">
+                                        </template>
+                                    </div>
+                                </td>
+                                <td class="calendar-cell" *ngIf="1!==currentViewIndex">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ion-scroll>
+                </div>
+                <ion-scroll scrollY="true" class="dayview-normal-event-container">
+                    <table class="table table-bordered table-fixed dayview-normal-event-table"
+                           *ngIf="1===currentViewIndex">
+                        <tbody>
+                        <tr *ngFor="let tm of views[1].rows">
+                            <td class="calendar-hour-column text-center">
+                                {{tm.time | date: formatHourColumn}}
+                            </td>
+                            <td class="calendar-cell" (click)="select(tm.time, tm.events)">
+                                <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                    <div *ngFor="let displayEvent of tm.events" class="calendar-event"
+                                         (click)="eventSelected(displayEvent.event)"
+                                         [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                                         <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
+                                             [ngOutletContext]="{displayEvent:displayEvent}">
+                                         </template>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered table-fixed dayview-normal-event-table"
+                           *ngIf="1!==currentViewIndex">
+                        <tbody>
+                        <tr *ngFor="let tm of views[1].rows">
+                            <td class="calendar-hour-column text-center">
+                                {{tm.time | date: formatHourColumn}}
+                            </td>
+                            <td class="calendar-cell">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </ion-scroll>
+            </ion-slide>
+            <ion-slide>
+                <div class="dayview-allday-table">
+                    <div class="dayview-allday-label">{{allDayLabel}}</div>
+                    <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
+                        <table class="table table-bordered dayview-allday-content-table">
+                            <tbody>
+                            <tr>
+                                <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[2].allDayEvents.length>0}"
+                                    [ngStyle]="{height: 25*views[2].allDayEvents.length+'px'}"
+                                    *ngIf="2===currentViewIndex">
+                                    <div *ngFor="let displayEvent of views[2].allDayEvents; let eventIndex=index"
+                                         class="calendar-event"
+                                         (click)="eventSelected(displayEvent.event)"
+                                         [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
+                                        <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
+                                            [ngOutletContext]="{displayEvent:displayEvent}">
+                                        </template>
+                                    </div>
+                                </td>
+                                <td class="calendar-cell" *ngIf="2!==currentViewIndex">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </ion-scroll>
+                </div>
+                <ion-scroll scrollY="true" class="dayview-normal-event-container">
+                    <table class="table table-bordered table-fixed dayview-normal-event-table"
+                           *ngIf="2===currentViewIndex">
+                        <tbody>
+                        <tr *ngFor="let tm of views[2].rows">
+                            <td class="calendar-hour-column text-center">
+                                {{tm.time | date: formatHourColumn}}
+                            </td>
+                            <td class="calendar-cell" (click)="select(tm.time, tm.events)">
+                                <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                    <div *ngFor="let displayEvent of tm.events" class="calendar-event"
+                                         (click)="eventSelected(displayEvent.event)"
+                                         [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                                         <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
+                                             [ngOutletContext]="{displayEvent:displayEvent}">
+                                         </template>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered table-fixed dayview-normal-event-table"
+                           *ngIf="2!==currentViewIndex">
+                        <tbody>
+                        <tr *ngFor="let tm of views[2].rows">
                             <td class="calendar-hour-column text-center">
                                 {{tm.time | date: formatHourColumn}}
                             </td>
@@ -263,6 +387,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     public range:IRange;
 
     private inited = false;
+    private callbackOnInit = true;
 
     constructor(private calendarService:CalendarService) {
     }
@@ -291,6 +416,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     }
 
     onSlideChanged() {
+        if(this.callbackOnInit) {
+            this.callbackOnInit = false;
+            return;
+        }
+
         let currentSlideIndex = this.slider.getActiveIndex(),
             direction = 0,
             currentViewIndex = this.currentViewIndex;

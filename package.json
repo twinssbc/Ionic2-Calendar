@@ -1,6 +1,6 @@
 {
     "name": "ionic2-calendar",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
@@ -28,18 +28,18 @@
         "tslint-ionic-rules": "0.0.5",
         "typescript": "2.0.3",
         "typings": "1.3.1",
-        "@angular/common": "2.0.1",
-        "@angular/compiler": "2.0.1",
-        "@angular/compiler-cli": "0.6.2",
-        "@angular/core": "2.0.1",
-        "@angular/forms": "2.0.1",
-        "@angular/http": "2.0.1",
-        "@angular/platform-browser": "2.0.1",
-        "@angular/platform-browser-dynamic": "2.0.1",
-        "@angular/platform-server": "2.0.1",
-        "ionic-angular": "2.0.0-rc.1",
+        "@angular/common": "2.2.1",
+        "@angular/compiler": "2.2.1",
+        "@angular/compiler-cli": "2.2.1",
+        "@angular/core": "2.2.1",
+        "@angular/forms": "2.2.1",
+        "@angular/http": "2.2.1",
+        "@angular/platform-browser": "2.2.1",
+        "@angular/platform-browser-dynamic": "2.2.1",
+        "@angular/platform-server": "2.2.1",
+        "ionic-angular": "2.0.0-rc.5",
         "rxjs": "5.0.0-beta.12",
-        "zone.js": "0.6.21",
+        "zone.js": "0.6.26",
         "intl": "^1.2.5"
     }
 }
