@@ -9,6 +9,10 @@ https://twinssbc.github.io/Ionic2-Calendar/demo/
 The latest version has below dependency:      
 intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333    
 
+version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
+version 0.2.0 depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API)
+
+
 # Usage
 
 Install: `npm install ionic2-calendar --save`
