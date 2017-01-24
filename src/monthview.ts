@@ -1,4 +1,5 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild, TemplateRef } from '@angular/core';
+import { Subscription } from 'rxjs/Rx';
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
 
@@ -248,6 +249,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     private moveOnSelected = false;
     private inited = false;
     private callbackOnInit = true;
+    private currentDateChangedFromParentSubscription:Subscription;
 
     constructor(private calendarService:CalendarService) {
     }
@@ -256,9 +258,16 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.refreshView();
         this.inited = true;
 
-        this.calendarService.currentDateChanged$.subscribe(currentDate => {
+        this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(currentDate => {
             this.refreshView();
         });
+    }
+
+    ngOnDestroy() {
+        if (this.currentDateChangedFromParentSubscription) {
+            this.currentDateChangedFromParentSubscription.unsubscribe();
+            this.currentDateChangedFromParentSubscription = null;
+        }
     }
 
     ngOnChanges(changes:SimpleChanges) {
@@ -276,7 +285,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     }
 
     onSlideChanged() {
-        if(this.callbackOnInit) {
+        if (this.callbackOnInit) {
             this.callbackOnInit = false;
             return;
         }
@@ -309,7 +318,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             this.moveOnSelected = false;
         } else {
             let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
-            this.calendarService.currentDate = adjacentDate;
+            this.calendarService.setCurrentDate(adjacentDate);
         }
         this.refreshView();
         this.direction = 0;
@@ -593,7 +602,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
                 direction = currentYear < selectedYear ? 1 : -1;
             }
 
-            this.calendarService.currentDate = selectedDate;
+            this.calendarService.setCurrentDate(selectedDate);
             if (direction === 0) {
                 let currentViewStartDate = this.range.startTime,
                     oneDay = 86400000,

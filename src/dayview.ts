@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
 import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef } from '@angular/core';
+import { Subscription } from 'rxjs/Rx';
 
 import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -388,6 +389,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
     private inited = false;
     private callbackOnInit = true;
+    private currentDateChangedFromParentSubscription:Subscription;
 
     constructor(private calendarService:CalendarService) {
     }
@@ -396,7 +398,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         this.refreshView();
         this.inited = true;
 
-        this.calendarService.currentDateChanged$.subscribe(currentDate => {
+        this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(currentDate => {
             this.refreshView();
         });
     }
@@ -412,6 +414,13 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         let eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
+        }
+    }
+
+    ngOnDestroy() {
+        if(this.currentDateChangedFromParentSubscription) {
+            this.currentDateChangedFromParentSubscription.unsubscribe();
+            this.currentDateChangedFromParentSubscription = null;
         }
     }
 
@@ -446,7 +455,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
         this.direction = direction;
         let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
-        this.calendarService.currentDate = adjacentDate;
+        this.calendarService.setCurrentDate(adjacentDate);
+        this.refreshView();
         this.direction = 0;
     }
 
