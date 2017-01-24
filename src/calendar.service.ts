@@ -6,25 +6,29 @@ import { ICalendarComponent, IView, CalendarMode, QueryMode } from './calendar';
 @Injectable()
 export class CalendarService {
     queryMode: QueryMode;
-    currentDateChanged$: Observable<Date>;
+    currentDateChangedFromParent$: Observable<Date>;
+    currentDateChangedFromChildren$: Observable<Date>;
 
     private _currentDate: Date;
-    private currentDateChanged = new Subject<Date>();
+    private currentDateChangedFromParent = new Subject<Date>();
+    private currentDateChangedFromChildren = new Subject<Date>();
 
     constructor() {
-        this.currentDateChanged$ = this.currentDateChanged.asObservable();
+        this.currentDateChangedFromParent$ = this.currentDateChangedFromParent.asObservable();
+        this.currentDateChangedFromChildren$ = this.currentDateChangedFromChildren.asObservable();
     }
 
-    setCurrentDateWithoutEvent(val: Date) {
+    setCurrentDate(val: Date, fromParent: boolean = false) {
         this._currentDate = val;
+        if (fromParent) {
+            this.currentDateChangedFromParent.next(val);
+        } else {
+            this.currentDateChangedFromChildren.next(val);
+        }
     }
 
     get currentDate(): Date {
         return this._currentDate;
-    }
-    set currentDate(val: Date) {
-        this._currentDate = val;
-        this.currentDateChanged.next(val);
     }
 
     rangeChanged(component: ICalendarComponent) {

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { Subscription } from 'rxjs/Rx';
 
 import { CalendarService } from './calendar.service';
 
@@ -239,8 +240,13 @@ export class CalendarComponent implements OnInit {
     }
 
     set currentDate(val:Date) {
+        if (!val) {
+            val = new Date();
+        }
+
         this._currentDate = val;
-        this.calendarService.currentDate = this.currentDate;
+        this.calendarService.setCurrentDate(val, true);
+        this.onCurrentDateChanged.emit(this._currentDate);
     }
 
     @Input() eventSource:IEvent[] = [];
@@ -275,6 +281,7 @@ export class CalendarComponent implements OnInit {
 
     private _currentDate:Date;
     private hourParts = 1;
+    private currentDateChangedFromChildrenSubscription:Subscription;
 
     constructor(private calendarService:CalendarService) {
     }
@@ -283,10 +290,17 @@ export class CalendarComponent implements OnInit {
         this.hourParts = 60 / this.step;
         this.calendarService.queryMode = this.queryMode;
 
-        this.calendarService.currentDateChanged$.subscribe(currentDate => {
+        this.currentDateChangedFromChildrenSubscription = this.calendarService.currentDateChangedFromChildren$.subscribe(currentDate => {
             this._currentDate = currentDate;
             this.onCurrentDateChanged.emit(currentDate);
         });
+    }
+
+    ngOnDestroy() {
+        if (this.currentDateChangedFromChildrenSubscription) {
+            this.currentDateChangedFromChildrenSubscription.unsubscribe();
+            this.currentDateChangedFromChildrenSubscription = null;
+        }
     }
 
     rangeChanged(range:IRange) {
