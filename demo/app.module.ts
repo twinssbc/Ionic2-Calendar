@@ -1,11 +1,10 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app/app.component';
 import { AboutPage } from './pages/about';
 import { HomePage } from './pages/home';
 import { TabsPage } from './pages/tabs';
 import { NgCalendarModule  } from 'ionic2-calendar';
-
 
 @NgModule({
     declarations: [
@@ -24,6 +23,9 @@ import { NgCalendarModule  } from 'ionic2-calendar';
         AboutPage,
         HomePage,
         TabsPage
+    ],
+    providers: [
+        { provide: LOCALE_ID, useValue: undefined }
     ]
 })
 export class AppModule {}

@@ -371,6 +371,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() hourParts:number;
     @Input() eventSource:IEvent[];
     @Input() markDisabled:(date:Date) => boolean;
+    @Input() locale:string;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -610,7 +611,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
     getTitle():string {
         let startingDate = this.range.startTime;
-        return new DatePipe(undefined).transform(startingDate, this.formatDayTitle);
+        return new DatePipe(this.locale).transform(startingDate, this.formatDayTitle);
     }
 
     private static compareEventByStartOffset(eventA:IDisplayEvent, eventB:IDisplayEvent) {
