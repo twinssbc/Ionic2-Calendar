@@ -233,6 +233,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() showEventDetail:boolean;
     @Input() noEventsLabel:string;
     @Input() markDisabled:(date:Date) => boolean;
+    @Input() locale:string;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -366,7 +367,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
 
         let dayHeaders:string[] = [];
         for (let i = 0; i < 7; i++) {
-            dayHeaders.push(new DatePipe(undefined).transform(days[i].date, this.formatDayHeader));
+            dayHeaders.push(new DatePipe(this.locale).transform(days[i].date, this.formatDayHeader));
         }
         return {
             dates: days,
@@ -566,7 +567,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             month = (currentViewStartDate.getMonth() + (date !== 1 ? 1 : 0)) % 12,
             year = currentViewStartDate.getFullYear() + (date !== 1 && month === 0 ? 1 : 0),
             headerDate = new Date(year, month, 1);
-        return new DatePipe(undefined).transform(headerDate, this.formatMonthTitle);
+        return new DatePipe(this.locale).transform(headerDate, this.formatMonthTitle);
     }
 
     private compareEvent(event1:IEvent, event2:IEvent):number {

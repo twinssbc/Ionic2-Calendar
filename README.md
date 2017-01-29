@@ -95,7 +95,7 @@ The format of the header displayed in the week view.
 Default value: 'EEE d'
 * formatHourColumn    
 The format of the hour column displayed in the week and day view.    
-Default value: 'ha'
+Default value: ‘j’
 * calendarMode    
 The initial mode of the calendar.    
 Default value: 'month'
@@ -269,6 +269,20 @@ For example, if an allDay event ending to 2014-05-10, then endTime is
 
 * allDay    
 Indicates the event is allDay event or regular event
+
+# Localization    
+The DatePipe relies on LOCALE_ID to achieve localization. By default, the LOCALE_ID is **en-US**. You can override it in the module as below. If you pass **undefined**, the LOCALE_ID will be detected using the browser language setting. But using explicit value is recommended, as browser has different level of localization support.
+
+```
+import { NgModule, LOCALE_ID } from '@angular/core';
+
+@NgModule({
+    …
+    providers: [
+        { provide: LOCALE_ID, useValue: ‘zh-CN’ }
+    ]
+})
+```
 
 # Known issue    
 This component updates the ion-slide dynamically so that only 3 looped slides are needed.    

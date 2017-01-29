@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, Inject, LOCALE_ID } from '@angular/core';
 import { Subscription } from 'rxjs/Rx';
 
 import { CalendarService } from './calendar.service';
@@ -154,6 +154,7 @@ export enum Step {
                 [markDisabled]="markDisabled"
                 [monthviewDisplayEventTemplate]="monthviewDisplayEventTemplate||monthviewDefaultDisplayEventTemplate"
                 [monthviewEventDetailTemplate]="monthviewEventDetailTemplate||monthviewDefaultEventDetailTemplate"
+                [locale]="locale"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -170,6 +171,7 @@ export enum Step {
                 [markDisabled]="markDisabled"
                 [weekviewAllDayEventTemplate]="weekviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [weekviewNormalEventTemplate]="weekviewNormalEventTemplate||defaultNormalEventTemplate"
+                [locale]="locale"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -184,6 +186,7 @@ export enum Step {
                 [markDisabled]="markDisabled"
                 [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
+                [locale]="locale"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -257,7 +260,7 @@ export class CalendarComponent implements OnInit {
     @Input() formatWeekTitle:string = 'MMMM yyyy, Week $n';
     @Input() formatMonthTitle:string = 'MMMM yyyy';
     @Input() formatWeekViewDayHeader:string = 'EEE d';
-    @Input() formatHourColumn:string = 'ha';
+    @Input() formatHourColumn:string = 'j';
     @Input() showEventDetail:boolean = true;
     @Input() startingDayMonth:number = 0;
     @Input() startingDayWeek:number = 0;
@@ -283,7 +286,7 @@ export class CalendarComponent implements OnInit {
     private hourParts = 1;
     private currentDateChangedFromChildrenSubscription:Subscription;
 
-    constructor(private calendarService:CalendarService) {
+    constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private locale: string) {
     }
 
     ngOnInit() {

@@ -457,6 +457,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() hourParts:number;
     @Input() eventSource:IEvent[];
     @Input() markDisabled:(date:Date) => boolean;
+    @Input() locale:string;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -583,7 +584,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         let dates = WeekViewComponent.getDates(startTime, 7);
         let dayHeaders:string[] = [];
         for (let i = 0; i < 7; i++) {
-            dayHeaders.push(new DatePipe(undefined).transform(dates[i].date, this.formatWeekViewDayHeader));
+            dayHeaders.push(new DatePipe(this.locale).transform(dates[i].date, this.formatWeekViewDayHeader));
         }
 
         return {
@@ -792,7 +793,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         let firstDayOfWeek = this.range.startTime,
             weekFormat = '$n',
             weekNumberIndex = this.formatWeekTitle.indexOf(weekFormat),
-            title = new DatePipe(undefined).transform(firstDayOfWeek, this.formatWeekTitle);
+            title = new DatePipe(this.locale).transform(firstDayOfWeek, this.formatWeekTitle);
 
         if (weekNumberIndex !== -1) {
             let weekNumber = String(WeekViewComponent.getISO8601WeekNumber(firstDayOfWeek));
