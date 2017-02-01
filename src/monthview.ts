@@ -607,7 +607,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             if (direction === 0) {
                 let currentViewStartDate = this.range.startTime,
                     oneDay = 86400000,
-                    selectedDayDifference = Math.floor((selectedDate.getTime() - currentViewStartDate.getTime()) / oneDay);
+                    selectedDayDifference = Math.floor((selectedDate.getTime() - currentViewStartDate.getTime() - (selectedDate.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay);
+
                 for (let r = 0; r < 42; r += 1) {
                     dates[r].selected = false;
                 }
@@ -637,8 +638,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         let currentCalendarDate = this.calendarService.currentDate,
             today = new Date(),
             oneDay = 86400000,
-            selectedDayDifference = Math.floor((currentCalendarDate.getTime() - currentViewStartDate.getTime()) / oneDay),
-            currentDayDifference = Math.floor((today.getTime() - currentViewStartDate.getTime()) / oneDay);
+            selectedDayDifference = Math.floor((currentCalendarDate.getTime() - currentViewStartDate.getTime() - (currentCalendarDate.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay),
+            currentDayDifference = Math.floor((today.getTime() - currentViewStartDate.getTime() - (today.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset())* 60000) / oneDay);
 
         for (let r = 0; r < 42; r += 1) {
             view.dates[r].selected = false;
