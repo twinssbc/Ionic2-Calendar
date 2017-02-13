@@ -48,7 +48,7 @@ Add the directive in the html page
       <calendar [eventSource]="eventSource"
         [calendarMode]="calendar.mode"
         [currentDate]="calendar.currentDate"
-        (onCurrectDateChanged)="onCurrentDateChanged($event)"
+        (onCurrentDateChanged)="onCurrentDateChanged($event)"
         (onRangeChanged)="reloadSource(startTime, endTime)"
         (onEventSelected)="onEventSelected($event)"
         (onTitleChanged)="onViewTitleChanged($event)"
