@@ -10,7 +10,7 @@ The latest version has below dependency:
 intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333    
 
 version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
-version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API)
+version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
 
 
 # Usage
@@ -126,6 +126,9 @@ Default value: 'local'
 * step    
 It can be set to 15 or 30, so that the event can be displayed at more accurate position in weekview or dayview.    
 Default value: 60
+* autoSelect  
+If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month view.  
+Default value: true
 * markDisabled    
 The callback function used to determine if the time should be marked as disabled.    
 
