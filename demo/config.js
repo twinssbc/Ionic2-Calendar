@@ -7,7 +7,7 @@
         'rxjs': 'https://unpkg.com/rxjs@5.0.0-beta.12',
         'angular2-in-memory-web-api': 'https://unpkg.com/angular2-in-memory-web-api', // get latest
         'ionic2-calendar': '../src',
-        'ionic-angular': 'https://unpkg.com/ionic-angular@2.0.0-rc.5',
+        'ionic-angular': 'https://unpkg.com/ionic-angular@2.1.0',
         'pages': 'pages',
         'intl': 'https://unpkg.com/intl@1.2.5'
     };

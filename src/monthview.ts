@@ -23,7 +23,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         </thead>
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
-                            <td *ngFor="let col of [0,1,2,3,4,5,6]" (click)="select(views[0].dates[row*7+col])"
+                            <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[0].dates[row*7+col])"
                                 [ngClass]="getHighlightClass(views[0].dates[row*7+col])">
                                 <template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
                                 [ngOutletContext]="{view: views[0], row: row, col: col}">
@@ -60,7 +60,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         </thead>
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
-                            <td *ngFor="let col of [0,1,2,3,4,5,6]" (click)="select(views[1].dates[row*7+col])"
+                            <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[1].dates[row*7+col])"
                                 [ngClass]="getHighlightClass(views[1].dates[row*7+col])">
                                 <template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
                                 [ngOutletContext]="{view: views[1], row: row, col: col}">
@@ -97,7 +97,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         </thead>
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
-                            <td *ngFor="let col of [0,1,2,3,4,5,6]" (click)="select(views[2].dates[row*7+col])"
+                            <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[2].dates[row*7+col])"
                                 [ngClass]="getHighlightClass(views[2].dates[row*7+col])">
                                 <template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
                                 [ngOutletContext]="{view: views[2], row: row, col: col}">
@@ -232,6 +232,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() startingDayMonth:number;
     @Input() showEventDetail:boolean;
     @Input() noEventsLabel:string;
+    @Input() autoSelect:boolean = true;
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
 
@@ -315,14 +316,13 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (direction === 0) return;
 
         this.direction = direction;
-        if (this.moveOnSelected) {
-            this.moveOnSelected = false;
-        } else {
+        if (!this.moveOnSelected) {
             let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
             this.calendarService.setCurrentDate(adjacentDate);
         }
         this.refreshView();
         this.direction = 0;
+        this.moveOnSelected = false;
     }
 
     createDateObject(date:Date, format:string):IMonthViewRow {
@@ -528,24 +528,23 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             }
         }
 
-        let findSelected = false;
-        for (let r = 0; r < 42; r += 1) {
-            if (dates[r].selected) {
-                this.selectedDate = dates[r];
-                findSelected = true;
-                break;
+        if(this.autoSelect) {
+            let findSelected = false;
+            for (let r = 0; r < 42; r += 1) {
+                if (dates[r].selected) {
+                    this.selectedDate = dates[r];
+                    findSelected = true;
+                    break;
+                }
             }
-            if (findSelected) {
-                break;
-            }
-        }
 
-        if (findSelected) {
-            this.onTimeSelected.emit({
-                selectedTime: this.selectedDate.date,
-                events: this.selectedDate.events,
-                disabled: this.selectedDate.disabled
-            });
+            if (findSelected) {
+                this.onTimeSelected.emit({
+                    selectedTime: this.selectedDate.date,
+                    events: this.selectedDate.events,
+                    disabled: this.selectedDate.disabled
+                });
+            }
         }
     };
 
@@ -645,7 +644,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             view.dates[r].selected = false;
         }
 
-        if (selectedDayDifference >= 0 && selectedDayDifference < 42 && !view.dates[selectedDayDifference].disabled) {
+        if (selectedDayDifference >= 0 && selectedDayDifference < 42 && !view.dates[selectedDayDifference].disabled && (this.autoSelect|| this.moveOnSelected)) {
             view.dates[selectedDayDifference].selected = true;
             this.selectedDate = view.dates[selectedDayDifference];
         } else {

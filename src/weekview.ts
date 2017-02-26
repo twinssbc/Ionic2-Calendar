@@ -31,7 +31,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                     <td *ngFor="let day of views[0].dates" class="calendar-cell">
                                         <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
                                              [ngStyle]="{height: 25*day.events.length+'px'}">
-                                            <div *ngFor="let displayEvent of day.events" class="calendar-event"
+                                            <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
@@ -52,9 +52,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 <td class="calendar-hour-column text-center">
                                     {{row[0].time | date: formatHourColumn}}
                                 </td>
-                                <td *ngFor="let tm of row" class="calendar-cell" (click)="select(tm.time, tm.events)">
+                                <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event"
+                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="weekviewNormalEventTemplate"
@@ -117,7 +117,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                     <td *ngFor="let day of views[1].dates" class="calendar-cell">
                                         <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
                                              [ngStyle]="{height: 25*day.events.length+'px'}">
-                                            <div *ngFor="let displayEvent of day.events" class="calendar-event"
+                                            <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
@@ -138,9 +138,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 <td class="calendar-hour-column text-center">
                                     {{row[0].time | date: formatHourColumn}}
                                 </td>
-                                <td *ngFor="let tm of row" class="calendar-cell" (click)="select(tm.time, tm.events)">
+                                <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event"
+                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="weekviewNormalEventTemplate"
@@ -203,7 +203,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                     <td *ngFor="let day of views[2].dates" class="calendar-cell">
                                         <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
                                              [ngStyle]="{height: 25*day.events.length+'px'}">
-                                            <div *ngFor="let displayEvent of day.events" class="calendar-event"
+                                            <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
@@ -224,9 +224,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 <td class="calendar-hour-column text-center">
                                     {{row[0].time | date: formatHourColumn}}
                                 </td>
-                                <td *ngFor="let tm of row" class="calendar-cell" (click)="select(tm.time, tm.events)">
+                                <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event"
+                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="weekviewNormalEventTemplate"

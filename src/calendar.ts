@@ -150,6 +150,7 @@ export enum Step {
                 [startingDayMonth]="startingDayMonth"
                 [showEventDetail]="showEventDetail"
                 [noEventsLabel]="noEventsLabel"
+                [autoSelect]="autoSelect"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
                 [monthviewDisplayEventTemplate]="monthviewDisplayEventTemplate||monthviewDefaultDisplayEventTemplate"
@@ -268,6 +269,7 @@ export class CalendarComponent implements OnInit {
     @Input() noEventsLabel:string = 'No Events';
     @Input() queryMode:QueryMode = 'local';
     @Input() step:Step = Step.Hour;
+    @Input() autoSelect:boolean = true;
     @Input() markDisabled:(date:Date) => boolean;
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewEventDetailTemplateContext>;
@@ -286,10 +288,17 @@ export class CalendarComponent implements OnInit {
     private hourParts = 1;
     private currentDateChangedFromChildrenSubscription:Subscription;
 
-    constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private locale: string) {
+    constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private locale:string) {
     }
 
     ngOnInit() {
+        if (this.autoSelect) {
+            if (this.autoSelect.toString() === 'false') {
+                this.autoSelect = false;
+            } else {
+                this.autoSelect = true;
+            }
+        }
         this.hourParts = 60 / this.step;
         this.calendarService.queryMode = this.queryMode;
 
