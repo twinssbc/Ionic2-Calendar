@@ -292,3 +292,13 @@ This component updates the ion-slide dynamically so that only 3 looped slides ar
 The ion-slide in Ionic2 uses Swiper. It seems in the Swiper implementation, the next slide after the end of looped slide is a separate cached slide, instead of the first slide.    
 I can't find out a way to force refresh that cached slide, so you will notice that when sliding from the third month to the forth month, the preview month is not the forth month, but the first month.    
 Once the sliding is over, the slide will be forced to render the forth month.
+
+# Common Questions
+* Error: Cannot find module "intl"  
+Answer: This calendar has dependency on 'Intl'. Run *npm install intl@1.2.5* to install the dependency
+
+* Error: Cannot read property 'getFullYear' of undefined  
+Answer: If you bind currentDate like this: [currentDate]="calendar.currentDate". You need to assign calendar.currentDate a valid Date object
+
+* How to switch the calendar to previous/next month programatically?  
+Answer: You can change currentDate to the date in previous/next month.
