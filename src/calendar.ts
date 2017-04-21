@@ -127,7 +127,7 @@ export enum Step {
                             -
                             {{event.endTime|date: 'HH:mm'}}
                         </span>
-                    <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">All day</span>
+                    <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">{{allDayLabel}}</span>
                     <span class="event-detail">  |  {{event.title}}</span>
                 </ion-item>
                 <ion-item *ngIf="selectedDate?.events.length==0">
@@ -154,6 +154,7 @@ export enum Step {
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
                 [monthviewDisplayEventTemplate]="monthviewDisplayEventTemplate||monthviewDefaultDisplayEventTemplate"
+                [monthviewInactiveDisplayEventTemplate]="monthviewInactiveDisplayEventTemplate||monthviewDefaultDisplayEventTemplate"
                 [monthviewEventDetailTemplate]="monthviewEventDetailTemplate||monthviewDefaultEventDetailTemplate"
                 [locale]="locale"
                 (onRangeChanged)="rangeChanged($event)"
@@ -272,6 +273,7 @@ export class CalendarComponent implements OnInit {
     @Input() autoSelect:boolean = true;
     @Input() markDisabled:(date:Date) => boolean;
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewEventDetailTemplateContext>;
     @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;

@@ -43,7 +43,9 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
                             <td *ngFor="let col of [0,1,2,3,4,5,6]">
-                                {{views[0].dates[row*7+col].label}}
+                                <template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
+                                [ngOutletContext]="{view: views[0], row: row, col: col}">
+                                </template>
                             </td>
                         <tr>
                         </tbody>
@@ -80,7 +82,9 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
                             <td *ngFor="let col of [0,1,2,3,4,5,6]">
-                                {{views[1].dates[row*7+col].label}}
+                                <template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
+                                [ngOutletContext]="{view: views[1], row: row, col: col}">
+                                </template>
                             </td>
                         <tr>
                         </tbody>
@@ -117,7 +121,9 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         <tbody>
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
                             <td *ngFor="let col of [0,1,2,3,4,5,6]">
-                                {{views[2].dates[row*7+col].label}}
+                                <template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
+                                [ngOutletContext]="{view: views[2], row: row, col: col}">
+                                </template>
                             </td>
                         <tr>
                         </tbody>
@@ -223,6 +229,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @ViewChild('monthSlider') slider:Slides;
 
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
 
     @Input() formatDay:string;
@@ -448,7 +455,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             currentViewIndex = this.currentViewIndex,
             dates = this.views[currentViewIndex].dates,
             oneDay = 86400000,
-            eps = 0.001;
+            eps = 0.0006;
 
         for (let r = 0; r < 42; r += 1) {
             if (dates[r].hasEvent) {
@@ -528,7 +535,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             }
         }
 
-        if(this.autoSelect) {
+        if (this.autoSelect) {
             let findSelected = false;
             for (let r = 0; r < 42; r += 1) {
                 if (dates[r].selected) {
@@ -638,13 +645,13 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             today = new Date(),
             oneDay = 86400000,
             selectedDayDifference = Math.floor((currentCalendarDate.getTime() - currentViewStartDate.getTime() - (currentCalendarDate.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay),
-            currentDayDifference = Math.floor((today.getTime() - currentViewStartDate.getTime() - (today.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset())* 60000) / oneDay);
+            currentDayDifference = Math.floor((today.getTime() - currentViewStartDate.getTime() - (today.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay);
 
         for (let r = 0; r < 42; r += 1) {
             view.dates[r].selected = false;
         }
 
-        if (selectedDayDifference >= 0 && selectedDayDifference < 42 && !view.dates[selectedDayDifference].disabled && (this.autoSelect|| this.moveOnSelected)) {
+        if (selectedDayDifference >= 0 && selectedDayDifference < 42 && !view.dates[selectedDayDifference].disabled && (this.autoSelect || this.moveOnSelected)) {
             view.dates[selectedDayDifference].selected = true;
             this.selectedDate = view.dates[selectedDayDifference];
         } else {
