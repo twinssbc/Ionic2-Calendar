@@ -117,10 +117,10 @@ export enum Step {
 @Component({
     selector: 'calendar',
     template: `
-        <template #monthviewDefaultDisplayEventTemplate let-view="view" let-row="row" let-col="col">
+        <ng-template #monthviewDefaultDisplayEventTemplate let-view="view" let-row="row" let-col="col">
             {{view.dates[row*7+col].label}}
-        </template>
-        <template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+        </ng-template>
+        <ng-template #monthviewDefaultEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
             <ion-list class="event-detail-container" has-bouncing="false" *ngIf="showEventDetail" overflow-scroll="false">
                 <ion-item *ngFor="let event of selectedDate?.events" (click)="eventSelected(event)">
                         <span *ngIf="!event.allDay" class="monthview-eventdetail-timecolumn">{{event.startTime|date: 'HH:mm'}}
@@ -134,13 +134,13 @@ export enum Step {
                     <div class="no-events-label">{{noEventsLabel}}</div>
                 </ion-item>
             </ion-list>
-        </template>
-        <template #defaultAllDayEventTemplate let-displayEvent="displayEvent">
+        </ng-template>
+        <ng-template #defaultAllDayEventTemplate let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </template>
-        <template #defaultNormalEventTemplate let-displayEvent="displayEvent">
+        </ng-template>
+        <ng-template #defaultNormalEventTemplate let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </template>
+        </ng-template>
 
         <div [ngSwitch]="calendarMode" class="{{calendarMode}}view-container">
             <monthview *ngSwitchCase="'month'"

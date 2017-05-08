@@ -25,9 +25,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          class="calendar-event" tappable
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
+                                        <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
                                             [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </template>
+                                        </ng-template>
                                     </div>
                                 </td>
                                 <td class="calendar-cell" *ngIf="0!==currentViewIndex">
@@ -50,9 +50,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                     <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
-                                         <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
+                                         <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
                                              [ngOutletContext]="{displayEvent:displayEvent}">
-                                         </template>
+                                         </ng-template>
                                     </div>
                                 </div>
                             </td>
@@ -87,9 +87,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          class="calendar-event" tappable
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
+                                        <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
                                             [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </template>
+                                        </ng-template>
                                     </div>
                                 </td>
                                 <td class="calendar-cell" *ngIf="1!==currentViewIndex">
@@ -112,9 +112,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                     <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
-                                         <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
+                                         <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
                                              [ngOutletContext]="{displayEvent:displayEvent}">
-                                         </template>
+                                         </ng-template>
                                     </div>
                                 </div>
                             </td>
@@ -149,9 +149,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          class="calendar-event" tappable
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
+                                        <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
                                             [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </template>
+                                        </ng-template>
                                     </div>
                                 </td>
                                 <td class="calendar-cell" *ngIf="2!==currentViewIndex">
@@ -174,9 +174,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                     <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
-                                         <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
+                                         <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
                                              [ngOutletContext]="{displayEvent:displayEvent}">
-                                         </template>
+                                         </ng-template>
                                     </div>
                                 </div>
                             </td>
