@@ -1,5 +1,4 @@
 import { NgModule }      from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { IonicModule } from 'ionic-angular';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
@@ -13,7 +12,7 @@ import { CalendarService } from './calendar.service';
     declarations: [
         MonthViewComponent, WeekViewComponent, DayViewComponent, CalendarComponent
     ],
-    imports: [BrowserModule, IonicModule],
+    imports: [IonicModule],
     exports: [CalendarComponent],
     entryComponents: [CalendarComponent]
 })
