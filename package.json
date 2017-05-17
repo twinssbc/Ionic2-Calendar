@@ -24,22 +24,22 @@
     },
     "main": "./index.js",
     "dependencies": {},
-    "devDependencies": {
-        "tslint-ionic-rules": "0.0.5",
-        "typescript": "2.0.3",
-        "typings": "1.3.1",
-        "@angular/common": "2.2.1",
-        "@angular/compiler": "2.2.1",
-        "@angular/compiler-cli": "2.2.1",
-        "@angular/core": "2.2.1",
-        "@angular/forms": "2.2.1",
-        "@angular/http": "2.2.1",
-        "@angular/platform-browser": "2.2.1",
-        "@angular/platform-browser-dynamic": "2.2.1",
-        "@angular/platform-server": "2.2.1",
-        "ionic-angular": "2.1.0",
-        "rxjs": "5.0.0-beta.12",
-        "zone.js": "0.6.26",
-        "intl": "^1.2.5"
-    }
+  "description": "Ionic2 calendar component",
+  "devDependencies": {
+  "@angular/common": "4.0.2",
+  "@angular/compiler": "4.0.2",
+  "@angular/compiler-cli": "4.0.2",
+  "@angular/core": "4.0.2",
+  "@angular/forms": "4.0.2",
+  "@angular/http": "4.0.2",
+  "@angular/platform-browser": "4.0.2",
+  "@angular/platform-browser-dynamic": "4.0.2",
+  "ionic-angular": "3.1.0",
+  "rxjs": "5.1.1",
+  "zone.js": "^0.8.5",
+    "intl": "^1.2.5",
+    "tslint-ionic-rules": "0.0.5",
+	"typescript": "~2.2.1",
+    "typings": "1.3.1"
+	}
 }
