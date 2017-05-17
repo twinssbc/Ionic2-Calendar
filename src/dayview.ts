@@ -3,7 +3,7 @@ import { Slides } from 'ionic-angular';
 import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode } from './calendar';
+import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode, IDateFormatter } from './calendar';
 import { CalendarService } from './calendar.service';
 import { IDisplayAllDayEvent } from "./calendar";
 
@@ -41,9 +41,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table"
                            *ngIf="0===currentViewIndex">
                         <tbody>
-                        <tr *ngFor="let tm of views[0].rows">
+                        <tr *ngFor="let tm of views[0].rows; let i = index">
                             <td class="calendar-hour-column text-center">
-                                {{tm.time | date: formatHourColumn}}
+                                {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                 <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -62,9 +62,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table"
                            *ngIf="0!==currentViewIndex">
                         <tbody>
-                        <tr *ngFor="let tm of views[0].rows">
+                        <tr *ngFor="let tm of views[0].rows; let i = index">
                             <td class="calendar-hour-column text-center">
-                                {{tm.time | date: formatHourColumn}}
+                                {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell">
                             </td>
@@ -103,9 +103,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table"
                            *ngIf="1===currentViewIndex">
                         <tbody>
-                        <tr *ngFor="let tm of views[1].rows">
+                        <tr *ngFor="let tm of views[1].rows; let i = index">
                             <td class="calendar-hour-column text-center">
-                                {{tm.time | date: formatHourColumn}}
+                                {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                 <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -124,9 +124,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table"
                            *ngIf="1!==currentViewIndex">
                         <tbody>
-                        <tr *ngFor="let tm of views[1].rows">
+                        <tr *ngFor="let tm of views[1].rows; let i = index">
                             <td class="calendar-hour-column text-center">
-                                {{tm.time | date: formatHourColumn}}
+                                {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell">
                             </td>
@@ -165,9 +165,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table"
                            *ngIf="2===currentViewIndex">
                         <tbody>
-                        <tr *ngFor="let tm of views[2].rows">
+                        <tr *ngFor="let tm of views[2].rows; let i = index">
                             <td class="calendar-hour-column text-center">
-                                {{tm.time | date: formatHourColumn}}
+                                {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                 <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -186,9 +186,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table"
                            *ngIf="2!==currentViewIndex">
                         <tbody>
-                        <tr *ngFor="let tm of views[2].rows">
+                        <tr *ngFor="let tm of views[2].rows; let i = index">
                             <td class="calendar-hour-column text-center">
-                                {{tm.time | date: formatHourColumn}}
+                                {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell">
                             </td>
@@ -372,6 +372,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() eventSource:IEvent[];
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
+    @Input() dateFormatter:IDateFormatter;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -391,12 +392,35 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     private inited = false;
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
+    private hourColumnLabels:string[];
+    private formatTitle:(date:Date) => string;
+    private formatHourColumnLabel:(date:Date) => string;
 
     constructor(private calendarService:CalendarService) {
     }
 
     ngOnInit() {
+        if (this.dateFormatter && this.dateFormatter.formatDayViewTitle) {
+            this.formatTitle = this.dateFormatter.formatDayViewTitle;
+        } else {
+            var datePipe = new DatePipe(this.locale);
+            this.formatTitle = function (date:Date) {
+                return datePipe.transform(date, this.formatDayTitle);
+            };
+        }
+
+        if (this.dateFormatter && this.dateFormatter.formatDayViewHourColumn) {
+            this.formatHourColumnLabel = this.dateFormatter.formatDayViewHourColumn;
+        } else {
+            var datePipe = new DatePipe(this.locale);
+            this.formatHourColumnLabel = function (date:Date) {
+                return datePipe.transform(date, this.formatHourColumn);
+            };
+        }
+
         this.refreshView();
+        this.hourColumnLabels = this.getHourColumnLabels();
+
         this.inited = true;
 
         this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(currentDate => {
@@ -419,14 +443,14 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     }
 
     ngOnDestroy() {
-        if(this.currentDateChangedFromParentSubscription) {
+        if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
             this.currentDateChangedFromParentSubscription = null;
         }
     }
 
     onSlideChanged() {
-        if(this.callbackOnInit) {
+        if (this.callbackOnInit) {
             this.callbackOnInit = false;
             return;
         }
@@ -477,6 +501,14 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             });
         }
         return rows;
+    }
+
+    private getHourColumnLabels():string[] {
+        let hourColumnLabels:string[] = [];
+        for (let hour = 0, length = this.views[0].rows.length; hour < length; hour += 1) {
+            hourColumnLabels.push(this.formatHourColumnLabel(this.views[0].rows[hour].time));
+        }
+        return hourColumnLabels;
     }
 
     getViewData(startTime:Date):IDayView {
@@ -611,7 +643,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
     getTitle():string {
         let startingDate = this.range.startTime;
-        return new DatePipe(this.locale).transform(startingDate, this.formatDayTitle);
+        return this.formatTitle(startingDate);
     }
 
     private static compareEventByStartOffset(eventA:IDisplayEvent, eventB:IDisplayEvent) {

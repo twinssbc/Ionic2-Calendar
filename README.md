@@ -140,6 +140,42 @@ The callback function used to determine if the time should be marked as disabled
             return date < current;
         };
 
+* dateFormatter    
+The custom date formatter to transform date to text.    
+If the custom date formatter is not set, the default Angular DatePipe is used.
+The format method in dateFormatter is optional, if omitted, the default Angular DatePipe is used.
+
+        <calendar ... [dateFormatter]="calendar.dateFormatter"></calendar>
+
+        calendar = {
+            dateFormatter: {
+                formatMonthViewDay: function(date:Date) {
+                    return date.getDate().toString();
+                },
+                formatMonthViewDayHeader: function(date:Date) {
+                    return ‘testMDH’;
+                },
+                formatMonthViewTitle: function(date:Date) {
+                    return 'testMT';
+                },
+                formatWeekViewDayHeader: function(date:Date) {
+                    return ‘testWDH’;
+                },
+                formatWeekViewTitle: function(date:Date) {
+                    return 'testWT’;
+                },
+                formatWeekViewHourColumn: function(date:Date) {
+                    return 'testWH’;
+                },
+                formatDayViewHourColumn: function(date:Date) {
+                    return 'testDH’;
+                },
+                formatDayViewTitle: function(date:Date) {
+                    return 'testDT’;
+                }
+            }
+        };        
+
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
 
@@ -296,6 +332,21 @@ import { NgModule, LOCALE_ID } from '@angular/core';
         { provide: LOCALE_ID, useValue: ‘zh-CN’ }
     ]
 })
+```
+
+# Performance Tuning    
+In the CPU profile, the default Intl based localization code occupies a big portion of the execution time. If you don’t need localization on certain parts, you can use the custom dateFormatter to override the date transform method. For example, the date in month view usually doesn’t require localization, you could use below code to just display the date part. If the month view day header doesn’t need to include the date, you could also use a string array containing static labels to save the date calculation.
+
+```
+<calendar ... [dateFormatter]="calendar.dateFormatter"></calendar>
+
+calendar = {
+    dateFormatter: {
+        formatMonthViewDay: function(date:Date) {
+            return date.getDate().toString();
+        }            
+    }
+};
 ```
 
 # Known issue    

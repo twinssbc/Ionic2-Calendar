@@ -1,4 +1,4 @@
-import { NgModule }      from '@angular/core';
+import { NgModule } from '@angular/core';
 import { IonicModule } from 'ionic-angular';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
@@ -16,4 +16,5 @@ import { CalendarService } from './calendar.service';
     exports: [CalendarComponent],
     entryComponents: [CalendarComponent]
 })
-export class NgCalendarModule {}
+export class NgCalendarModule {
+}

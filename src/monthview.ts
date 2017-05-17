@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { DatePipe } from '@angular/common';
 import { Slides } from 'ionic-angular';
 
-import { ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode } from './calendar';
+import { ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode, IDateFormatter } from './calendar';
 import { CalendarService } from './calendar.service';
 import { IMonthViewDisplayEventTemplateContext } from "./calendar";
 
@@ -242,6 +242,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() autoSelect:boolean = true;
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
+    @Input() dateFormatter:IDateFormatter;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -259,11 +260,41 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     private inited = false;
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
+    private formatDayLabel:(date:Date) => string;
+    private formatDayHeaderLabel:(date:Date) => string;
+    private formatTitle:(date:Date) => string;
 
     constructor(private calendarService:CalendarService) {
     }
 
     ngOnInit() {
+        if (this.dateFormatter && this.dateFormatter.formatMonthViewDay) {
+            this.formatDayLabel = this.dateFormatter.formatMonthViewDay;
+        } else {
+            var dayLabelDatePipe = new DatePipe('en-US');
+            this.formatDayLabel = function (date:Date) {
+                return dayLabelDatePipe.transform(date, this.formatDay);
+            };
+        }
+
+        if (this.dateFormatter && this.dateFormatter.formatMonthViewDayHeader) {
+            this.formatDayHeaderLabel = this.dateFormatter.formatMonthViewDayHeader;
+        } else {
+            var datePipe = new DatePipe(this.locale);
+            this.formatDayHeaderLabel = function (date:Date) {
+                return datePipe.transform(date, this.formatDayHeader);
+            };
+        }
+
+        if (this.dateFormatter && this.dateFormatter.formatMonthViewTitle) {
+            this.formatTitle = this.dateFormatter.formatMonthViewTitle;
+        } else {
+            var datePipe = new DatePipe(this.locale);
+            this.formatTitle = function (date:Date) {
+                return datePipe.transform(date, this.formatMonthTitle);
+            };
+        }
+
         this.refreshView();
         this.inited = true;
 
@@ -332,7 +363,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.moveOnSelected = false;
     }
 
-    createDateObject(date:Date, format:string):IMonthViewRow {
+    createDateObject(date:Date):IMonthViewRow {
         var disabled = false;
         if (this.markDisabled) {
             disabled = this.markDisabled(date);
@@ -341,7 +372,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         return {
             date: date,
             events: [],
-            label: new DatePipe('en-US').transform(date, format),
+            label: this.formatDayLabel(date),
             secondary: false,
             disabled: disabled
         };
@@ -367,14 +398,14 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         let dates = MonthViewComponent.getDates(startDate, 42);
         let days:IMonthViewRow[] = [];
         for (let i = 0; i < 42; i++) {
-            let dateObject = this.createDateObject(dates[i], this.formatDay);
+            let dateObject = this.createDateObject(dates[i]);
             dateObject.secondary = dates[i].getMonth() !== month;
             days[i] = dateObject;
         }
 
         let dayHeaders:string[] = [];
         for (let i = 0; i < 7; i++) {
-            dayHeaders.push(new DatePipe(this.locale).transform(days[i].date, this.formatDayHeader));
+            dayHeaders.push(this.formatDayHeaderLabel(days[i].date));
         }
         return {
             dates: days,
@@ -573,7 +604,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             month = (currentViewStartDate.getMonth() + (date !== 1 ? 1 : 0)) % 12,
             year = currentViewStartDate.getFullYear() + (date !== 1 && month === 0 ? 1 : 0),
             headerDate = new Date(year, month, 1);
-        return new DatePipe(this.locale).transform(headerDate, this.formatMonthTitle);
+        return this.formatTitle(headerDate);
     }
 
     private compareEvent(event1:IEvent, event2:IEvent):number {
