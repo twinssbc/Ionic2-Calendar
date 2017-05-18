@@ -104,6 +104,17 @@ export interface IMonthViewEventDetailTemplateContext {
     noEventsLabel: string
 }
 
+export interface IDateFormatter {
+    formatMonthViewDay?: { (date:Date): string; };
+    formatMonthViewDayHeader?: { (date:Date): string; };
+    formatMonthViewTitle?: { (date:Date): string; };
+    formatWeekViewDayHeader?: { (date:Date): string; };
+    formatWeekViewTitle?: { (date:Date): string; };
+    formatWeekViewHourColumn?: { (date:Date): string; };
+    formatDayViewTitle?: { (date:Date): string; };
+    formatDayViewHourColumn?: { (date:Date): string; };
+}
+
 export type CalendarMode = 'day' | 'month' | 'week';
 
 export type QueryMode = 'local' | 'remote';
@@ -157,6 +168,7 @@ export enum Step {
                 [monthviewInactiveDisplayEventTemplate]="monthviewInactiveDisplayEventTemplate||monthviewDefaultDisplayEventTemplate"
                 [monthviewEventDetailTemplate]="monthviewEventDetailTemplate||monthviewDefaultEventDetailTemplate"
                 [locale]="locale"
+                [dateFormatter]="dateFormatter"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -174,6 +186,7 @@ export enum Step {
                 [weekviewAllDayEventTemplate]="weekviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [weekviewNormalEventTemplate]="weekviewNormalEventTemplate||defaultNormalEventTemplate"
                 [locale]="locale"
+                [dateFormatter]="dateFormatter"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -189,6 +202,7 @@ export enum Step {
                 [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
                 [locale]="locale"
+                [dateFormatter]="dateFormatter"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -279,6 +293,7 @@ export class CalendarComponent implements OnInit {
     @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
     @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
+    @Input() dateFormatter:IDateFormatter;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();

@@ -3,7 +3,7 @@ import { Slides } from 'ionic-angular';
 import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode } from './calendar';
+import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode, IDateFormatter } from './calendar';
 import { CalendarService } from './calendar.service';
 import { IDisplayAllDayEvent } from "./calendar";
 
@@ -48,9 +48,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
                             <tbody>
-                            <tr *ngFor="let row of views[0].rows">
+                            <tr *ngFor="let row of views[0].rows; let i = index">
                                 <td class="calendar-hour-column text-center">
-                                    {{row[0].time | date: formatHourColumn}}
+                                    {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -85,9 +85,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
                             <tbody>
-                            <tr *ngFor="let row of views[0].rows">
+                            <tr *ngFor="let row of views[0].rows; let i = index">
                                 <td class="calendar-hour-column text-center">
-                                    {{row[0].time | date: formatHourColumn}}
+                                    {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell">
                                 </td>
@@ -134,9 +134,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
                             <tbody>
-                            <tr *ngFor="let row of views[1].rows">
+                            <tr *ngFor="let row of views[1].rows; let i = index">
                                 <td class="calendar-hour-column text-center">
-                                    {{row[0].time | date: formatHourColumn}}
+                                    {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -171,9 +171,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
                             <tbody>
-                            <tr *ngFor="let row of views[1].rows">
+                            <tr *ngFor="let row of views[1].rows; let i = index">
                                 <td class="calendar-hour-column text-center">
-                                    {{row[0].time | date: formatHourColumn}}
+                                    {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell">
                                 </td>
@@ -220,9 +220,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
                             <tbody>
-                            <tr *ngFor="let row of views[2].rows">
+                            <tr *ngFor="let row of views[2].rows; let i = index">
                                 <td class="calendar-hour-column text-center">
-                                    {{row[0].time | date: formatHourColumn}}
+                                    {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -257,9 +257,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <ion-scroll scrollY="true" class="weekview-normal-event-container" zoom="false">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
                             <tbody>
-                            <tr *ngFor="let row of views[2].rows">
+                            <tr *ngFor="let row of views[2].rows; let i = index">
                                 <td class="calendar-hour-column text-center">
-                                    {{row[0].time | date: formatHourColumn}}
+                                    {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell">
                                 </td>
@@ -458,6 +458,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() eventSource:IEvent[];
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
+    @Input() dateFormatter:IDateFormatter;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -473,12 +474,44 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     private inited = false;
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
+    private hourColumnLabels:string[];
+    private formatDayHeader:(date:Date) => string;
+    private formatTitle:(date:Date) => string;
+    private formatHourColumnLabel:(date:Date) => string;
 
     constructor(private calendarService:CalendarService) {
     }
 
     ngOnInit() {
+        if (this.dateFormatter && this.dateFormatter.formatWeekViewDayHeader) {
+            this.formatDayHeader = this.dateFormatter.formatWeekViewDayHeader;
+        } else {
+            var datePipe = new DatePipe(this.locale);
+            this.formatDayHeader = function (date:Date) {
+                return datePipe.transform(date, this.formatWeekViewDayHeader);
+            };
+        }
+
+        if (this.dateFormatter && this.dateFormatter.formatWeekViewTitle) {
+            this.formatTitle = this.dateFormatter.formatWeekViewTitle;
+        } else {
+            var datePipe = new DatePipe(this.locale);
+            this.formatTitle = function (date:Date) {
+                return datePipe.transform(date, this.formatWeekTitle);
+            };
+        }
+
+        if (this.dateFormatter && this.dateFormatter.formatWeekViewHourColumn) {
+            this.formatHourColumnLabel = this.dateFormatter.formatWeekViewHourColumn;
+        } else {
+            var datePipe = new DatePipe(this.locale);
+            this.formatHourColumnLabel = function (date:Date) {
+                return datePipe.transform(date, this.formatHourColumn);
+            };
+        }
+
         this.refreshView();
+        this.hourColumnLabels = this.getHourColumnLabels();
         this.inited = true;
 
         this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(currentDate => {
@@ -580,11 +613,19 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         return dates;
     }
 
+    private getHourColumnLabels():string[] {
+        let hourColumnLabels:string[] = [];
+        for (let hour = 0, length = this.views[0].rows.length; hour < length; hour += 1) {
+            hourColumnLabels.push(this.formatHourColumnLabel(this.views[0].rows[hour][0].time));
+        }
+        return hourColumnLabels;
+    }
+
     getViewData(startTime:Date):IWeekView {
         let dates = WeekViewComponent.getDates(startTime, 7);
         let dayHeaders:string[] = [];
         for (let i = 0; i < 7; i++) {
-            dayHeaders.push(new DatePipe(this.locale).transform(dates[i].date, this.formatWeekViewDayHeader));
+            dayHeaders.push(this.formatDayHeader(dates[i].date));
         }
 
         return {
@@ -793,7 +834,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         let firstDayOfWeek = this.range.startTime,
             weekFormat = '$n',
             weekNumberIndex = this.formatWeekTitle.indexOf(weekFormat),
-            title = new DatePipe(this.locale).transform(firstDayOfWeek, this.formatWeekTitle);
+            title = this.formatTitle(firstDayOfWeek);
 
         if (weekNumberIndex !== -1) {
             let weekNumber = String(WeekViewComponent.getISO8601WeekNumber(firstDayOfWeek));
