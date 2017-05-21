@@ -10,7 +10,7 @@ import { IDisplayAllDayEvent } from "./calendar";
 @Component({
     selector: 'dayview',
     template: `
-        <ion-slides #daySlider [loop]="true" (ionSlideDidChange)="onSlideChanged()">
+        <ion-slides #daySlider [loop]="true" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
             <ion-slide>
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
@@ -278,10 +278,20 @@ import { IDisplayAllDayEvent } from "./calendar";
           width: 50px;
         }
 
+        [dir="rtl"] .dayview-allday-label {
+            border-right: 1px solid #ddd;
+            float: right;
+        }
+
         .dayview-allday-content-wrapper {
           margin-left: 50px;
           overflow: hidden;
           height: 51px;
+        }
+
+        [dir="rtl"] .dayview-allday-content-wrapper {
+          margin-left: 0;
+          margin-right: 50px;
         }
 
         .dayview-allday-content-table {
@@ -354,6 +364,11 @@ import { IDisplayAllDayEvent } from "./calendar";
           .dayview-allday-content-wrapper {
             margin-left: 31px;
           }
+
+          [dir="rtl"] .dayview-allday-content-wrapper {
+            margin-left: 0;
+            margin-right: 31px;
+          }
         }
     `],
     encapsulation: ViewEncapsulation.None
@@ -373,6 +388,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
+    @Input() dir:string = "";
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -711,6 +727,12 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                 events[i].position = col;
             } else {
                 events[i].position = maxColumn++;
+            }
+        }
+
+        if (this.dir === 'rtl') {
+            for (let i = 0; i < len; i += 1) {
+                events[i].position = maxColumn - 1 - events[i].position;
             }
         }
     }

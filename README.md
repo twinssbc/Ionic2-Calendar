@@ -176,6 +176,10 @@ The format method in dateFormatter is optional, if omitted, the default Angular 
             }
         };        
 
+* dir  
+If set to “rtl”, the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards.  
+Default value: “”
+
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
 
