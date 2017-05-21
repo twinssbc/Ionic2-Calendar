@@ -10,7 +10,7 @@ import { IDisplayAllDayEvent } from "./calendar";
 @Component({
     selector: 'weekview',
     template: `
-        <ion-slides #weekSlider [loop]="true" (ionSlideDidChange)="onSlideChanged()">
+        <ion-slides #weekSlider [loop]="true" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
             <ion-slide>
                 <table class="table table-bordered table-fixed weekview-header">
                     <thead>
@@ -350,10 +350,20 @@ import { IDisplayAllDayEvent } from "./calendar";
           width: 50px;
         }
 
+        [dir="rtl"] .weekview-allday-label {
+            float: right;
+            border-right: 1px solid #ddd;
+        }
+
         .weekview-allday-content-wrapper {
           margin-left: 50px;
           overflow: hidden;
           height: 51px;
+        }
+
+        [dir="rtl"] .weekview-allday-content-wrapper {
+          margin-left: 0;
+          margin-right: 50px;
         }
 
         .weekview-allday-content-table {
@@ -438,6 +448,11 @@ import { IDisplayAllDayEvent } from "./calendar";
           .weekview-allday-content-wrapper {
             margin-left: 31px;
           }
+
+          [dir="rtl"] .weekview-allday-content-wrapper {
+            margin-left: 0;
+            margin-right: 31px;
+          }
         }
     `],
     encapsulation: ViewEncapsulation.None
@@ -459,6 +474,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
+    @Input() dir:string = "";
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -534,14 +550,14 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     ngOnDestroy() {
-        if(this.currentDateChangedFromParentSubscription) {
+        if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
             this.currentDateChangedFromParentSubscription = null;
         }
     }
 
     onSlideChanged() {
-        if(this.callbackOnInit) {
+        if (this.callbackOnInit) {
             this.callbackOnInit = false;
             return;
         }
@@ -917,6 +933,12 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                 events[i].position = col;
             } else {
                 events[i].position = maxColumn++;
+            }
+        }
+
+        if (this.dir === 'rtl') {
+            for (let i = 0; i < len; i += 1) {
+                events[i].position = maxColumn - 1 - events[i].position;
             }
         }
     }
