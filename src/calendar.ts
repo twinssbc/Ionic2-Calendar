@@ -189,6 +189,7 @@ export enum Step {
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
                 [dir]="dir"
+                [initScrollPosition]="1"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
