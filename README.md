@@ -88,7 +88,7 @@ The format of the title displayed in the day view.
 Default value: 'MMMM dd, yyyy'
 * formatWeekTitle    
 The format of the title displayed in the week view.    
-Default value: 'MMMM yyyy, Week w'
+Default value: 'MMMM yyyy, Week $n’
 * formatMonthTitle    
 The format of the title displayed in the month view.    
 Default value: 'MMMM yyyy'
