@@ -22,7 +22,8 @@
     "src/calendar.module.ts",
     "src/monthview.ts",
     "src/weekview.ts",
-    "src/dayview.ts"
+    "src/dayview.ts",
+    "src/init-position-scroll.ts"
   ],
   "exclude": [
     "node_modules"

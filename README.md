@@ -11,6 +11,7 @@ intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
 
 version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
 version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
+version 0.2.9+ depends on Ionic 2.3.0 version onwards.  
 version 0.3.x depends on Ionic 3.1.1 version onwards.
 
 
@@ -87,7 +88,7 @@ The format of the title displayed in the day view.
 Default value: 'MMMM dd, yyyy'
 * formatWeekTitle    
 The format of the title displayed in the week view.    
-Default value: 'MMMM yyyy, Week w'
+Default value: 'MMMM yyyy, Week $n’
 * formatMonthTitle    
 The format of the title displayed in the month view.    
 Default value: 'MMMM yyyy'
@@ -179,6 +180,14 @@ The format method in dateFormatter is optional, if omitted, the default Angular 
 * dir  
 If set to “rtl”, the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards.  
 Default value: “”
+
+* scrollToHour  
+Make weekview and dayview scroll to the specific hour after entering to the new view.  
+Default value: 0
+
+* preserveScrollPosition  
+If set to true, the previous/next views in weekview and dayview will also scroll to the same position as the current active view.  
+Default value: false
 
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
