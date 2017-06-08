@@ -477,6 +477,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean;
+    @Input() lockSwipeToPrev:boolean;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -529,6 +530,10 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
             };
         }
 
+        if (this.lockSwipeToPrev) {
+            this.slider.lockSwipeToPrev(true);
+        }
+
         this.refreshView();
         this.hourColumnLabels = this.getHourColumnLabels();
         this.inited = true;
@@ -557,6 +562,11 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         let eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
+        }
+
+        let lockSwipeToPrev = changes['lockSwipeToPrev'];
+        if (lockSwipeToPrev) {
+            this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
         }
     }
 

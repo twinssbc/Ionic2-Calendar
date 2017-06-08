@@ -170,6 +170,7 @@ export enum Step {
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
                 [dir]="dir"
+                [lockSwipeToPrev]="lockSwipeToPrev"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -191,6 +192,7 @@ export enum Step {
                 [dir]="dir"
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
+                [lockSwipeToPrev]="lockSwipeToPrev"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -210,6 +212,7 @@ export enum Step {
                 [dir]="dir"
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
+                [lockSwipeToPrev]="lockSwipeToPrev"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -304,6 +307,7 @@ export class CalendarComponent implements OnInit {
     @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean = false;
+    @Input() lockSwipeToPrev:boolean = false;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();

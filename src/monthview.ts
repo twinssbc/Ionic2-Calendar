@@ -244,6 +244,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
     @Input() dir:string = "";
+    @Input() lockSwipeToPrev:boolean;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -296,6 +297,10 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             };
         }
 
+        if (this.lockSwipeToPrev) {
+            this.slider.lockSwipeToPrev(true);
+        }
+
         this.refreshView();
         this.inited = true;
 
@@ -317,6 +322,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         let eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
+        }
+
+        let lockSwipeToPrev = changes['lockSwipeToPrev'];
+        if (lockSwipeToPrev) {
+            this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
         }
     }
 
