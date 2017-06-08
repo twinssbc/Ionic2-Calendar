@@ -189,6 +189,27 @@ Default value: 0
 If set to true, the previous/next views in weekview and dayview will also scroll to the same position as the current active view.  
 Default value: false
 
+* lockSwipeToPrev  
+If set to true, swiping to previous view is disabled.  
+Default value: false
+
+        <calendar ... [lockSwipeToPrev]=“lockSwipeToPrev”></calendar>
+
+        onCurrentDateChanged(event:Date) {
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+            event.setHours(0, 0, 0, 0);
+    
+            if (this.calendar.mode === 'month') {
+                if (event.getFullYear() < today.getFullYear() || (event.getFullYear() === today.getFullYear() && event.getMonth() <= today.getMonth())) {
+                    this.lockSwipeToPrev = true;
+                } else {
+                    this.lockSwipeToPrev = false;
+                }
+            }
+        }
+
+
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
 
