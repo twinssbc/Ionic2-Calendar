@@ -354,6 +354,34 @@ For example, if an allDay event ending to 2014-05-10, then endTime is
 * allDay    
 Indicates the event is allDay event or regular event
 
+*Note* The calendar only watches for the eventSource reference for performance consideration. That means only you manually reassign the eventSource value, the calendar gets notified, and this is usually fit to the scenario when the range is changed, you load a new data set from the backend. In case you want to manually insert/remove/update the element in the eventSource array, you can call instance method ‘loadEvents’ event to notify the calendar manually.
+
+# Instance Methods
+* loadEvents
+When this method is called, the calendar will be forced to reload the events in the eventSource array. This is only necessary when you directly modify the element in the eventSource array.
+
+```
+import { CalendarComponent } from "ionic2-calendar/calendar";
+
+@Component({
+    selector: 'page-home',
+    templateUrl: 'home.html'
+})
+export class HomePage {
+    @ViewChild(CalendarComponent) myCalendar:CalendarComponent;
+    eventSource;
+    …
+    loadEvents: function() {
+        this.eventSource.push({
+            title: ‘test’,
+            startTime: startTime,
+            endTime: endTime,
+            allDay: false
+        });
+        this.myCalendar.loadEvents();
+    }
+```
+
 # Localization    
 The DatePipe relies on LOCALE_ID to achieve localization. By default, the LOCALE_ID is **en-US**. You can override it in the module as below. If you pass **undefined**, the LOCALE_ID will be detected using the browser language setting. But using explicit value is recommended, as browser has different level of localization support.
 

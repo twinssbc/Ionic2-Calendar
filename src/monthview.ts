@@ -262,6 +262,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     private inited = false;
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
+    private eventSourceChangedSubscription:Subscription;
     private formatDayLabel:(date:Date) => string;
     private formatDayHeaderLabel:(date:Date) => string;
     private formatTitle:(date:Date) => string;
@@ -307,12 +308,21 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(currentDate => {
             this.refreshView();
         });
+
+        this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
+            this.onDataLoaded();
+        });
     }
 
     ngOnDestroy() {
         if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
             this.currentDateChangedFromParentSubscription = null;
+        }
+
+        if (this.eventSourceChangedSubscription) {
+            this.eventSourceChangedSubscription.unsubscribe();
+            this.eventSourceChangedSubscription = null;
         }
     }
 
