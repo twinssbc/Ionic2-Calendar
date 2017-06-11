@@ -361,4 +361,8 @@ export class CalendarComponent implements OnInit {
     titleChanged(title:string) {
         this.onTitleChanged.emit(title);
     }
+
+    loadEvents() {
+        this.calendarService.loadEvents();
+    }
 }

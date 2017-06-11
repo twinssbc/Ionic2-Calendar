@@ -9,14 +9,17 @@ export class CalendarService {
     queryMode: QueryMode;
     currentDateChangedFromParent$: Observable<Date>;
     currentDateChangedFromChildren$: Observable<Date>;
+    eventSourceChanged$: Observable<void>;
 
     private _currentDate: Date;
     private currentDateChangedFromParent = new Subject<Date>();
     private currentDateChangedFromChildren = new Subject<Date>();
+    private eventSourceChanged = new Subject<void>();
 
     constructor() {
         this.currentDateChangedFromParent$ = this.currentDateChangedFromParent.asObservable();
         this.currentDateChangedFromChildren$ = this.currentDateChangedFromChildren.asObservable();
+        this.eventSourceChanged$ = this.eventSourceChanged.asObservable();
     }
 
     setCurrentDate(val: Date, fromParent: boolean = false) {
@@ -86,7 +89,7 @@ export class CalendarService {
     getAdjacentViewStartTime(component: ICalendarComponent, direction: number): Date {
         let adjacentCalendarDate = this.getAdjacentCalendarDate(component.mode, direction);
         return component.getRange(adjacentCalendarDate).startTime;
-    };
+    }
 
     populateAdjacentViews(component: ICalendarComponent) {
         let currentViewStartDate: Date,
@@ -123,5 +126,9 @@ export class CalendarService {
                 component.views[toUpdateViewIndex] = component.getViewData(currentViewStartDate);
             }
         }
+    }
+
+    loadEvents() {
+        this.eventSourceChanged.next();
     }
 }
