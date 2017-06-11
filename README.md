@@ -354,10 +354,10 @@ For example, if an allDay event ending to 2014-05-10, then endTime is
 * allDay    
 Indicates the event is allDay event or regular event
 
-*Note* The calendar only watches for the eventSource reference for performance consideration. That means only you manually reassign the eventSource value, the calendar gets notified, and this is usually fit to the scenario when the range is changed, you load a new data set from the backend. In case you want to manually insert/remove/update the element in the eventSource array, you can call instance method ‘loadEvents’ event to notify the calendar manually.
+**Note** The calendar only watches for the eventSource reference for performance consideration. That means only you manually reassign the eventSource value, the calendar gets notified, and this is usually fit to the scenario when the range is changed, you load a new data set from the backend. In case you want to manually insert/remove/update the element in the eventSource array, you can call instance method ‘loadEvents’ event to notify the calendar manually.
 
 # Instance Methods
-* loadEvents
+* loadEvents  
 When this method is called, the calendar will be forced to reload the events in the eventSource array. This is only necessary when you directly modify the element in the eventSource array.
 
 ```
@@ -380,6 +380,7 @@ export class HomePage {
         });
         this.myCalendar.loadEvents();
     }
+}
 ```
 
 # Localization    
