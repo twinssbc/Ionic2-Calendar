@@ -345,7 +345,7 @@ import { IDisplayAllDayEvent } from "./calendar";
         .weekview-allday-label {
           float: left;
           height: 100%;
-          line-height: 50px;
+          line-height: 12px;
           text-align: center;
           width: 50px;
         }
