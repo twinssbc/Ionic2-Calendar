@@ -171,6 +171,7 @@ export enum Step {
                 [dateFormatter]="dateFormatter"
                 [dir]="dir"
                 [lockSwipeToPrev]="lockSwipeToPrev"
+                [lockSwipeToNext]="lockSwipeToNext"
                 [lockSwipes]="lockSwipes"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
@@ -194,6 +195,7 @@ export enum Step {
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
                 [lockSwipeToPrev]="lockSwipeToPrev"
+                [lockSwipeToNext]="lockSwipeToNext"
                 [lockSwipes]="lockSwipes"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
@@ -215,6 +217,7 @@ export enum Step {
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
                 [lockSwipeToPrev]="lockSwipeToPrev"
+                [lockSwipeToNext]="lockSwipeToNext"
                 [lockSwipes]="lockSwipes"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
@@ -311,6 +314,7 @@ export class CalendarComponent implements OnInit {
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean = false;
     @Input() lockSwipeToPrev:boolean = false;
+    @Input() lockSwipeToNext:boolean = true;
     @Input() lockSwipes:boolean = false;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
