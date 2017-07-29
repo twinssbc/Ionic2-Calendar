@@ -44,6 +44,25 @@ import { NgCalendarModule  } from 'ionic2-calendar';
 export class AppModule {}
 ```
 
+If you are using PageModule, you need to import the NgCalendarModule in your page module
+```
+import { NgCalendarModule  } from 'ionic2-calendar';
+
+@NgModule({
+  declarations: [
+    MyPage
+  ],
+  imports: [
+    IonicPageModule.forChild(MyPage),
+    NgCalendarModule
+  ],
+  entryComponents: [
+    MyPage
+  ]
+})
+export class MyPageModule {}
+```
+
 Add the directive in the html page
 
 ```
