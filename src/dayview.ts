@@ -597,7 +597,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             utcEndTime = new Date(Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate())),
             currentViewIndex = this.currentViewIndex,
             rows = this.views[currentViewIndex].rows,
-            allDayEvents = this.views[currentViewIndex].allDayEvents,
+            allDayEvents:IDisplayAllDayEvent[] = this.views[currentViewIndex].allDayEvents = [],
             oneHour = 3600000,
             eps = 0.016,
             normalEventInRange = false;
