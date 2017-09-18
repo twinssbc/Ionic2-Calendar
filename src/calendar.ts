@@ -312,6 +312,7 @@ export class CalendarComponent implements OnInit {
     @Input() preserveScrollPosition:boolean = false;
     @Input() lockSwipeToPrev:boolean = false;
     @Input() lockSwipes:boolean = false;
+    @Input() locale:string = "";
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();
@@ -323,7 +324,8 @@ export class CalendarComponent implements OnInit {
     private hourParts = 1;
     private currentDateChangedFromChildrenSubscription:Subscription;
 
-    constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private locale:string) {
+    constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private appLocale:string) {
+        this.locale = appLocale;
     }
 
     ngOnInit() {
