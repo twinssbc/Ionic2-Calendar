@@ -44,6 +44,25 @@ import { NgCalendarModule  } from 'ionic2-calendar';
 export class AppModule {}
 ```
 
+If you are using PageModule, you need to import the NgCalendarModule in your page module
+```
+import { NgCalendarModule  } from 'ionic2-calendar';
+
+@NgModule({
+  declarations: [
+    MyPage
+  ],
+  imports: [
+    IonicPageModule.forChild(MyPage),
+    NgCalendarModule
+  ],
+  entryComponents: [
+    MyPage
+  ]
+})
+export class MyPageModule {}
+```
+
 Add the directive in the html page
 
 ```
@@ -131,6 +150,16 @@ Default value: 60
 * autoSelect  
 If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month view.  
 Default value: true
+* locale  
+The locale used to display text in the calendar.  
+Default value: undefined (which means the local language)
+
+        <calendar ... [locale]=“calendar.locale”></calendar>
+
+        calendar = {
+            locale: 'en-GB'
+        };
+
 * markDisabled    
 The callback function used to determine if the time should be marked as disabled.    
 
@@ -398,8 +427,10 @@ export class HomePage {
 ```
 
 # Localization    
-The DatePipe relies on LOCALE_ID to achieve localization. By default, the LOCALE_ID is **en-US**. You can override it in the module as below. If you pass **undefined**, the LOCALE_ID will be detected using the browser language setting. But using explicit value is recommended, as browser has different level of localization support.
-
+You could use *locale* option to achieve the localization.  
+If locale option is not specified, the calendar will use the LOCALE_ID set at the module level.  
+By default, the LOCALE_ID is **en-US**. You can override it in the module as below. If you pass **undefined**, the LOCALE_ID will be detected using the browser language setting. But using explicit value is recommended, as browser has different level of localization support.    
+Note that the event detail section in the month view doesn't support *locale* option, only LOCALE_ID takes effect. This is because it uses DatePipe in html directly. You could easily leverage customized event detail template to switch to other locale. 
 ```
 import { NgModule, LOCALE_ID } from '@angular/core';
 
@@ -410,6 +441,7 @@ import { NgModule, LOCALE_ID } from '@angular/core';
     ]
 })
 ```
+If you want to change the locale dynamically, you should use *locale* option instead of LOCALE_ID.
 
 # Performance Tuning    
 In the CPU profile, the default Intl based localization code occupies a big portion of the execution time. If you don’t need localization on certain parts, you can use the custom dateFormatter to override the date transform method. For example, the date in month view usually doesn’t require localization, you could use below code to just display the date part. If the month view day header doesn’t need to include the date, you could also use a string array containing static labels to save the date calculation.
