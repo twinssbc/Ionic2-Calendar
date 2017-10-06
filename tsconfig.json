@@ -24,5 +24,7 @@
   ],
   "exclude": [
     "node_modules"
+    "machin.xml"
+    "lerestedespb.lol"
   ]
 }
