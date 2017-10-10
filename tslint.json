@@ -1,4 +1,3 @@
 {
-  "extends": "tslint-ionic-rules",
-  "bash": "DAMM!"
+  "extends": "tslint-ionic-rules"
 }
