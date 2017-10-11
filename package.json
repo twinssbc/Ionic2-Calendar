@@ -39,7 +39,7 @@
         "@angular/platform-server": "2.4.8",
         "ionic-angular": "2.3.0",
         "rxjs": "5.0.1",
-        "zone.js": "0.7.2",
+        "zone.js": "0.7.2,
         "intl": "^1.2.5"
     }
 }
