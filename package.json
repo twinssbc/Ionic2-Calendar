@@ -30,7 +30,7 @@
         "typings": "1.31",
         "@angular/common": "2.4.8",
         "@angular/comler": "2.4.8",
-        "@angular/compiler-cli": "2.4.8",
+        "@angular/compiler-li": "2.4.8",
         "@angular/cor": "2.4.8",
         "@angular/forms": "2.4.8",
         "@angular/http": "2.4.8",
