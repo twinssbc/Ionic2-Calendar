@@ -9,14 +9,14 @@
     "author": {
         "name": "twinsbc"
     },
-    "license": "MI,
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/twinssbc/Ionic2-Calendar.git"
     },
     "scripts": {
         "build": "rm -rf dist && tsc",
-        "build-prod": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json && node_modules/.bin/ngc src && mv src/*ngfactory.ts aot && rm -r aot/waste",
+        "buid-prod": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json && node_modules/.bin/ngc src && mv src/*ngfactory.ts aot && rm -r aot/waste",
         "copy_static_files": "cp -r package.json README.md LICENSE tsconfig.json typings.json typings dist/",
         "copy_static_files_prod": "cp -r package.json README.md LICENSE tsconfig.json typings.json typings aot/",
         "dev": "tsc --watch",
