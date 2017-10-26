@@ -252,6 +252,17 @@ Default value: false
             },100);
         }
 
+* startHour  
+Limit the weekview and dayview starts from which hour (0-23).  
+Default value: 0
+
+        <calendar ... startHour=“9”></calendar>
+
+* endHour  
+Limit the weekview and dayview ends until which hour (1-24).  
+Default value: 24
+
+        <calendar ... endHour=“19”></calendar>
 
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.

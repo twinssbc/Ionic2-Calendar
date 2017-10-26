@@ -195,6 +195,8 @@ export enum Step {
                 [preserveScrollPosition]="preserveScrollPosition"
                 [lockSwipeToPrev]="lockSwipeToPrev"
                 [lockSwipes]="lockSwipes"
+                [startHour]="startHour"
+                [endHour]="endHour"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -216,6 +218,8 @@ export enum Step {
                 [preserveScrollPosition]="preserveScrollPosition"
                 [lockSwipeToPrev]="lockSwipeToPrev"
                 [lockSwipes]="lockSwipes"
+                [startHour]="startHour"
+                [endHour]="endHour"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -313,6 +317,8 @@ export class CalendarComponent implements OnInit {
     @Input() lockSwipeToPrev:boolean = false;
     @Input() lockSwipes:boolean = false;
     @Input() locale:string = "";
+    @Input() startHour:number = 0;
+    @Input() endHour:number = 24;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();
@@ -337,6 +343,8 @@ export class CalendarComponent implements OnInit {
             }
         }
         this.hourParts = 60 / this.step;
+        this.startHour = parseInt(this.startHour.toString());
+        this.endHour = parseInt(this.endHour.toString());
         this.calendarService.queryMode = this.queryMode;
 
         this.currentDateChangedFromChildrenSubscription = this.calendarService.currentDateChangedFromChildren$.subscribe(currentDate => {
