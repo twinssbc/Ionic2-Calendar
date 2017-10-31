@@ -1,0 +1,4 @@
+{
+  "extends": "tslint-ionic-rules",
+  "test finale sur les variable": "bref"
+}
