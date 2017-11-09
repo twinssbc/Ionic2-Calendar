@@ -392,6 +392,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean;
     @Input() lockSwipeToPrev:boolean;
+    @Input() lockSwipeToNext: boolean;
     @Input() lockSwipes:boolean;
     @Input() startHour:number;
     @Input() endHour:number;
@@ -448,6 +449,10 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             this.slider.lockSwipeToPrev(true);
         }
 
+        if (this.lockSwipeToNext) {
+          this.slider.lockSwipeToNext(true);
+        }
+
         if (this.lockSwipes) {
             this.slider.lockSwipes(true);
         }
@@ -490,6 +495,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         let lockSwipeToPrev = changes['lockSwipeToPrev'];
         if (lockSwipeToPrev) {
             this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
+        }
+
+        let lockSwipeToNext = changes['lockSwipeToNext'];
+        if (lockSwipeToNext) {
+            this.slider.lockSwipeToNext(lockSwipeToNext.currentValue);
         }
 
         let lockSwipes = changes['lockSwipes'];

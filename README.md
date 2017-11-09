@@ -222,22 +222,24 @@ Default value: 0
 If set to true, the previous/next views in weekview and dayview will also scroll to the same position as the current active view.  
 Default value: false
 
-* lockSwipeToPrev  
-If set to true, swiping to previous view is disabled.  
+* lockSwipeToPrev/lockSwipeToNext
+If set to true, swiping to previous/next view will be disabled. Useful for bounded date ranges.
 Default value: false
 
-        <calendar ... [lockSwipeToPrev]=“lockSwipeToPrev”></calendar>
+        <calendar ... [lockSwipeToPrev]=“lockSwipeToPrev” [lockSwipeToNext]=lockSwipeToNext></calendar>
 
         onCurrentDateChanged(event:Date) {
             var today = new Date();
             today.setHours(0, 0, 0, 0);
             event.setHours(0, 0, 0, 0);
-    
+
             if (this.calendar.mode === 'month') {
                 if (event.getFullYear() < today.getFullYear() || (event.getFullYear() === today.getFullYear() && event.getMonth() <= today.getMonth())) {
                     this.lockSwipeToPrev = true;
-                } else {
-                    this.lockSwipeToPrev = false;
+                }
+
+                if (event.getFullYear() > today.getFullYear() || (event.getFullYear() === today.getFullYear() && event.getMonth() >= today.getMonth())) {
+                    this.lockSwipeToNext = true;
                 }
             }
         }
@@ -347,7 +349,7 @@ Type: TemplateRef\<IMonthViewEventDetailTemplateContext\>
 The template provides customized view for event detail section in the monthview
 ``` html
         <template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
-	    ... 
+	    ...
         </template>
 
         <calendar ... [monthviewEventDetailTemplate]="template"></calendar>
