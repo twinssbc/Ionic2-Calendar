@@ -35,7 +35,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
-                                                    [ngOutletContext]="{displayEvent:displayEvent}">
+                                                    [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                                 </template>
                                             </div>
                                         </div>
@@ -58,7 +58,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="weekviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </template>
                                         </div>
                                     </div>
@@ -121,7 +121,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
-                                                    [ngOutletContext]="{displayEvent:displayEvent}">
+                                                    [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                                 </template>
                                             </div>
                                         </div>
@@ -144,7 +144,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="weekviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </template>
                                         </div>
                                     </div>
@@ -207,7 +207,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
-                                                    [ngOutletContext]="{displayEvent:displayEvent}">
+                                                    [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                                 </template>
                                             </div>
                                         </div>
@@ -230,7 +230,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="weekviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </template>
                                         </div>
                                     </div>
