@@ -290,10 +290,10 @@ export class CalendarComponent implements OnInit {
     @Input() formatDay:string = 'd';
     @Input() formatDayHeader:string = 'EEE';
     @Input() formatDayTitle:string = 'MMMM dd, yyyy';
-    @Input() formatWeekTitle:string = 'MMMM yyyy, Week $n';
+    @Input() formatWeekTitle:string = 'MMMM yyyy, \'Week\' w';
     @Input() formatMonthTitle:string = 'MMMM yyyy';
     @Input() formatWeekViewDayHeader:string = 'EEE d';
-    @Input() formatHourColumn:string = 'j';
+    @Input() formatHourColumn:string = 'ha';
     @Input() showEventDetail:boolean = true;
     @Input() startingDayMonth:number = 0;
     @Input() startingDayWeek:number = 0;

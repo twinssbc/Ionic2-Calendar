@@ -20,7 +20,7 @@ export class initPositionScrollComponent extends Scroll {
     private listenerAttached:boolean = false;
 
     constructor(el:ElementRef) {
-        super(el);
+        super();
         this.element = el;
     }
 

@@ -26,7 +26,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
                                         <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
+                                            [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                         </ng-template>
                                     </div>
                                 </td>
@@ -50,7 +50,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                          <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                             [ngOutletContext]="{displayEvent:displayEvent}">
+                                             [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                          </ng-template>
                                     </div>
                                 </div>
@@ -88,7 +88,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
                                         <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
+                                            [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                         </ng-template>
                                     </div>
                                 </td>
@@ -112,7 +112,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                          <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                             [ngOutletContext]="{displayEvent:displayEvent}">
+                                             [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                          </ng-template>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
                                         <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
+                                            [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                         </ng-template>
                                     </div>
                                 </td>
@@ -174,7 +174,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                          <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                             [ngOutletContext]="{displayEvent:displayEvent}">
+                                             [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                          </ng-template>
                                     </div>
                                 </div>
@@ -429,7 +429,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         if (this.dateFormatter && this.dateFormatter.formatDayViewTitle) {
             this.formatTitle = this.dateFormatter.formatDayViewTitle;
         } else {
-            var datePipe = new DatePipe(this.locale);
+            let datePipe = new DatePipe(this.locale);
             this.formatTitle = function (date:Date) {
                 return datePipe.transform(date, this.formatDayTitle);
             };
@@ -438,7 +438,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         if (this.dateFormatter && this.dateFormatter.formatDayViewHourColumn) {
             this.formatHourColumnLabel = this.dateFormatter.formatDayViewHourColumn;
         } else {
-            var datePipe = new DatePipe(this.locale);
+            let datePipe = new DatePipe(this.locale);
             this.formatHourColumnLabel = function (date:Date) {
                 return datePipe.transform(date, this.formatHourColumn);
             };
@@ -472,7 +472,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
         if (this.scrollToHour > 0) {
             let hourColumns = this.elm.nativeElement.querySelector('.dayview-normal-event-container').querySelectorAll('.calendar-hour-column');
-            var me = this;
+            let me = this;
             setTimeout(function () {
                 me.initScrollPosition = hourColumns[me.scrollToHour - me.startHour].offsetTop;
             }, 0);

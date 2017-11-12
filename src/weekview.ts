@@ -35,7 +35,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <ng-template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
-                                                    [ngOutletContext]="{displayEvent:displayEvent}">
+                                                    [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                                 </ng-template>
                                             </div>
                                         </div>
@@ -58,7 +58,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <ng-template [ngTemplateOutlet]="weekviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </ng-template>
                                         </div>
                                     </div>
@@ -121,7 +121,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <ng-template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
-                                                    [ngOutletContext]="{displayEvent:displayEvent}">
+                                                    [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                                 </ng-template>
                                             </div>
                                         </div>
@@ -144,7 +144,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <ng-template [ngTemplateOutlet]="weekviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </ng-template>
                                         </div>
                                     </div>
@@ -207,7 +207,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                                  (click)="eventSelected(displayEvent.event)"
                                                  [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                                                 <ng-template [ngTemplateOutlet]="weekviewAllDayEventTemplate"
-                                                    [ngOutletContext]="{displayEvent:displayEvent}">
+                                                    [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                                 </ng-template>
                                             </div>
                                         </div>
@@ -230,7 +230,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <ng-template [ngTemplateOutlet]="weekviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </ng-template>
                                         </div>
                                     </div>
@@ -512,7 +512,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         if (this.dateFormatter && this.dateFormatter.formatWeekViewDayHeader) {
             this.formatDayHeader = this.dateFormatter.formatWeekViewDayHeader;
         } else {
-            var datePipe = new DatePipe(this.locale);
+            let datePipe = new DatePipe(this.locale);
             this.formatDayHeader = function (date:Date) {
                 return datePipe.transform(date, this.formatWeekViewDayHeader);
             };
@@ -521,7 +521,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         if (this.dateFormatter && this.dateFormatter.formatWeekViewTitle) {
             this.formatTitle = this.dateFormatter.formatWeekViewTitle;
         } else {
-            var datePipe = new DatePipe(this.locale);
+            let datePipe = new DatePipe(this.locale);
             this.formatTitle = function (date:Date) {
                 return datePipe.transform(date, this.formatWeekTitle);
             };
@@ -530,7 +530,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         if (this.dateFormatter && this.dateFormatter.formatWeekViewHourColumn) {
             this.formatHourColumnLabel = this.dateFormatter.formatWeekViewHourColumn;
         } else {
-            var datePipe = new DatePipe(this.locale);
+            let datePipe = new DatePipe(this.locale);
             this.formatHourColumnLabel = function (date:Date) {
                 return datePipe.transform(date, this.formatHourColumn);
             };
@@ -563,7 +563,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
         if (this.scrollToHour > 0) {
             let hourColumns = this.elm.nativeElement.querySelector('.weekview-normal-event-container').querySelectorAll('.calendar-hour-column');
-            var me = this;
+            let me = this;
             setTimeout(function () {
                 me.initScrollPosition = hourColumns[me.scrollToHour - me.startHour].offsetTop;
             }, 0);
@@ -912,25 +912,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     getTitle():string {
-        let firstDayOfWeek = this.range.startTime,
-            weekFormat = '$n',
-            weekNumberIndex = this.formatWeekTitle.indexOf(weekFormat),
-            title = this.formatTitle(firstDayOfWeek);
-
-        if (weekNumberIndex !== -1) {
-            let weekNumber = String(WeekViewComponent.getISO8601WeekNumber(firstDayOfWeek));
-            title = title.replace(weekFormat, weekNumber);
-        }
-
-        return title;
-    }
-
-    private static getISO8601WeekNumber(date:Date):number {
-        let dayOfWeekOnFirst = (new Date(date.getFullYear(), 0, 1)).getDay();
-        let firstThurs = new Date(date.getFullYear(), 0, ((dayOfWeekOnFirst <= 4) ? 5 : 12) - dayOfWeekOnFirst);
-        let thisThurs = new Date(date.getFullYear(), date.getMonth(), date.getDate() + (4 - date.getDay()));
-        let diff = +thisThurs - +firstThurs;
-        return (1 + Math.round(diff / 6.048e8)); // 6.048e8 ms per week
+        let firstDayOfWeek = this.range.startTime;
+        return this.formatTitle(firstDayOfWeek);
     }
 
     private static compareEventByStartOffset(eventA:IDisplayEvent, eventB:IDisplayEvent):number {
