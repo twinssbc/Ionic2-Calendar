@@ -13,6 +13,7 @@ version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4
 version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
 version 0.2.9+ depends on Ionic 2.3.0 version onwards.  
 version 0.3.x depends on Ionic 3.1.1 version onwards.
+version 0.4.x depends on Ionic 3.9.2 version onwards.
 
 
 # Usage
@@ -108,7 +109,7 @@ The format of the title displayed in the day view.
 Default value: 'MMMM dd, yyyy'
 * formatWeekTitle    
 The format of the title displayed in the week view.    
-Default value: 'MMMM yyyy, Week $n’
+Default value: (version 0.1-0.3) 'MMMM yyyy, Week $n', (version 0.4) 'MMMM yyyy, \'Week\' w'  
 * formatMonthTitle    
 The format of the title displayed in the month view.    
 Default value: 'MMMM yyyy'
@@ -117,7 +118,7 @@ The format of the header displayed in the week view.
 Default value: 'EEE d'
 * formatHourColumn    
 The format of the hour column displayed in the week and day view.    
-Default value: ‘j’
+Default value: (version 0.1-0.3) 'j', (version 0.4) 'ha'  
 * calendarMode    
 The initial mode of the calendar.    
 Default value: 'month'
@@ -132,10 +133,10 @@ Control week view starting from which day.
 Default value: 0
 * allDayLabel    
 The text displayed in the allDay column header.    
-Default value: ‘all day’
+Default value: 'all day'
 * noEventsLabel    
 The text displayed when there’s no event on the selected date in month view.    
-Default value: ‘No Events’
+Default value: 'No Events'
 * eventSource    
 The data source of the calendar, when the eventSource is set, the view will be updated accordingly.    
 Default value: null    
@@ -155,7 +156,7 @@ Default value: true
 The locale used to display text in the calendar.  
 Default value: undefined (which means the local language)
 ``` html
-        <calendar ... [locale]=“calendar.locale”></calendar>
+        <calendar ... [locale]="calendar.locale"></calendar>
 ```
 ``` json
         calendar = {
@@ -165,7 +166,7 @@ Default value: undefined (which means the local language)
 * markDisabled    
 The callback function used to determine if the time should be marked as disabled.    
 ``` html
-        <calendar ... [markDisabled]=“markDisabled”></calendar>
+        <calendar ... [markDisabled]="markDisabled"></calendar>
 ```
 ``` typescript
         markDisabled = (date: Date) => {
@@ -187,32 +188,32 @@ The format method in dateFormatter is optional, if omitted, the default Angular 
                     return date.getDate().toString();
                 },
                 formatMonthViewDayHeader: function(date:Date) {
-                    return ‘testMDH’;
+                    return 'testMDH';
                 },
                 formatMonthViewTitle: function(date:Date) {
                     return 'testMT';
                 },
                 formatWeekViewDayHeader: function(date:Date) {
-                    return ‘testWDH’;
+                    return 'testWDH';
                 },
                 formatWeekViewTitle: function(date:Date) {
-                    return 'testWT’;
+                    return 'testWT';
                 },
                 formatWeekViewHourColumn: function(date:Date) {
-                    return 'testWH’;
+                    return 'testWH';
                 },
                 formatDayViewHourColumn: function(date:Date) {
-                    return 'testDH’;
+                    return 'testDH';
                 },
                 formatDayViewTitle: function(date:Date) {
-                    return 'testDT’;
+                    return 'testDT';
                 }
             }
         };        
 ```
 * dir  
-If set to “rtl”, the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards.  
-Default value: “”
+If set to "rtl", the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards.  
+Default value: ""
 
 * scrollToHour  
 Make weekview and dayview scroll to the specific hour after entering to the new view.  
@@ -226,7 +227,7 @@ Default value: false
 If set to true, swiping to previous view is disabled.  
 Default value: false
 
-        <calendar ... [lockSwipeToPrev]=“lockSwipeToPrev”></calendar>
+        <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
 
         onCurrentDateChanged(event:Date) {
             var today = new Date();
@@ -247,7 +248,7 @@ If set to true, swiping is disabled.
 Default value: false  
 *Note:* Since swiping is disabled, you could set currentDate to move the calendar to previous/next view. Do not set lockSwipeToPrev in the constructor phase. It will cause the view not updating when changing the currentDate. You could either set it in some callback function after initialization phase or use setTimeout to trigger some delay.  
 ``` html
-        <calendar ... [lockSwipeToPrev]=“lockSwipeToPrev”></calendar>
+        <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
 ```
 ``` javascript
         ngAfterViewInit() {
@@ -261,13 +262,13 @@ Default value: false
 Limit the weekview and dayview starts from which hour (0-23).  
 Default value: 0
 ``` html
-        <calendar ... startHour=“9”></calendar>
+        <calendar ... startHour="9"></calendar>
 ```
 * endHour  
 Limit the weekview and dayview ends until which hour (1-24).  
 Default value: 24
 ``` html
-        <calendar ... endHour=“19”></calendar>
+        <calendar ... endHour="19"></calendar>
 ```
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
@@ -312,7 +313,7 @@ The ev parameter contains two fields, selectedTime and events, if there's no eve
 * onTitleChanged    
 The callback function triggered when the view title is changed
 ``` html
-        <calendar ... (onTitleChanged)="onViewTitleChanged($event)”></calendar>
+        <calendar ... (onTitleChanged)="onViewTitleChanged($event)"></calendar>
 
         onViewTitleChanged = (title: string) => {
             this.viewTitle = title;
@@ -439,7 +440,7 @@ export class HomePage {
     …
     loadEvents: function() {
         this.eventSource.push({
-            title: ‘test’,
+            title: 'test',
             startTime: startTime,
             endTime: endTime,
             allDay: false
@@ -461,9 +462,17 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 @NgModule({
     …
     providers: [
-        { provide: LOCALE_ID, useValue: ‘zh-CN’ }
+        { provide: LOCALE_ID, useValue: 'zh-CN' }
     ]
 })
+```
+
+For version 0.4.x which depends on Ionic 3.9.2 and Angular 5.0, locale module needs to be registered explicitly in module file as below.
+``` typescript
+import { registerLocaleData } from '@angular/common';
+import localeZh from '@angular/common/locales/zh';
+registerLocaleData(localeZh);
+
 ```
 
 If you want to change the locale dynamically, you should use *locale* option instead of LOCALE_ID.
