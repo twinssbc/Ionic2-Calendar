@@ -12,7 +12,7 @@ intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
 version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
 version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
 version 0.2.9+ depends on Ionic 2.3.0 version onwards.  
-version 0.3.x depends on Ionic 3.1.1 version onwards.
+version 0.3.x depends on Ionic 3.1.1 version onwards.  
 version 0.4.x depends on Ionic 3.9.2 version onwards.
 
 
