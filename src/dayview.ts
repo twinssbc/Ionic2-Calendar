@@ -26,7 +26,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
                                         <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
+                                            [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                         </template>
                                     </div>
                                 </td>
@@ -50,7 +50,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </template>
                                         </div>
                                     </div>
@@ -88,7 +88,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
                                         <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
+                                            [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                         </template>
                                     </div>
                                 </td>
@@ -112,7 +112,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </template>
                                         </div>
                                     </div>
@@ -150,7 +150,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                          (click)="eventSelected(displayEvent.event)"
                                          [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
                                         <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
+                                            [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                         </template>
                                     </div>
                                 </td>
@@ -174,7 +174,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                                              (click)="eventSelected(displayEvent.event)"
                                              [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                                              <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                                              </template>
                                         </div>
                                     </div>
