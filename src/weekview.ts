@@ -10,7 +10,7 @@ import { IDisplayAllDayEvent } from "./calendar";
 @Component({
     selector: 'weekview',
     template: `
-        <ion-slides #weekSlider [loop]="true" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
+        <ion-slides #weekSlider [loop]="true" [dir]="dir" [spaceBetween]="spaceBetween" (ionSlideDidChange)="onSlideChanged()">
             <ion-slide>
                 <table class="table table-bordered table-fixed weekview-header">
                     <thead>
@@ -348,6 +348,7 @@ import { IDisplayAllDayEvent } from "./calendar";
           line-height: 50px;
           text-align: center;
           width: 50px;
+          border-left: 1px solid #ddd;  
         }
 
         [dir="rtl"] .weekview-allday-label {
@@ -481,6 +482,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() lockSwipes:boolean;
     @Input() startHour:number;
     @Input() endHour:number;
+    @Input() spaceBetween:number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -912,7 +914,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     getTitle():string {
-        let firstDayOfWeek = this.range.startTime;
+        let firstDayOfWeek = new Date(this.range.startTime.getTime());
+        firstDayOfWeek.setHours(12, 0, 0, 0);
         return this.formatTitle(firstDayOfWeek);
     }
 
