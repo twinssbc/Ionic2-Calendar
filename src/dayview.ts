@@ -10,7 +10,7 @@ import { IDisplayAllDayEvent } from "./calendar";
 @Component({
     selector: 'dayview',
     template: `
-        <ion-slides #daySlider [loop]="true" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
+        <ion-slides #daySlider [loop]="true" [dir]="dir" [spaceBetween]="spaceBetween" (ionSlideDidChange)="onSlideChanged()">
             <ion-slide>
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
@@ -276,6 +276,7 @@ import { IDisplayAllDayEvent } from "./calendar";
           line-height: 50px;
           text-align: center;
           width: 50px;
+          border-left: 1px solid #ddd;
         }
 
         [dir="rtl"] .dayview-allday-label {
@@ -395,6 +396,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() lockSwipes:boolean;
     @Input() startHour:number;
     @Input() endHour:number;
+    @Input() spaceBetween:number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -723,7 +725,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     }
 
     getTitle():string {
-        let startingDate = this.range.startTime;
+        let startingDate = new Date(this.range.startTime.getTime());
+        startingDate.setHours(12, 0,0,0);
         return this.formatTitle(startingDate);
     }
 
