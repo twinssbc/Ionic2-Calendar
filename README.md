@@ -515,4 +515,11 @@ Answer: This calendar has dependency on 'Intl'. Run *npm install intl@1.2.5* to 
 Answer: If you bind currentDate like this: [currentDate]="calendar.currentDate". You need to assign calendar.currentDate a valid Date object
 
 * How to switch the calendar to previous/next month programmatically?  
-Answer: You can change currentDate to the date in previous/next month.
+Answer: You can change currentDate to the date in previous/next month. You could also retrieve the Swiper element and then call the Swiper API directly.
+```
+var mySwiper = document.querySelector('.swiper-container')['swiper'];
+    mySwiper.slideNext();
+```
+
+* Error: Cannot read property 'dayHeaders' of undefined  
+Answer: Take a look at the Localization section. For version 0.4.x, you need to manually register the locale.
