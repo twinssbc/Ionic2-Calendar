@@ -1,4 +1,5 @@
 /typings
 /node_modules
-
+/.idea
 /dist
+/aot
