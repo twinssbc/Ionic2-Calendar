@@ -1,13 +1,13 @@
 {
     "name": "ionic2-calendar",
-    "version": "0.2.16",
+    "version": "0.2.17",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
         "calendar"
     ],
     "author": {
-        "name": "twinsbc"
+        "name": "twinssbc"
     },
     "license": "MIT",
     "repository": {
