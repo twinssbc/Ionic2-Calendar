@@ -330,15 +330,15 @@ The callback function triggered when the view title is changed
 
 ```
 # View Customization Option
-Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation.    
+Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation. You could refer to calendar.ts to get the definition of context types.   
 
 * monthviewDisplayEventTemplate    
 Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the active monthview
 ``` html
-        <template #template let-view="view" let-row="row" let-col="col">
+        <ng-template #template let-view="view" let-row="row" let-col="col">
             {{view.dates[row*7+col].label}}
-        </template>
+        </ng-template>
 
         <calendar ... [monthviewDisplayEventTemplate]="template"></calendar>
 ```
@@ -346,9 +346,9 @@ The template provides customized view for event displayed in the active monthvie
 Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the inactive monthview
 ``` html
-        <template #template let-view="view" let-row="row" let-col="col">
+        <ng-template #template let-view="view" let-row="row" let-col="col">
             {{view.dates[row*7+col].label}}
-        </template>
+        </ng-template>
 
         <calendar ... [monthviewInactiveDisplayEventTemplate]="template"></calendar>
 ```
@@ -356,9 +356,9 @@ The template provides customized view for event displayed in the inactive monthv
 Type: TemplateRef\<IMonthViewEventDetailTemplateContext\>    
 The template provides customized view for event detail section in the monthview
 ``` html
-        <template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+        <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
 	    ... 
-        </template>
+        </ng-template>
 
         <calendar ... [monthviewEventDetailTemplate]="template"></calendar>
 ```
@@ -366,9 +366,9 @@ The template provides customized view for event detail section in the monthview
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the weekview
 ``` html
-        <template #template let-displayEvent="displayEvent">
+        <ng-template #template let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </template>
+        </ng-template>
 
         <calendar ... [weekviewAllDayEventTemplate]="template"></calendar>
 ```
@@ -377,9 +377,9 @@ Type: TemplateRef\<IDisplayEvent\>
 The template provides customized view for normal event in the weekview
 
 ``` html
-        <template #template let-displayEvent="displayEvent">
+        <ng-template #template let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </template>
+        </ng-template>
 
         <calendar ... [weekviewNormalEventTemplate]="template"></calendar>
 ```
@@ -388,9 +388,9 @@ The template provides customized view for normal event in the weekview
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the dayview
 
-        <template #template let-displayEvent="displayEvent">
+        <ng-template #template let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </template>
+        </ng-template>
 
         <calendar ... [dayviewAllDayEventTemplate]="template"></calendar>
 ```
@@ -400,11 +400,91 @@ Type: TemplateRef\<IDisplayEvent\>
 The template provides customized view for normal event in the dayview
 
 ``` javascript
-        <template #template let-displayEvent="displayEvent">
+        <ng-template #template let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </template>
+        </ng-template>
 
         <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
+```
+
+* weekviewAllDayEventSectionTemplate    
+Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>    
+The template provides customized view for all day event section in the weekview
+
+``` javascript
+        <ng-template #template let-day="day" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
+                 [ngStyle]="{height: 25*day.events.length+'px'}">
+                <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
+                     (click)="eventSelected(displayEvent.event)"
+                     [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [weekviewAllDayEventSectionTemplate]="template"></calendar>
+```
+
+* weekviewNormalEventSectionTemplate    
+Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>    
+The template provides customized view for normal event section in the weekview
+
+``` javascript
+        <ng-template #template let-tm="tm" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                     (click)="eventSelected(displayEvent.event)"
+                     [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [weekviewNormalEventSectionTemplate]="template"></calendar>
+```
+
+* dayviewAllDayEventSectionTemplate    
+Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>    
+The template provides customized view for all day event section in the dayview
+
+``` javascript
+        <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
+            <div *ngFor="let displayEvent of allDayEvents; let eventIndex=index"
+                 class="calendar-event" tappable
+                 (click)="eventSelected(displayEvent.event)"
+                 [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
+                <ng-template [ngTemplateOutlet]="eventTemplate"
+                             [ngOutletContext]="{displayEvent:displayEvent}">
+                </ng-template>
+            </div>
+        </ng-template>
+
+        <calendar ... [dayviewAllDayEventSectionTemplate]="template"></calendar>
+```
+
+* dayviewNormalEventSectionTemplate    
+Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>    
+The template provides customized view for normal event section in the dayview
+
+``` javascript
+        <ng-template #template let-tm="tm" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                     (click)="eventSelected(displayEvent.event)"
+                     [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [dayviewNormalEventSectionTemplate]="template"></calendar>
 ```
 
 # EventSource

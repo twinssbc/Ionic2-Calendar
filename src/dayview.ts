@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode, IDateFormatter } from './calendar';
 import { CalendarService } from './calendar.service';
-import { IDisplayAllDayEvent } from "./calendar";
+import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext } from "./calendar";
 
 @Component({
     selector: 'dayview',
@@ -21,14 +21,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[0].allDayEvents.length>0}"
                                     [ngStyle]="{height: 25*views[0].allDayEvents.length+'px'}"
                                     *ngIf="0===currentViewIndex">
-                                    <div *ngFor="let displayEvent of views[0].allDayEvents; let eventIndex=index"
-                                         class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </ng-template>
-                                    </div>
+                                    <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
+                                                 [ngOutletContext]="{allDayEvents:views[0].allDayEvents,eventTemplate:dayviewAllDayEventTemplate}">
+                                    </ng-template>
                                 </td>
                                 <td class="calendar-cell" *ngIf="0!==currentViewIndex">
                                 </td>
@@ -45,15 +40,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
-                                <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                    <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
-                                         <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                             [ngOutletContext]="{displayEvent:displayEvent}">
-                                         </ng-template>
-                                    </div>
-                                </div>
+                                <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
+                                             [ngOutletContext]="{tm:tm, eventTemplate:dayviewNormalEventTemplate}">
+                                </ng-template>
                             </td>
                         </tr>
                         </tbody>
@@ -83,14 +72,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[1].allDayEvents.length>0}"
                                     [ngStyle]="{height: 25*views[1].allDayEvents.length+'px'}"
                                     *ngIf="1===currentViewIndex">
-                                    <div *ngFor="let displayEvent of views[1].allDayEvents; let eventIndex=index"
-                                         class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </ng-template>
-                                    </div>
+                                    <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
+                                                 [ngOutletContext]="{allDayEvents:views[1].allDayEvents,eventTemplate:dayviewAllDayEventTemplate}">
+                                    </ng-template>
                                 </td>
                                 <td class="calendar-cell" *ngIf="1!==currentViewIndex">
                                 </td>
@@ -107,15 +91,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
-                                <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                    <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
-                                         <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                             [ngOutletContext]="{displayEvent:displayEvent}">
-                                         </ng-template>
-                                    </div>
-                                </div>
+                                <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
+                                             [ngOutletContext]="{tm:tm, eventTemplate:dayviewNormalEventTemplate}">
+                                </ng-template>
                             </td>
                         </tr>
                         </tbody>
@@ -145,14 +123,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[2].allDayEvents.length>0}"
                                     [ngStyle]="{height: 25*views[2].allDayEvents.length+'px'}"
                                     *ngIf="2===currentViewIndex">
-                                    <div *ngFor="let displayEvent of views[2].allDayEvents; let eventIndex=index"
-                                         class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <ng-template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </ng-template>
-                                    </div>
+                                    <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
+                                                 [ngOutletContext]="{allDayEvents:views[2].allDayEvents,eventTemplate:dayviewAllDayEventTemplate}">
+                                    </ng-template>
                                 </td>
                                 <td class="calendar-cell" *ngIf="2!==currentViewIndex">
                                 </td>
@@ -169,15 +142,9 @@ import { IDisplayAllDayEvent } from "./calendar";
                                 {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
-                                <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                    <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
-                                         <ng-template [ngTemplateOutlet]="dayviewNormalEventTemplate"
-                                             [ngOutletContext]="{displayEvent:displayEvent}">
-                                         </ng-template>
-                                    </div>
-                                </div>
+                                <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
+                                             [ngOutletContext]="{tm:tm, eventTemplate:dayviewNormalEventTemplate}">
+                                </ng-template>
                             </td>
                         </tr>
                         </tbody>
@@ -380,6 +347,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
     @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
+    @Input() dayviewAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
 
     @Input() formatHourColumn:string;
     @Input() formatDayTitle:string;
