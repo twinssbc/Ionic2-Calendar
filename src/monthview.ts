@@ -11,7 +11,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
     selector: 'monthview',
     template: `
         <div>
-            <ion-slides #monthSlider [loop]="true" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
+            <ion-slides #monthSlider [loop]="true" [dir]="dir" [spaceBetween]="spaceBetween" (ionSlideDidChange)="onSlideChanged()">
                 <ion-slide>
                     <table *ngIf="0===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
@@ -246,6 +246,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() dir:string = "";
     @Input() lockSwipeToPrev:boolean;
     @Input() lockSwipes:boolean;
+    @Input() spaceBetween:number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -264,6 +265,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
     private eventSourceChangedSubscription:Subscription;
+    private localeSourceChangedSubscription:Subscription;
     private formatDayLabel:(date:Date) => string;
     private formatDayHeaderLabel:(date:Date) => string;
     private formatTitle:(date:Date) => string;
@@ -275,8 +277,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewDay) {
             this.formatDayLabel = this.dateFormatter.formatMonthViewDay;
         } else {
-            let dayLabelDatePipe = new DatePipe('en-US');
+
             this.formatDayLabel = function (date:Date) {
+              let dayLabelDatePipe = new DatePipe('en-US');
                 return dayLabelDatePipe.transform(date, this.formatDay);
             };
         }
@@ -284,8 +287,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewDayHeader) {
             this.formatDayHeaderLabel = this.dateFormatter.formatMonthViewDayHeader;
         } else {
-            let datePipe = new DatePipe(this.locale);
+
             this.formatDayHeaderLabel = function (date:Date) {
+              let datePipe = new DatePipe(this.locale);
                 return datePipe.transform(date, this.formatDayHeader);
             };
         }
@@ -293,8 +297,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewTitle) {
             this.formatTitle = this.dateFormatter.formatMonthViewTitle;
         } else {
-            let datePipe = new DatePipe(this.locale);
+
             this.formatTitle = function (date:Date) {
+              let datePipe = new DatePipe(this.locale);
                 return datePipe.transform(date, this.formatMonthTitle);
             };
         }
@@ -314,6 +319,12 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             this.refreshView();
         });
 
+        this.localeSourceChangedSubscription = this.calendarService.localeSourceChanged$.subscribe(language => {
+          this.locale = language;
+          this.getTitle();
+          this.refreshView();
+      });
+
         this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
             this.onDataLoaded();
         });
@@ -323,6 +334,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
             this.currentDateChangedFromParentSubscription = null;
+        }
+
+        if (this.localeSourceChangedSubscription) {
+          this.localeSourceChangedSubscription.unsubscribe();
+          this.localeSourceChangedSubscription = null;
         }
 
         if (this.eventSourceChangedSubscription) {
@@ -634,7 +650,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             date = currentViewStartDate.getDate(),
             month = (currentViewStartDate.getMonth() + (date !== 1 ? 1 : 0)) % 12,
             year = currentViewStartDate.getFullYear() + (date !== 1 && month === 0 ? 1 : 0),
-            headerDate = new Date(year, month, 1);
+            headerDate = new Date(year, month, 1, 12, 0, 0, 0);
         return this.formatTitle(headerDate);
     }
 
