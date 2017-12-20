@@ -172,7 +172,7 @@ export enum Step {
                 [dir]="dir"
                 [lockSwipeToPrev]="lockSwipeToPrev"
                 [lockSwipes]="lockSwipes"
-                [spaceBetween]="spaceBetween"
+                [spaceBetween]="spaceBetween" 
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
