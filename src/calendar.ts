@@ -237,7 +237,8 @@ export enum Step {
                 [formatHourColumn]="formatHourColumn"
                 [startingDayWeek]="startingDayWeek"
                 [allDayLabel]="allDayLabel"
-                [hourParts]="hourParts"
+                [hourParts]="hourParts" 
+                [hourSegments]="hourSegments"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
                 [weekviewAllDayEventTemplate]="weekviewAllDayEventTemplate||defaultAllDayEventTemplate"
@@ -361,6 +362,7 @@ export class CalendarComponent implements OnInit {
     @Input() noEventsLabel:string = 'No Events';
     @Input() queryMode:QueryMode = 'local';
     @Input() step:Step = Step.Hour;
+    @Input() timeInterval:number = 60;
     @Input() autoSelect:boolean = true;
     @Input() markDisabled:(date:Date) => boolean;
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
@@ -393,6 +395,7 @@ export class CalendarComponent implements OnInit {
 
     private _currentDate:Date;
     private hourParts = 1;
+    private hourSegments = 1;
     private currentDateChangedFromChildrenSubscription:Subscription;
 
     constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private appLocale:string) {
@@ -407,7 +410,13 @@ export class CalendarComponent implements OnInit {
                 this.autoSelect = true;
             }
         }
+        this.hourSegments = 60 / this.timeInterval;
         this.hourParts = 60 / this.step;
+        if(this.hourParts <= this.hourSegments) {
+            this.hourParts = 1;
+        } else {
+            this.hourParts = this.hourParts / this.hourSegments;
+        }
         this.startHour = parseInt(this.startHour.toString());
         this.endHour = parseInt(this.endHour.toString());
         this.calendarService.queryMode = this.queryMode;

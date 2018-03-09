@@ -450,6 +450,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() startHour:number;
     @Input() endHour:number;
     @Input() spaceBetween:number;
+    @Input() hourSegments:number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -477,7 +478,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     ngOnInit() {
-        this.hourRange = this.endHour - this.startHour;
+        this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
         if (this.dateFormatter && this.dateFormatter.formatWeekViewDayHeader) {
             this.formatDayHeader = this.dateFormatter.formatWeekViewDayHeader;
         } else {
@@ -607,23 +608,25 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         this.direction = 0;
     }
 
-    static createDateObjects(startTime:Date, startHour: number, endHour: number):IWeekViewRow[][] {
+    static createDateObjects(startTime:Date, startHour: number, endHour: number, timeInterval: number):IWeekViewRow[][] {
         let times:IWeekViewRow[][] = [],
             currentHour = startTime.getHours(),
             currentDate = startTime.getDate();
 
         for (let hour = startHour; hour < endHour; hour += 1) {
-            let row:IWeekViewRow[] = [];
-            for (let day = 0; day < 7; day += 1) {
-                let time = new Date(startTime.getTime());
-                time.setHours(currentHour + hour);
-                time.setDate(currentDate + day);
-                row.push({
-                    events: [],
-                    time: time
-                });
+            for(let interval = 0; interval < timeInterval; interval +=1 ) {
+                let row: IWeekViewRow[] = [];
+                for (let day = 0; day < 7; day += 1) {
+                    let time = new Date(startTime.getTime());
+                    time.setHours(currentHour + hour, 60*interval/timeInterval);
+                    time.setDate(currentDate + day);
+                    row.push({
+                        events: [],
+                        time: time
+                    });
+                }
+                times.push(row);
             }
-            times.push(row);
         }
         return times;
     }
@@ -659,7 +662,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         }
 
         return {
-            rows: WeekViewComponent.createDateObjects(startTime, this.startHour, this.endHour),
+            rows: WeekViewComponent.createDateObjects(startTime, this.startHour, this.endHour, this.hourSegments),
             dates: dates,
             dayHeaders: dayHeaders
         };
@@ -700,7 +703,11 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         // add allday eps
             eps = 0.016,
             allDayEventInRange = false,
-            normalEventInRange = false;
+            normalEventInRange = false,
+            rangeStartRowIndex = this.startHour * this.hourSegments,
+            rangeEndRowIndex = this.endHour * this.hourSegments,
+            allRows = 24 * this.hourSegments;
+
 
         for (let i = 0; i < 7; i += 1) {
             dates[i].events = [];
@@ -763,28 +770,28 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                         timeDifferenceStart = 0;
                     } else {
                         timeDiff = eventStartTime.getTime() - startTime.getTime() - (eventStartTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                        timeDifferenceStart = timeDiff / oneHour;
+                        timeDifferenceStart = timeDiff / oneHour * this.hourSegments;
                     }
 
                     let timeDifferenceEnd:number;
                     if (eventEndTime >= endTime) {
                         timeDiff = endTime.getTime() - startTime.getTime() - (endTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                        timeDifferenceEnd = timeDiff / oneHour;
+                        timeDifferenceEnd = timeDiff / oneHour * this.hourSegments;
                     } else {
                         timeDiff = eventEndTime.getTime() - startTime.getTime() - (eventEndTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                        timeDifferenceEnd = timeDiff / oneHour;
+                        timeDifferenceEnd = timeDiff / oneHour * this.hourSegments;
                     }
 
                     let startIndex = Math.floor(timeDifferenceStart),
                         endIndex = Math.ceil(timeDifferenceEnd - eps),
-                        startRowIndex = startIndex % 24,
-                        dayIndex = Math.floor(startIndex / 24),
-                        endOfDay = dayIndex * 24,
+                        startRowIndex = startIndex % allRows,
+                        dayIndex = Math.floor(startIndex / allRows),
+                        endOfDay = dayIndex * allRows,
                         startOffset = 0,
                         endOffset = 0;
 
                     if (this.hourParts !== 1) {
-                        if (startRowIndex < this.startHour) {
+                        if (startRowIndex < rangeStartRowIndex) {
                             startOffset = 0;
                         } else {
                             startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
@@ -792,29 +799,29 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                     }
 
                     do {
-                        endOfDay += 24;
+                        endOfDay += allRows;
                         let endRowIndex:number;
                         if (endOfDay <= endIndex) {
-                            endRowIndex = 24;
+                            endRowIndex = allRows;
                         } else {
-                            endRowIndex = endIndex % 24;
+                            endRowIndex = endIndex % allRows;
                             if (this.hourParts !== 1) {
-                                if (endRowIndex > this.endHour) {
+                                if (endRowIndex > rangeEndRowIndex) {
                                     endOffset = 0;
                                 } else {
                                     endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
                                 }
                             }
                         }
-                        if(startRowIndex < this.startHour) {
+                        if(startRowIndex < rangeStartRowIndex) {
                             startRowIndex = 0;
                         } else {
-                            startRowIndex -= this.startHour;
+                            startRowIndex -= rangeStartRowIndex;
                         }
-                        if(endRowIndex > this.endHour) {
-                            endRowIndex = this.endHour;
+                        if(endRowIndex > rangeEndRowIndex) {
+                            endRowIndex = rangeEndRowIndex;
                         }
-                        endRowIndex -= this.startHour;
+                        endRowIndex -= rangeStartRowIndex;
 
                         if(startRowIndex < endRowIndex) {
                             let displayEvent = {
