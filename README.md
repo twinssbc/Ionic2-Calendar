@@ -388,7 +388,7 @@ The template provides customized view for normal event in the weekview
         <calendar ... [weekviewNormalEventTemplate]="template"></calendar>
 ```
 
-* dayviewAllDayEventTemplate    
+* dayviewAllDayEventTemplate  
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the dayview
 
@@ -411,7 +411,7 @@ The template provides customized view for normal event in the dayview
         <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
 ```
 
-* weekviewAllDayEventSectionTemplate    
+* weekviewAllDayEventSectionTemplate  
 Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>    
 The template provides customized view for all day event section in the weekview
 
@@ -432,7 +432,7 @@ The template provides customized view for all day event section in the weekview
         <calendar ... [weekviewAllDayEventSectionTemplate]="template"></calendar>
 ```
 
-* weekviewNormalEventSectionTemplate    
+* weekviewNormalEventSectionTemplate  
 Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>    
 The template provides customized view for normal event section in the weekview
 
@@ -452,7 +452,7 @@ The template provides customized view for normal event section in the weekview
         <calendar ... [weekviewNormalEventSectionTemplate]="template"></calendar>
 ```
 
-* dayviewAllDayEventSectionTemplate    
+* dayviewAllDayEventSectionTemplate  
 Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>    
 The template provides customized view for all day event section in the dayview
 
@@ -471,7 +471,7 @@ The template provides customized view for all day event section in the dayview
         <calendar ... [dayviewAllDayEventSectionTemplate]="template"></calendar>
 ```
 
-* dayviewNormalEventSectionTemplate    
+* dayviewNormalEventSectionTemplate  
 Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>    
 The template provides customized view for normal event section in the dayview
 
