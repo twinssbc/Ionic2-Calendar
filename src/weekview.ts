@@ -618,7 +618,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                 let row: IWeekViewRow[] = [];
                 for (let day = 0; day < 7; day += 1) {
                     let time = new Date(startTime.getTime());
-                    time.setHours(currentHour + hour, 60*interval/timeInterval);
+                    time.setHours(currentHour + hour, 60 * interval / timeInterval);
                     time.setDate(currentDate + day);
                     row.push({
                         events: [],

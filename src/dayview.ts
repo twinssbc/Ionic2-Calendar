@@ -366,6 +366,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() startHour:number;
     @Input() endHour:number;
     @Input() spaceBetween:number;
+    @Input() hourSegments:number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -396,7 +397,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     }
 
     ngOnInit() {
-        this.hourRange = this.endHour - this.startHour;
+        this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
         if (this.dateFormatter && this.dateFormatter.formatDayViewTitle) {
             this.formatTitle = this.dateFormatter.formatDayViewTitle;
         } else {
@@ -517,20 +518,22 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         this.direction = 0;
     }
 
-    static createDateObjects(startTime:Date, startHour: number, endHour: number):IDayViewRow[] {
+    static createDateObjects(startTime:Date, startHour: number, endHour: number, timeInterval: number):IDayViewRow[] {
         let rows:IDayViewRow[] = [],
             time:Date,
             currentHour = startTime.getHours(),
             currentDate = startTime.getDate();
 
         for (let hour = startHour; hour < endHour; hour += 1) {
-            time = new Date(startTime.getTime());
-            time.setHours(currentHour + hour);
-            time.setDate(currentDate);
-            rows.push({
-                time: time,
-                events: []
-            });
+            for(let interval = 0; interval < timeInterval; interval +=1 ) {
+                time = new Date(startTime.getTime());
+                time.setHours(currentHour + hour, 60 * interval / timeInterval);
+                time.setDate(currentDate);
+                rows.push({
+                    time: time,
+                    events: []
+                });
+            }
         }
         return rows;
     }
@@ -545,7 +548,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
     getViewData(startTime:Date):IDayView {
         return {
-            rows: DayViewComponent.createDateObjects(startTime, this.startHour, this.endHour),
+            rows: DayViewComponent.createDateObjects(startTime, this.startHour, this.endHour, this.hourSegments),
             allDayEvents: []
         };
     }
@@ -575,7 +578,9 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             allDayEvents:IDisplayAllDayEvent[] = this.views[currentViewIndex].allDayEvents = [],
             oneHour = 3600000,
             eps = 0.016,
-            normalEventInRange = false;
+            normalEventInRange = false,
+            rangeStartRowIndex = this.startHour * this.hourSegments,
+            rangeEndRowIndex = this.endHour * this.hourSegments;
 
         for (let hour = 0; hour < this.hourRange; hour += 1) {
             rows[hour].events = [];
@@ -607,16 +612,16 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                     timeDifferenceStart = 0;
                 } else {
                     timeDiff = eventStartTime.getTime() - startTime.getTime() - (eventStartTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                    timeDifferenceStart = timeDiff / oneHour;
+                    timeDifferenceStart = timeDiff / oneHour * this.hourSegments;
                 }
 
                 let timeDifferenceEnd: number;
                 if (eventEndTime >= endTime) {
                     timeDiff = endTime.getTime() - startTime.getTime() - (endTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                    timeDifferenceEnd = timeDiff / oneHour;
+                    timeDifferenceEnd = timeDiff / oneHour * this.hourSegments;
                 } else {
                     timeDiff = eventEndTime.getTime() - startTime.getTime() - (eventEndTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                    timeDifferenceEnd = timeDiff / oneHour;
+                    timeDifferenceEnd = timeDiff / oneHour * this.hourSegments;
                 }
 
                 let startIndex = Math.floor(timeDifferenceStart);
@@ -624,27 +629,27 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                 let startOffset = 0;
                 let endOffset = 0;
                 if (this.hourParts !== 1) {
-                    if (startIndex < this.startHour) {
+                    if (startIndex < rangeStartRowIndex) {
                         startOffset = 0;
                     } else {
                         startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
                     }
-                    if (endIndex > this.endHour) {
+                    if (endIndex > rangeEndRowIndex) {
                         endOffset = 0;
                     } else {
                         endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
                     }
                 }
 
-                if (startIndex < this.startHour) {
+                if (startIndex < rangeStartRowIndex) {
                     startIndex = 0;
                 } else {
-                    startIndex -= this.startHour;
+                    startIndex -= rangeStartRowIndex;
                 }
-                if (endIndex > this.endHour) {
-                    endIndex = this.endHour;
+                if (endIndex > rangeEndRowIndex) {
+                    endIndex = rangeEndRowIndex;
                 }
-                endIndex -= this.startHour;
+                endIndex -= rangeStartRowIndex;
 
                 if (startIndex < endIndex) {
                     let displayEvent = {

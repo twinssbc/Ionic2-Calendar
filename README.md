@@ -147,7 +147,11 @@ If queryMode is set to 'remote', when the range or mode is changed, the calendar
 Users will need to implement their custom loading data logic in this function, and fill it into the eventSource. The eventSource is watched, so the view will be updated once the eventSource is changed.    
 Default value: 'local'
 * step    
-It can be set to 15 or 30, so that the event can be displayed at more accurate position in weekview or dayview.    
+It is used to display the event using more accurate time interval in weekview and dayview. For example, if set to 30, then the event will only occupy half of the row height (If timeInterval option uses default value).   The unit is minute. It can be set to 15 or 30.    
+Default value: 60
+* timeInterval  
+It is used to display the rows using more accurate time interval in weekview and dayview. For example, if set to 30, then the time interval between each row is 30 mins.
+The unit is minute. It should be the factor or multiple of 60, which means 60%timeInterval=0 or timeInterval%60=0.  
 Default value: 60
 * autoSelect  
 If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month view.  
