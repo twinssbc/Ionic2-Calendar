@@ -47,12 +47,12 @@ export interface IMonthViewRow {
 export interface IWeekView extends IView {
     dates: IWeekViewDateRow[];
     rows: IWeekViewRow[][];
-    dayHeaders: string[];
 }
 
 export interface IWeekViewDateRow {
     date: Date;
     events: IDisplayEvent[];
+    dayHeader: string;
 }
 
 export interface IWeekViewRow {
@@ -68,6 +68,10 @@ export interface IDisplayEvent {
     startOffset?: number;
     overlapNumber?: number;
     position?: number;
+}
+
+export interface IDisplayWeekViewHeader {
+    viewDate: IWeekViewDateRow;
 }
 
 export interface IDisplayAllDayEvent {
@@ -146,6 +150,9 @@ export enum Step {
                 </ion-item>
             </ion-list>
         </ng-template>
+        <ng-template #defaultWeekviewHeaderTemplate let-viewDate="viewDate">
+            {{ viewDate.dayHeader }}
+        </ng-template>
         <ng-template #defaultAllDayEventTemplate let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
         </ng-template>
@@ -172,7 +179,7 @@ export enum Step {
                 [dir]="dir"
                 [lockSwipeToPrev]="lockSwipeToPrev"
                 [lockSwipes]="lockSwipes"
-                [spaceBetween]="spaceBetween"       
+                [spaceBetween]="spaceBetween"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -187,6 +194,7 @@ export enum Step {
                 [hourParts]="hourParts"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
+                [weekviewHeaderTemplate]="weekviewHeaderTemplate||defaultWeekviewHeaderTemplate"
                 [weekviewAllDayEventTemplate]="weekviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [weekviewNormalEventTemplate]="weekviewNormalEventTemplate||defaultNormalEventTemplate"
                 [locale]="locale"
@@ -309,6 +317,7 @@ export class CalendarComponent implements OnInit {
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewEventDetailTemplateContext>;
+    @Input() weekviewHeaderTemplate:TemplateRef<IDisplayWeekViewHeader>;
     @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
     @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;

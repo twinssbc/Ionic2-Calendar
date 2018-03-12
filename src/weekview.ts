@@ -3,7 +3,7 @@ import { Slides } from 'ionic-angular';
 import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode, IDateFormatter } from './calendar';
+import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode, IDateFormatter, IDisplayWeekViewHeader } from './calendar';
 import { CalendarService } from './calendar.service';
 import { IDisplayAllDayEvent } from "./calendar";
 
@@ -16,7 +16,10 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <thead>
                     <tr>
                         <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let dayHeader of views[0].dayHeaders">{{dayHeader}}
+                        <th class="weekview-header text-center" *ngFor="let date of views[0].dates">
+                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                [ngTemplateOutletContext]="{viewDate:date}">
+                            </ng-template>
                         </th>
                     </tr>
                     </thead>
@@ -102,7 +105,10 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <thead>
                     <tr>
                         <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let dayHeader of views[1].dayHeaders">{{dayHeader}}
+                        <th class="weekview-header text-center" *ngFor="let date of views[1].dates">
+                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                [ngTemplateOutletContext]="{viewDate:date}">
+                            </ng-template>
                         </th>
                     </tr>
                     </thead>
@@ -188,7 +194,10 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <thead>
                     <tr>
                         <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let dayHeader of views[2].dayHeaders">{{dayHeader}}
+                        <th class="weekview-header text-center" *ngFor="let date of views[2].dates">
+                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                [ngTemplateOutletContext]="{viewDate:date}">
+                            </ng-template>
                         </th>
                     </tr>
                     </thead>
@@ -348,7 +357,7 @@ import { IDisplayAllDayEvent } from "./calendar";
           line-height: 50px;
           text-align: center;
           width: 50px;
-          border-left: 1px solid #ddd;  
+          border-left: 1px solid #ddd;
         }
 
         [dir="rtl"] .weekview-allday-label {
@@ -462,6 +471,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @ViewChild('weekSlider') slider:Slides;
     @HostBinding('class.weekview') class = true;
 
+    @Input() weekviewHeaderTemplate:TemplateRef<IDisplayWeekViewHeader>;
     @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
 
@@ -669,7 +679,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         while (i < n) {
             dates[i++] = {
                 date: new Date(current.getTime()),
-                events: []
+                events: [],
+                dayHeader: ''
             };
             current.setDate(current.getDate() + 1);
         }
@@ -686,15 +697,13 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
     getViewData(startTime:Date):IWeekView {
         let dates = WeekViewComponent.getDates(startTime, 7);
-        let dayHeaders:string[] = [];
         for (let i = 0; i < 7; i++) {
-            dayHeaders.push(this.formatDayHeader(dates[i].date));
+            dates[i].dayHeader = this.formatDayHeader(dates[i].date);
         }
 
         return {
             rows: WeekViewComponent.createDateObjects(startTime, this.startHour, this.endHour),
-            dates: dates,
-            dayHeaders: dayHeaders
+            dates: dates
         };
     }
 
