@@ -50,8 +50,11 @@ export interface IWeekView extends IView {
 }
 
 export interface IWeekViewDateRow {
+    current?: boolean;
     date: Date;
     events: IDisplayEvent[];
+    hasEvent?: boolean;
+    selected?: boolean;
     dayHeader: string;
 }
 
@@ -98,14 +101,14 @@ export interface ITimeSelected {
 }
 
 export interface IMonthViewDisplayEventTemplateContext {
-    view: IView,
-    row: number,
-    col: number
+    view: IView;
+    row: number;
+    col: number;
 }
 
 export interface IMonthViewEventDetailTemplateContext {
-    selectedDate: ITimeSelected,
-    noEventsLabel: string
+    selectedDate: ITimeSelected;
+    noEventsLabel: string;
 }
 
 export interface IDateFormatter {
@@ -192,6 +195,7 @@ export enum Step {
                 [startingDayWeek]="startingDayWeek"
                 [allDayLabel]="allDayLabel"
                 [hourParts]="hourParts"
+                [autoSelect]="autoSelect"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
                 [weekviewHeaderTemplate]="weekviewHeaderTemplate||defaultWeekviewHeaderTemplate"

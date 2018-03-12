@@ -151,7 +151,7 @@ Default value: 'local'
 It can be set to 15 or 30, so that the event can be displayed at more accurate position in weekview or dayview.    
 Default value: 60
 * autoSelect  
-If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month view.  
+If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month and week view.  
 Default value: true
 * locale  
 The locale used to display text in the calendar.  
