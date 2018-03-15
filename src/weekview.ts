@@ -827,10 +827,14 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                     do {
                         endOfDay += 24;
                         let endRowIndex:number;
-                        if (endOfDay <= endIndex) {
+                        if (endOfDay < endIndex) {
                             endRowIndex = 24;
                         } else {
-                            endRowIndex = endIndex % 24;
+                            if (endOfDay === endIndex) {
+                                endRowIndex = 24;
+                            } else {
+                                endRowIndex = endIndex % 24;
+                            }
                             if (this.hourParts !== 1) {
                                 if(endRowIndex > this.endHour) {
                                     endOffset = 0;

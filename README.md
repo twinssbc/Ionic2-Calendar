@@ -12,7 +12,7 @@ intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
 version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
 version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
 version 0.2.9+ depends on Ionic 2.3.0 version onwards.  
-version 0.3.x depends on Ionic 3.1.1 version onwards.  
+version 0.3.x depends on Ionic 3.1.1 version onwards.
 version 0.4.x depends on Ionic 3.9.2 version onwards.
 
 
@@ -147,8 +147,20 @@ If queryMode is set to 'remote', when the range or mode is changed, the calendar
 Users will need to implement their custom loading data logic in this function, and fill it into the eventSource. The eventSource is watched, so the view will be updated once the eventSource is changed.    
 Default value: 'local'
 * step    
-It can be set to 15 or 30, so that the event can be displayed at more accurate position in weekview or dayview.    
+It is used to display the event using more accurate time interval in weekview and dayview. For example, if set to 30, then the event will only occupy half of the row height (If timeInterval option uses default value).   The unit is minute. It can be set to 15 or 30.    
 Default value: 60
+``` html
+        <calendar ... [step]="30"></calendar>
+```
+
+* timeInterval (version >= 0.3)  
+It is used to display the rows using more accurate time interval in weekview and dayview. For example, if set to 30, then the time interval between each row is 30 mins.
+The unit is minute. It should be the factor or multiple of 60, which means 60%timeInterval=0 or timeInterval%60=0.  
+Default value: 60
+``` html
+        <calendar ... [timeInterval]="30"></calendar>
+```
+
 * autoSelect  
 If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month view.  
 Default value: true
@@ -330,15 +342,15 @@ The callback function triggered when the view title is changed
 
 ```
 # View Customization Option
-Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation.    
+Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation. You could refer to calendar.ts to get the definition of context types.   
 
 * monthviewDisplayEventTemplate    
 Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the active monthview
 ``` html
-        <template #template let-view="view" let-row="row" let-col="col">
+        <ng-template #template let-view="view" let-row="row" let-col="col">
             {{view.dates[row*7+col].label}}
-        </template>
+        </ng-template>
 
         <calendar ... [monthviewDisplayEventTemplate]="template"></calendar>
 ```
@@ -346,9 +358,9 @@ The template provides customized view for event displayed in the active monthvie
 Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the inactive monthview
 ``` html
-        <template #template let-view="view" let-row="row" let-col="col">
+        <ng-template #template let-view="view" let-row="row" let-col="col">
             {{view.dates[row*7+col].label}}
-        </template>
+        </ng-template>
 
         <calendar ... [monthviewInactiveDisplayEventTemplate]="template"></calendar>
 ```
@@ -356,9 +368,9 @@ The template provides customized view for event displayed in the inactive monthv
 Type: TemplateRef\<IMonthViewEventDetailTemplateContext\>    
 The template provides customized view for event detail section in the monthview
 ``` html
-        <template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+        <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
 	    ... 
-        </template>
+        </ng-template>
 
         <calendar ... [monthviewEventDetailTemplate]="template"></calendar>
 ```
@@ -366,46 +378,125 @@ The template provides customized view for event detail section in the monthview
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the weekview
 ``` html
-    <template #template let-displayEvent="displayEvent">
-        <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-    </template>
+        <ng-template #template let-displayEvent="displayEvent">
+            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+        </ng-template>
 
-    <calendar ... [weekviewAllDayEventTemplate]="template"></calendar>
+        <calendar ... [weekviewAllDayEventTemplate]="template"></calendar>
 ```
 * weekviewNormalEventTemplate    
 Type: TemplateRef\<IDisplayEvent\>    
 The template provides customized view for normal event in the weekview
 
 ``` html
-    <template #template let-displayEvent="displayEvent">
-        <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-    </template>
+        <ng-template #template let-displayEvent="displayEvent">
+            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+        </ng-template>
 
-    <calendar ... [weekviewNormalEventTemplate]="template"></calendar>
+        <calendar ... [weekviewNormalEventTemplate]="template"></calendar>
 ```
 
-* dayviewAllDayEventTemplate    
+* dayviewAllDayEventTemplate  
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the dayview
-
 ``` html
-    <template #template let-displayEvent="displayEvent">
-        <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-    </template>
+        <ng-template #template let-displayEvent="displayEvent">
+            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+        </ng-template>
 
-    <calendar ... [dayviewAllDayEventTemplate]="template"></calendar>
+        <calendar ... [dayviewAllDayEventTemplate]="template"></calendar>
 ```
 
-* dayviewNormalEventTemplate    
+* dayviewNormalEventTemplate  
 Type: TemplateRef\<IDisplayEvent\>    
 The template provides customized view for normal event in the dayview
 
-``` javascript
-        <template #template let-displayEvent="displayEvent">
+``` html
+        <ng-template #template let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </template>
+        </ng-template>
 
         <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
+```
+
+* weekviewAllDayEventSectionTemplate (version >= 0.3)  
+Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>    
+The template provides customized view for all day event section in the weekview
+
+``` html
+        <ng-template #template let-day="day" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
+                 [ngStyle]="{height: 25*day.events.length+'px'}">
+                <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
+                     (click)="onEventSelected(displayEvent.event)"
+                     [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [weekviewAllDayEventSectionTemplate]="template"></calendar>
+```
+
+* weekviewNormalEventSectionTemplate (version >= 0.3)  
+Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>    
+The template provides customized view for normal event section in the weekview
+
+``` html
+        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                     (click)="onEventSelected(displayEvent.event)"
+                     [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [weekviewNormalEventSectionTemplate]="template"></calendar>
+```
+
+* dayviewAllDayEventSectionTemplate (version >= 0.3)  
+Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>    
+The template provides customized view for all day event section in the dayview
+
+``` html
+        <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
+            <div *ngFor="let displayEvent of allDayEvents; let eventIndex=index"
+                 class="calendar-event" tappable
+                 (click)="onEventSelected(displayEvent.event)"
+                 [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
+                <ng-template [ngTemplateOutlet]="eventTemplate"
+                             [ngOutletContext]="{displayEvent:displayEvent}">
+                </ng-template>
+            </div>
+        </ng-template>
+
+        <calendar ... [dayviewAllDayEventSectionTemplate]="template"></calendar>
+```
+
+* dayviewNormalEventSectionTemplate (version >= 0.3)  
+Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>    
+The template provides customized view for normal event section in the dayview
+
+``` html
+        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                     (click)="onEventSelected(displayEvent.event)"
+                     [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [dayviewNormalEventSectionTemplate]="template"></calendar>
 ```
 
 # EventSource
@@ -415,17 +506,17 @@ EventSource is an array of event object which contains at least below fields:
 * title
 * startTime    
 If allDay is set to true, the startTime has to be as a UTC date which time is set to 0:00 AM, because in an allDay event, only the date is considered, the exact time or timezone doesn't matter.    
-For example, if an allDay event starting from 2014-05-08, then startTime is
+For example, if an allDay event starting from 2014-05-09, then startTime is
 
 ``` javascript
-var startTime = new Date(Date.UTC(2014, 4, 8));
+        var startTime = new Date(Date.UTC(2014, 4, 8));
 ```
 
 * endTime    
 If allDay is set to true, the startTime has to be as a UTC date which time is set to 0:00 AM, because in an allDay event, only the date is considered, the exact time or timezone doesn't matter.    
-For example, if an allDay event ending to 2014-05-09, then endTime is
+For example, if an allDay event ending to 2014-05-10, then endTime is
 ``` javascript
-var endTime = new Date(Date.UTC(2014, 4, 9));
+        var endTime = new Date(Date.UTC(2014, 4, 9));
 ```
 * allDay    
 Indicates the event is allDay event or regular event
@@ -463,7 +554,7 @@ export class HomePage {
 You could use *locale* option to achieve the localization.  
 If locale option is not specified, the calendar will use the LOCALE_ID set at the module level.  
 By default, the LOCALE_ID is **en-US**. You can override it in the module as below. If you pass **undefined**, the LOCALE_ID will be detected using the browser language setting. But using explicit value is recommended, as browser has different level of localization support.    
-Note that the event detail section in the month view doesn't support *locale* option, only LOCALE_ID takes effect. This is because it uses DatePipe in html directly. You could easily leverage customized event detail template to switch to other locale.
+Note that the event detail section in the month view doesn't support *locale* option, only LOCALE_ID takes effect. This is because it uses DatePipe in html directly. You could easily leverage customized event detail template to switch to other locale. 
 
 ``` typescript
 import { NgModule, LOCALE_ID } from '@angular/core';
