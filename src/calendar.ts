@@ -104,6 +104,26 @@ export interface IMonthViewEventDetailTemplateContext {
     noEventsLabel: string
 }
 
+export interface IWeekViewAllDayEventSectionTemplateContext {
+    day: IWeekViewDateRow,
+    eventTemplate: TemplateRef<IDisplayAllDayEvent>
+}
+
+export interface IWeekViewNormalEventSectionTemplateContext {
+    tm: IWeekViewRow,
+    eventTemplate: TemplateRef<IDisplayEvent>
+}
+
+export interface IDayViewAllDayEventSectionTemplateContext {
+    alldayEvents: IDisplayAllDayEvent[],
+    eventTemplate: TemplateRef<IDisplayAllDayEvent>
+}
+
+export interface IDayViewNormalEventSectionTemplateContext {
+    tm: IDayViewRow,
+    eventTemplate: TemplateRef<IDisplayEvent>
+}
+
 export interface IDateFormatter {
     formatMonthViewDay?: { (date:Date): string; };
     formatMonthViewDayHeader?: { (date:Date): string; };
@@ -152,6 +172,39 @@ export enum Step {
         <ng-template #defaultNormalEventTemplate let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
         </ng-template>
+        <ng-template #defaultWeekViewAllDayEventSectionTemplate let-day="day" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
+                 [ngStyle]="{height: 25*day.events.length+'px'}">
+                <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
+                     (click)="eventSelected(displayEvent.event)"
+                     [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #defaultDayViewAllDayEventSectionTemplate let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
+            <div *ngFor="let displayEvent of allDayEvents; let eventIndex=index"
+                 class="calendar-event" tappable
+                 (click)="eventSelected(displayEvent.event)"
+                 [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
+                <ng-template [ngTemplateOutlet]="eventTemplate"
+                             [ngTemplateOutletContext]="{displayEvent:displayEvent}">
+                </ng-template>
+            </div>
+        </ng-template>
+        <ng-template #defaultNormalEventSectionTemplate let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                     (click)="eventSelected(displayEvent.event)"
+                     [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
 
         <div [ngSwitch]="calendarMode" class="{{calendarMode}}view-container">
             <monthview *ngSwitchCase="'month'"
@@ -185,10 +238,13 @@ export enum Step {
                 [startingDayWeek]="startingDayWeek"
                 [allDayLabel]="allDayLabel"
                 [hourParts]="hourParts"
+                [hourSegments]="hourSegments"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
                 [weekviewAllDayEventTemplate]="weekviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [weekviewNormalEventTemplate]="weekviewNormalEventTemplate||defaultNormalEventTemplate"
+                [weekviewAllDayEventSectionTemplate]="weekviewAllDayEventSectionTemplate||defaultWeekViewAllDayEventSectionTemplate"
+                [weekviewNormalEventSectionTemplate]="weekviewNormalEventSectionTemplate||defaultNormalEventSectionTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
                 [dir]="dir"
@@ -209,10 +265,13 @@ export enum Step {
                 [formatHourColumn]="formatHourColumn"
                 [allDayLabel]="allDayLabel"
                 [hourParts]="hourParts"
+                [hourSegments]="hourSegments"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
                 [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
+                [dayviewAllDayEventSectionTemplate]="dayviewAllDayEventSectionTemplate||defaultDayViewAllDayEventSectionTemplate" 
+                [dayviewNormalEventSectionTemplate]="dayviewNormalEventSectionTemplate||defaultNormalEventSectionTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
                 [dir]="dir"
@@ -304,6 +363,7 @@ export class CalendarComponent implements OnInit {
     @Input() noEventsLabel:string = 'No Events';
     @Input() queryMode:QueryMode = 'local';
     @Input() step:Step = Step.Hour;
+    @Input() timeInterval:number = 60;
     @Input() autoSelect:boolean = true;
     @Input() markDisabled:(date:Date) => boolean;
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
@@ -313,6 +373,10 @@ export class CalendarComponent implements OnInit {
     @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
     @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
+    @Input() weekviewAllDayEventSectionTemplate:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
+    @Input() weekviewNormalEventSectionTemplate:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
+    @Input() dayviewAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
     @Input() dateFormatter:IDateFormatter;
     @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
@@ -332,6 +396,7 @@ export class CalendarComponent implements OnInit {
 
     private _currentDate:Date;
     private hourParts = 1;
+    private hourSegments = 1;
     private currentDateChangedFromChildrenSubscription:Subscription;
 
     constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private appLocale:string) {
@@ -346,7 +411,13 @@ export class CalendarComponent implements OnInit {
                 this.autoSelect = true;
             }
         }
+        this.hourSegments = 60 / this.timeInterval;
         this.hourParts = 60 / this.step;
+        if(this.hourParts <= this.hourSegments) {
+            this.hourParts = 1;
+        } else {
+            this.hourParts = this.hourParts / this.hourSegments;
+        }
         this.startHour = parseInt(this.startHour.toString());
         this.endHour = parseInt(this.endHour.toString());
         this.calendarService.queryMode = this.queryMode;
