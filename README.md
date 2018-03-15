@@ -428,7 +428,7 @@ The template provides customized view for all day event section in the weekview
             <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
                  [ngStyle]="{height: 25*day.events.length+'px'}">
                 <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
-                     (click)="eventSelected(displayEvent.event)"
+                     (click)="onEventSelected(displayEvent.event)"
                      [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                     <ng-template [ngTemplateOutlet]="eventTemplate"
                                  [ngOutletContext]="{displayEvent:displayEvent}">
@@ -448,7 +448,7 @@ The template provides customized view for normal event section in the weekview
         <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
-                     (click)="eventSelected(displayEvent.event)"
+                     (click)="onEventSelected(displayEvent.event)"
                      [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                     <ng-template [ngTemplateOutlet]="eventTemplate"
                                  [ngOutletContext]="{displayEvent:displayEvent}">
@@ -468,7 +468,7 @@ The template provides customized view for all day event section in the dayview
         <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
             <div *ngFor="let displayEvent of allDayEvents; let eventIndex=index"
                  class="calendar-event" tappable
-                 (click)="eventSelected(displayEvent.event)"
+                 (click)="onEventSelected(displayEvent.event)"
                  [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
                 <ng-template [ngTemplateOutlet]="eventTemplate"
                              [ngOutletContext]="{displayEvent:displayEvent}">
@@ -487,7 +487,7 @@ The template provides customized view for normal event section in the dayview
         <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
-                     (click)="eventSelected(displayEvent.event)"
+                     (click)="onEventSelected(displayEvent.event)"
                      [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                     <ng-template [ngTemplateOutlet]="eventTemplate"
                                  [ngOutletContext]="{displayEvent:displayEvent}">
@@ -606,4 +606,11 @@ Answer: This calendar has dependency on 'Intl'. Run *npm install intl@1.2.5* to 
 Answer: If you bind currentDate like this: [currentDate]="calendar.currentDate". You need to assign calendar.currentDate a valid Date object
 
 * How to switch the calendar to previous/next month programmatically?  
-Answer: You can change currentDate to the date in previous/next month.
+Answer: You can change currentDate to the date in previous/next month. You could also retrieve the Swiper element and then call the Swiper API directly.
+```
+var mySwiper = document.querySelector('.swiper-container')['swiper'];
+    mySwiper.slideNext();
+```
+
+* Error: Cannot read property 'dayHeaders' of undefined  
+Answer: Take a look at the Localization section. For version 0.4.x, you need to manually register the locale.
