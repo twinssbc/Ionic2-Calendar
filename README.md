@@ -149,10 +149,18 @@ Default value: 'local'
 * step    
 It is used to display the event using more accurate time interval in weekview and dayview. For example, if set to 30, then the event will only occupy half of the row height (If timeInterval option uses default value).   The unit is minute. It can be set to 15 or 30.    
 Default value: 60
-* timeInterval  
+``` html
+        <calendar ... [step]="30"></calendar>
+```
+
+* timeInterval (version >= 0.3)  
 It is used to display the rows using more accurate time interval in weekview and dayview. For example, if set to 30, then the time interval between each row is 30 mins.
 The unit is minute. It should be the factor or multiple of 60, which means 60%timeInterval=0 or timeInterval%60=0.  
 Default value: 60
+``` html
+        <calendar ... [timeInterval]="30"></calendar>
+```
+
 * autoSelect  
 If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month view.  
 Default value: true
@@ -391,7 +399,7 @@ The template provides customized view for normal event in the weekview
 * dayviewAllDayEventTemplate  
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the dayview
-
+``` html
         <ng-template #template let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
         </ng-template>
@@ -403,7 +411,7 @@ The template provides customized view for all day event in the dayview
 Type: TemplateRef\<IDisplayEvent\>    
 The template provides customized view for normal event in the dayview
 
-``` javascript
+``` html
         <ng-template #template let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
         </ng-template>
@@ -411,11 +419,11 @@ The template provides customized view for normal event in the dayview
         <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
 ```
 
-* weekviewAllDayEventSectionTemplate  
+* weekviewAllDayEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>    
 The template provides customized view for all day event section in the weekview
 
-``` javascript
+``` html
         <ng-template #template let-day="day" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
                  [ngStyle]="{height: 25*day.events.length+'px'}">
@@ -432,12 +440,12 @@ The template provides customized view for all day event section in the weekview
         <calendar ... [weekviewAllDayEventSectionTemplate]="template"></calendar>
 ```
 
-* weekviewNormalEventSectionTemplate  
+* weekviewNormalEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>    
 The template provides customized view for normal event section in the weekview
 
-``` javascript
-        <ng-template #template let-tm="tm" let-eventTemplate="eventTemplate">
+``` html
+        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                      (click)="eventSelected(displayEvent.event)"
@@ -452,11 +460,11 @@ The template provides customized view for normal event section in the weekview
         <calendar ... [weekviewNormalEventSectionTemplate]="template"></calendar>
 ```
 
-* dayviewAllDayEventSectionTemplate  
+* dayviewAllDayEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>    
 The template provides customized view for all day event section in the dayview
 
-``` javascript
+``` html
         <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
             <div *ngFor="let displayEvent of allDayEvents; let eventIndex=index"
                  class="calendar-event" tappable
@@ -471,12 +479,12 @@ The template provides customized view for all day event section in the dayview
         <calendar ... [dayviewAllDayEventSectionTemplate]="template"></calendar>
 ```
 
-* dayviewNormalEventSectionTemplate  
+* dayviewNormalEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>    
 The template provides customized view for normal event section in the dayview
 
-``` javascript
-        <ng-template #template let-tm="tm" let-eventTemplate="eventTemplate">
+``` html
+        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                      (click)="eventSelected(displayEvent.event)"

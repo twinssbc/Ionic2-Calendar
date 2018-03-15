@@ -194,7 +194,7 @@ export enum Step {
                 </ng-template>
             </div>
         </ng-template>
-        <ng-template #defaultNormalEventSectionTemplate let-tm="tm" let-eventTemplate="eventTemplate">
+        <ng-template #defaultNormalEventSectionTemplate let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                      (click)="eventSelected(displayEvent.event)"

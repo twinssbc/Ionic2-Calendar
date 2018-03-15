@@ -41,7 +41,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                 <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
-                                             [ngOutletContext]="{tm:tm, eventTemplate:dayviewNormalEventTemplate}">
+                                             [ngOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:dayviewNormalEventTemplate}">
                                 </ng-template>
                             </td>
                         </tr>
@@ -92,7 +92,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                 <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
-                                             [ngOutletContext]="{tm:tm, eventTemplate:dayviewNormalEventTemplate}">
+                                             [ngOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:dayviewNormalEventTemplate}">
                                 </ng-template>
                             </td>
                         </tr>
@@ -143,7 +143,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                             </td>
                             <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                 <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
-                                             [ngOutletContext]="{tm:tm, eventTemplate:dayviewNormalEventTemplate}">
+                                             [ngOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:dayviewNormalEventTemplate}">
                                 </ng-template>
                             </td>
                         </tr>

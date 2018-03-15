@@ -47,7 +47,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <ng-template [ngTemplateOutlet]="weekviewNormalEventSectionTemplate"
-                                                 [ngOutletContext]="{tm:tm, eventTemplate:weekviewNormalEventTemplate}">
+                                                 [ngOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
                                     </ng-template>
                                 </td>
                             </tr>
@@ -121,7 +121,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                                         <ng-template [ngTemplateOutlet]="weekviewNormalEventSectionTemplate"
-                                                     [ngOutletContext]="{tm:tm, eventTemplate:weekviewNormalEventTemplate}">
+                                                     [ngOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
                                         </ng-template>
                                     </div>
                                 </td>
@@ -196,7 +196,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 <td *ngFor="let tm of row" class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                                         <ng-template [ngTemplateOutlet]="weekviewNormalEventSectionTemplate"
-                                                     [ngOutletContext]="{tm:tm, eventTemplate:weekviewNormalEventTemplate}">
+                                                     [ngOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
                                         </ng-template>
                                     </div>
                                 </td>
