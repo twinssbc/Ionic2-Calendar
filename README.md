@@ -407,7 +407,7 @@ The template provides customized view for all day event in the dayview
         <calendar ... [dayviewAllDayEventTemplate]="template"></calendar>
 ```
 
-* dayviewNormalEventTemplate    
+* dayviewNormalEventTemplate  
 Type: TemplateRef\<IDisplayEvent\>    
 The template provides customized view for normal event in the dayview
 
