@@ -431,7 +431,7 @@ The template provides customized view for all day event section in the weekview
                      (click)="onEventSelected(displayEvent.event)"
                      [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
                     <ng-template [ngTemplateOutlet]="eventTemplate"
-                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                     </ng-template>
                 </div>
             </div>
@@ -451,7 +451,7 @@ The template provides customized view for normal event section in the weekview
                      (click)="onEventSelected(displayEvent.event)"
                      [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                     <ng-template [ngTemplateOutlet]="eventTemplate"
-                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                     </ng-template>
                 </div>
             </div>
@@ -471,7 +471,7 @@ The template provides customized view for all day event section in the dayview
                  (click)="onEventSelected(displayEvent.event)"
                  [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
                 <ng-template [ngTemplateOutlet]="eventTemplate"
-                             [ngOutletContext]="{displayEvent:displayEvent}">
+                             [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                 </ng-template>
             </div>
         </ng-template>
@@ -490,7 +490,7 @@ The template provides customized view for normal event section in the dayview
                      (click)="onEventSelected(displayEvent.event)"
                      [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
                     <ng-template [ngTemplateOutlet]="eventTemplate"
-                                 [ngOutletContext]="{displayEvent:displayEvent}">
+                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
                     </ng-template>
                 </div>
             </div>
