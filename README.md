@@ -327,8 +327,9 @@ The ev parameter contains two fields, selectedTime and events, if there's no eve
 ``` html
         <calendar ... (onTimeSelected)="onTimeSelected($event)"></calendar>
 
-        onTimeSelected = (ev: { selectedTime: Date, events: any[] }) => {
-            console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0));
+        onTimeSelected(ev) {
+            console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' +
+                (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
         };
 ```
 * onTitleChanged    
