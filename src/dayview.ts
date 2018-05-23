@@ -522,12 +522,22 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         let rows:IDayViewRow[] = [],
             time:Date,
             currentHour = startTime.getHours(),
-            currentDate = startTime.getDate();
+            currentDate = startTime.getDate(),
+            hourStep,
+            minStep;
 
-        for (let hour = startHour; hour < endHour; hour += 1) {
-            for(let interval = 0; interval < timeInterval; interval +=1 ) {
+        if(timeInterval < 1) {
+            hourStep = Math.floor(1 / timeInterval);
+            minStep = 60;
+        } else {
+            hourStep = 1;
+            minStep = Math.floor(60  / timeInterval);
+        }
+
+        for (let hour = startHour; hour < endHour; hour += hourStep) {
+            for(let interval = 0; interval < 60; interval += minStep ) {
                 time = new Date(startTime.getTime());
-                time.setHours(currentHour + hour, 60 * interval / timeInterval);
+                time.setHours(currentHour + hour, interval);
                 time.setDate(currentDate);
                 rows.push({
                     time: time,
