@@ -611,14 +611,24 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     static createDateObjects(startTime:Date, startHour: number, endHour: number, timeInterval: number):IWeekViewRow[][] {
         let times:IWeekViewRow[][] = [],
             currentHour = startTime.getHours(),
-            currentDate = startTime.getDate();
+            currentDate = startTime.getDate(),
+            hourStep,
+            minStep;
 
-        for (let hour = startHour; hour < endHour; hour += 1) {
-            for(let interval = 0; interval < timeInterval; interval +=1 ) {
+        if(timeInterval < 1) {
+            hourStep = Math.floor(1 / timeInterval);
+            minStep = 60;
+        } else {
+            hourStep = 1;
+            minStep = Math.floor(60  / timeInterval);
+        }
+
+        for (let hour = startHour; hour < endHour; hour += hourStep) {
+            for (let interval = 0; interval < 60; interval += minStep) {
                 let row: IWeekViewRow[] = [];
                 for (let day = 0; day < 7; day += 1) {
                     let time = new Date(startTime.getTime());
-                    time.setHours(currentHour + hour, 60 * interval / timeInterval);
+                    time.setHours(currentHour + hour,  interval);
                     time.setDate(currentDate + day);
                     row.push({
                         events: [],
