@@ -265,6 +265,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
     private eventSourceChangedSubscription:Subscription;
+    private localeSourceChangedSubscription:Subscription;
     private formatDayLabel:(date:Date) => string;
     private formatDayHeaderLabel:(date:Date) => string;
     private formatTitle:(date:Date) => string;
@@ -276,8 +277,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewDay) {
             this.formatDayLabel = this.dateFormatter.formatMonthViewDay;
         } else {
-            let dayLabelDatePipe = new DatePipe('en-US');
+
             this.formatDayLabel = function (date:Date) {
+              let dayLabelDatePipe = new DatePipe('en-US');
                 return dayLabelDatePipe.transform(date, this.formatDay);
             };
         }
@@ -285,8 +287,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewDayHeader) {
             this.formatDayHeaderLabel = this.dateFormatter.formatMonthViewDayHeader;
         } else {
-            let datePipe = new DatePipe(this.locale);
+
             this.formatDayHeaderLabel = function (date:Date) {
+              let datePipe = new DatePipe(this.locale);
                 return datePipe.transform(date, this.formatDayHeader);
             };
         }
@@ -294,8 +297,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewTitle) {
             this.formatTitle = this.dateFormatter.formatMonthViewTitle;
         } else {
-            let datePipe = new DatePipe(this.locale);
+
             this.formatTitle = function (date:Date) {
+              let datePipe = new DatePipe(this.locale);
                 return datePipe.transform(date, this.formatMonthTitle);
             };
         }
@@ -315,6 +319,12 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             this.refreshView();
         });
 
+        this.localeSourceChangedSubscription = this.calendarService.localeSourceChanged$.subscribe(language => {
+          this.locale = language;
+          this.getTitle();
+          this.refreshView();
+      });
+
         this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
             this.onDataLoaded();
         });
@@ -324,6 +334,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
             this.currentDateChangedFromParentSubscription = null;
+        }
+
+        if (this.localeSourceChangedSubscription) {
+          this.localeSourceChangedSubscription.unsubscribe();
+          this.localeSourceChangedSubscription = null;
         }
 
         if (this.eventSourceChangedSubscription) {

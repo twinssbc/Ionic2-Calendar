@@ -225,7 +225,7 @@ export enum Step {
                 [dir]="dir"
                 [lockSwipeToPrev]="lockSwipeToPrev"
                 [lockSwipes]="lockSwipes"
-                [spaceBetween]="spaceBetween"       
+                [spaceBetween]="spaceBetween" 
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -454,4 +454,8 @@ export class CalendarComponent implements OnInit {
     loadEvents() {
         this.calendarService.loadEvents();
     }
+
+    loadLocale(language) {
+      this.calendarService.loadLocale(language);
+  }
 }
