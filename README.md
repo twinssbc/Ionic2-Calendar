@@ -162,7 +162,7 @@ Default value: 60
 ```
 
 * autoSelect  
-If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month view.  
+If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month and week view.  
 Default value: true
 * locale  
 The locale used to display text in the calendar.  
@@ -238,9 +238,10 @@ Default value: false
 * lockSwipeToPrev  
 If set to true, swiping to previous view is disabled.  
 Default value: false
-
+``` html
         <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
-
+```
+``` typescript
         onCurrentDateChanged(event:Date) {
             var today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -254,6 +255,7 @@ Default value: false
                 }
             }
         }
+```
 
 * lockSwipes  
 If set to true, swiping is disabled.  
@@ -262,7 +264,7 @@ Default value: false
 ``` html
         <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
 ```
-``` javascript
+``` typescript
         ngAfterViewInit() {
             var me = this;
             setTimeout(function() {
@@ -295,7 +297,8 @@ Default value: 0
 The callback function triggered when the date that is currently viewed changes.
 ``` html
         <calendar ... (onCurrentDateChanged)="onCurrentDateChanged($event)"></calendar>
-
+```
+``` typescript
         onCurrentChanged = (ev: Date) => {
             console.log('Currently viewed date: ' + ev);
         };
@@ -305,7 +308,8 @@ The callback function triggered when the range or mode is changed if the queryMo
 The ev parameter contains two fields, startTime and endTime.
 ``` html
         <calendar ... (onRangeChanged)="onRangeChanged($event)"></calendar>
-
+```
+``` typescript
         onRangeChanged = (ev: { startTime: Date, endTime: Date }) => {
             Events.query(ev, (events) => {
                 this.eventSource = events;
@@ -316,7 +320,8 @@ The ev parameter contains two fields, startTime and endTime.
 The callback function triggered when an event is clicked
 ``` html
         <calendar ... (onEventSelected)="onEventSelected($event)"></calendar>
-
+```
+``` typescript
         onEventSelected = (event) => {
             console.log(event.title);
         };
@@ -326,23 +331,64 @@ The callback function triggered when a date is selected in the monthview.
 The ev parameter contains two fields, selectedTime and events, if there's no event at the selected time, the events field will be either undefined or empty array
 ``` html
         <calendar ... (onTimeSelected)="onTimeSelected($event)"></calendar>
-
-        onTimeSelected(ev) {
-            console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' +
-                (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
+```
+``` typescript
+    onTimeSelected = (ev: { selectedTime: Date, events: any[] }) => {
+        console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0));
         };
 ```
 * onTitleChanged    
 The callback function triggered when the view title is changed
 ``` html
         <calendar ... (onTitleChanged)="onViewTitleChanged($event)"></calendar>
-
+```
+``` typescript
         onViewTitleChanged = (title: string) => {
             this.viewTitle = title;
         };
 
 ```
 # View Customization Option
+There are two ways to customize the look and feel. If you just want to simply change the color or size of certain element, you could override the styles of the predefined css classes. **CSS Customization** section lists some important css classes. If you need to change the layout of certain element, you could refer to the **Template Customization** part.
+
+## CSS Customization  
+
+* monthview-primary-with-event  
+The date that is in current month and having events
+
+* monthview-secondary-with-event  
+The date that is in previous/next month and having events
+
+* monthview-selected  
+The selected date
+
+* monthview-current  
+The current date
+
+* monthview-disabled  
+The disabled date
+
+* weekview-with-event  
+The date having all day events, applied to the day header in week view
+
+* week-view-current  
+The current date, applied to the day header in week view
+
+* weekview-selected  
+The selected date, applied to the day header in week view
+
+* weekview-allday-label  
+Applied to the all day label in week view
+
+* dayview-allday-label  
+Applied to the all day label in day view
+
+* calendar-hour-column  
+Applied to the hour column in both weekview and day view
+
+
+## Template Customization  
+
 Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation. You could refer to calendar.ts to get the definition of context types.   
 
 * monthviewDisplayEventTemplate    
@@ -374,6 +420,16 @@ The template provides customized view for event detail section in the monthview
         </ng-template>
 
         <calendar ... [monthviewEventDetailTemplate]="template"></calendar>
+```
+* weekviewHeaderTemplate (version >= 0.4.5)  
+Type: TemplateRef\<IDisplayWeekViewHeader\>     
+The template provides customized view for day header in the weekview 
+``` html 
+    <ng-template #template let-viewDate="viewDate"> 
+        <div class="custom-day-header"> {{ viewDate.dayHeader }} </div> 
+    </ng-template> 
+ 
+    <calendar ... [weekviewHeaderTemplate]="template"></calendar>
 ```
 * weekviewAllDayEventTemplate    
 Type: TemplateRef\<IDisplayAllDayEvent\>    
@@ -417,12 +473,12 @@ The template provides customized view for normal event in the dayview
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
         </ng-template>
 
-        <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
+    <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
 ```
 
 * weekviewAllDayEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>    
-The template provides customized view for all day event section in the weekview
+The template provides customized view for all day event section (table part) in the weekview
 
 ``` html
         <ng-template #template let-day="day" let-eventTemplate="eventTemplate">
@@ -443,7 +499,7 @@ The template provides customized view for all day event section in the weekview
 
 * weekviewNormalEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>    
-The template provides customized view for normal event section in the weekview
+The template provides customized view for normal event section (table part) in the weekview
 
 ``` html
         <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
@@ -463,7 +519,7 @@ The template provides customized view for normal event section in the weekview
 
 * dayviewAllDayEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>    
-The template provides customized view for all day event section in the dayview
+The template provides customized view for all day event section (table part) in the dayview
 
 ``` html
         <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
@@ -482,7 +538,7 @@ The template provides customized view for all day event section in the dayview
 
 * dayviewNormalEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>    
-The template provides customized view for normal event section in the dayview
+The template provides customized view for normal event section (table part) in the dayview
 
 ``` html
         <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
@@ -583,7 +639,8 @@ In the CPU profile, the default Intl based localization code occupies a big port
 
 ``` html
 <calendar ... [dateFormatter]="calendar.dateFormatter"></calendar>
-
+```
+``` typescript
 calendar = {
     dateFormatter: {
         formatMonthViewDay: function(date:Date) {
