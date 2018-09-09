@@ -47,12 +47,15 @@ export interface IMonthViewRow {
 export interface IWeekView extends IView {
     dates: IWeekViewDateRow[];
     rows: IWeekViewRow[][];
-    dayHeaders: string[];
 }
 
 export interface IWeekViewDateRow {
+    current?: boolean;
     date: Date;
     events: IDisplayEvent[];
+    hasEvent?: boolean;
+    selected?: boolean;
+    dayHeader: string;
 }
 
 export interface IWeekViewRow {
@@ -68,6 +71,10 @@ export interface IDisplayEvent {
     startOffset?: number;
     overlapNumber?: number;
     position?: number;
+}
+
+export interface IDisplayWeekViewHeader {
+    viewDate: IWeekViewDateRow;
 }
 
 export interface IDisplayAllDayEvent {
@@ -94,14 +101,14 @@ export interface ITimeSelected {
 }
 
 export interface IMonthViewDisplayEventTemplateContext {
-    view: IView,
-    row: number,
-    col: number
+    view: IView;
+    row: number;
+    col: number;
 }
 
 export interface IMonthViewEventDetailTemplateContext {
-    selectedDate: ITimeSelected,
-    noEventsLabel: string
+    selectedDate: ITimeSelected;
+    noEventsLabel: string;
 }
 
 export interface IWeekViewAllDayEventSectionTemplateContext {
@@ -166,6 +173,9 @@ export enum Step {
                 </ion-item>
             </ion-list>
         </ng-template>
+        <ng-template #defaultWeekviewHeaderTemplate let-viewDate="viewDate">
+            {{ viewDate.dayHeader }}
+        </ng-template>
         <ng-template #defaultAllDayEventTemplate let-displayEvent="displayEvent">
             <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
         </ng-template>
@@ -225,7 +235,7 @@ export enum Step {
                 [dir]="dir"
                 [lockSwipeToPrev]="lockSwipeToPrev"
                 [lockSwipes]="lockSwipes"
-                [spaceBetween]="spaceBetween"       
+                [spaceBetween]="spaceBetween"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -238,9 +248,11 @@ export enum Step {
                 [startingDayWeek]="startingDayWeek"
                 [allDayLabel]="allDayLabel"
                 [hourParts]="hourParts"
+                [autoSelect]="autoSelect"
                 [hourSegments]="hourSegments"
                 [eventSource]="eventSource"
                 [markDisabled]="markDisabled"
+                [weekviewHeaderTemplate]="weekviewHeaderTemplate||defaultWeekviewHeaderTemplate"
                 [weekviewAllDayEventTemplate]="weekviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [weekviewNormalEventTemplate]="weekviewNormalEventTemplate||defaultNormalEventTemplate"
                 [weekviewAllDayEventSectionTemplate]="weekviewAllDayEventSectionTemplate||defaultWeekViewAllDayEventSectionTemplate"
@@ -369,6 +381,7 @@ export class CalendarComponent implements OnInit {
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewEventDetailTemplateContext>;
+    @Input() weekviewHeaderTemplate:TemplateRef<IDisplayWeekViewHeader>;
     @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
     @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
