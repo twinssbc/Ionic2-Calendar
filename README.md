@@ -68,7 +68,7 @@ export class MyPageModule {}
 Add the directive in the html page
 
 ``` html
-      <calendar [eventSource]="eventSource"
+    <calendar [eventSource]="eventSource"
         [calendarMode]="calendar.mode"
         [currentDate]="calendar.currentDate"
         (onCurrentDateChanged)="onCurrentDateChanged($event)"
@@ -77,7 +77,8 @@ Add the directive in the html page
         (onTitleChanged)="onViewTitleChanged($event)"
         (onTimeSelected)="onTimeSelected($event)"
         step="30">
-      </calendar>
+        
+    </calendar>
 ```
 
 # Note for Ionic Build/Run command
@@ -162,66 +163,66 @@ Default value: 60
 ```
 
 * autoSelect  
-If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month view.  
+If set to true, the current calendar date will be auto selected when calendar is loaded or swiped in the month and week view.  
 Default value: true
 * locale  
 The locale used to display text in the calendar.  
 Default value: undefined (which means the local language)
 ``` html
-        <calendar ... [locale]="calendar.locale"></calendar>
+    <calendar ... [locale]="calendar.locale"></calendar>
 ```
 ``` json
-        calendar = {
-            locale: 'en-GB'
-        };
+    calendar = {
+        locale: 'en-GB'
+    };
 ```
 * markDisabled    
 The callback function used to determine if the time should be marked as disabled.    
 ``` html
-        <calendar ... [markDisabled]="markDisabled"></calendar>
+    <calendar ... [markDisabled]="markDisabled"></calendar>
 ```
 ``` typescript
-        markDisabled = (date: Date) => {
-            var current = new Date();
-            return date < current;
-        };
+    markDisabled = (date: Date) => {
+        var current = new Date();
+        return date < current;
+    };
 ```
 * dateFormatter    
 The custom date formatter to transform date to text.    
 If the custom date formatter is not set, the default Angular DatePipe is used.
 The format method in dateFormatter is optional, if omitted, the default Angular DatePipe is used.
 ``` html
-        <calendar ... [dateFormatter]="calendar.dateFormatter"></calendar>
+    <calendar ... [dateFormatter]="calendar.dateFormatter"></calendar>
 ```
 ``` typescript
-        calendar = {
-            dateFormatter: {
-                formatMonthViewDay: function(date:Date) {
-                    return date.getDate().toString();
-                },
-                formatMonthViewDayHeader: function(date:Date) {
-                    return 'testMDH';
-                },
-                formatMonthViewTitle: function(date:Date) {
-                    return 'testMT';
-                },
-                formatWeekViewDayHeader: function(date:Date) {
-                    return 'testWDH';
-                },
-                formatWeekViewTitle: function(date:Date) {
-                    return 'testWT';
-                },
-                formatWeekViewHourColumn: function(date:Date) {
-                    return 'testWH';
-                },
-                formatDayViewHourColumn: function(date:Date) {
-                    return 'testDH';
-                },
-                formatDayViewTitle: function(date:Date) {
-                    return 'testDT';
-                }
+    calendar = {
+        dateFormatter: {
+            formatMonthViewDay: function(date:Date) {
+                return date.getDate().toString();
+            },
+            formatMonthViewDayHeader: function(date:Date) {
+                return 'testMDH';
+            },
+            formatMonthViewTitle: function(date:Date) {
+                return 'testMT';
+            },
+            formatWeekViewDayHeader: function(date:Date) {
+                return 'testWDH';
+            },
+            formatWeekViewTitle: function(date:Date) {
+                return 'testWT';
+            },
+            formatWeekViewHourColumn: function(date:Date) {
+                return 'testWH';
+            },
+            formatDayViewHourColumn: function(date:Date) {
+                return 'testDH';
+            },
+            formatDayViewTitle: function(date:Date) {
+                return 'testDT';
             }
-        };        
+        }
+    };        
 ```
 * dir  
 If set to "rtl", the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards.  
@@ -238,108 +239,114 @@ Default value: false
 * lockSwipeToPrev  
 If set to true, swiping to previous view is disabled.  
 Default value: false
+``` html
+    <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
+```
+``` typescript
+    onCurrentDateChanged(event:Date) {
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        event.setHours(0, 0, 0, 0);
 
-        <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
-
-        onCurrentDateChanged(event:Date) {
-            var today = new Date();
-            today.setHours(0, 0, 0, 0);
-            event.setHours(0, 0, 0, 0);
-    
-            if (this.calendar.mode === 'month') {
-                if (event.getFullYear() < today.getFullYear() || (event.getFullYear() === today.getFullYear() && event.getMonth() <= today.getMonth())) {
-                    this.lockSwipeToPrev = true;
-                } else {
-                    this.lockSwipeToPrev = false;
-                }
+        if (this.calendar.mode === 'month') {
+            if (event.getFullYear() < today.getFullYear() || (event.getFullYear() === today.getFullYear() && event.getMonth() <= today.getMonth())) {
+                this.lockSwipeToPrev = true;
+            } else {
+                this.lockSwipeToPrev = false;
             }
         }
+    }
+```
 
 * lockSwipes  
 If set to true, swiping is disabled.  
 Default value: false  
 *Note:* Since swiping is disabled, you could set currentDate to move the calendar to previous/next view. Do not set lockSwipeToPrev in the constructor phase. It will cause the view not updating when changing the currentDate. You could either set it in some callback function after initialization phase or use setTimeout to trigger some delay.  
 ``` html
-        <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
+    <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
 ```
-``` javascript
-        ngAfterViewInit() {
-            var me = this;
-            setTimeout(function() {
-                me.lockSwipes = true;
-            },100);
-        }
+``` typescript
+    ngAfterViewInit() {
+        var me = this;
+        setTimeout(function() {
+            me.lockSwipes = true;
+        },100);
+    }
 ```
 
 * startHour  
 Limit the weekview and dayview starts from which hour (0-23).  
 Default value: 0
 ``` html
-        <calendar ... startHour="9"></calendar>
+    <calendar ... startHour="9"></calendar>
 ```
 
 * endHour  
 Limit the weekview and dayview ends until which hour (1-24).  
 Default value: 24
 ``` html
-        <calendar ... endHour="19"></calendar>
+    <calendar ... endHour="19"></calendar>
 ```
 
 * spaceBetween  
 Distance between slides.  
 Default value: 0
 ``` html
-        <calendar ... spaceBetween="10"></calendar>
+    <calendar ... spaceBetween="10"></calendar>
 ```
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
 ``` html
-        <calendar ... (onCurrentDateChanged)="onCurrentDateChanged($event)"></calendar>
-
-        onCurrentChanged = (ev: Date) => {
-            console.log('Currently viewed date: ' + ev);
-        };
+    <calendar ... (onCurrentDateChanged)="onCurrentDateChanged($event)"></calendar>
+```
+``` typescript
+    onCurrentChanged = (ev: Date) => {
+        console.log('Currently viewed date: ' + ev);
+    };
 ```
 * onRangeChanged    
 The callback function triggered when the range or mode is changed if the queryMode is set to 'remote'    
 The ev parameter contains two fields, startTime and endTime.
 ``` html
-        <calendar ... (onRangeChanged)="onRangeChanged($event)"></calendar>
-
-        onRangeChanged = (ev: { startTime: Date, endTime: Date }) => {
-            Events.query(ev, (events) => {
-                this.eventSource = events;
-            });
-        };
+    <calendar ... (onRangeChanged)="onRangeChanged($event)"></calendar>
+```
+``` typescript
+    onRangeChanged = (ev: { startTime: Date, endTime: Date }) => {
+        Events.query(ev, (events) => {
+            this.eventSource = events;
+        });
+    };
 ```
 * onEventSelected    
 The callback function triggered when an event is clicked
 ``` html
-        <calendar ... (onEventSelected)="onEventSelected($event)"></calendar>
-
-        onEventSelected = (event) => {
-            console.log(event.title);
-        };
+    <calendar ... (onEventSelected)="onEventSelected($event)"></calendar>
+```
+``` typescript
+    onEventSelected = (event) => {
+        console.log(event.title);
+    };
 ```
 * onTimeSelected    
 The callback function triggered when a date is selected in the monthview.    
 The ev parameter contains two fields, selectedTime and events, if there's no event at the selected time, the events field will be either undefined or empty array
 ``` html
-        <calendar ... (onTimeSelected)="onTimeSelected($event)"></calendar>
-
-        onTimeSelected = (ev: { selectedTime: Date, events: any[] }) => {
-            console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0));
-        };
+    <calendar ... (onTimeSelected)="onTimeSelected($event)"></calendar>
+```
+``` typescript
+    onTimeSelected = (ev: { selectedTime: Date, events: any[] }) => {
+        console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0));
+    };
 ```
 * onTitleChanged    
 The callback function triggered when the view title is changed
 ``` html
-        <calendar ... (onTitleChanged)="onViewTitleChanged($event)"></calendar>
-
-        onViewTitleChanged = (title: string) => {
-            this.viewTitle = title;
-        };
-
+    <calendar ... (onTitleChanged)="onViewTitleChanged($event)"></calendar>
+```
+``` typescript
+    onViewTitleChanged = (title: string) => {
+        this.viewTitle = title;
+    };
 ```
 # View Customization Option
 Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation. You could refer to calendar.ts to get the definition of context types.   
@@ -348,63 +355,73 @@ Note: For any css class appear in the customized template, you need to specify t
 Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the active monthview
 ``` html
-        <ng-template #template let-view="view" let-row="row" let-col="col">
-            {{view.dates[row*7+col].label}}
-        </ng-template>
+    <ng-template #template let-view="view" let-row="row" let-col="col">
+        {{view.dates[row*7+col].label}}
+    </ng-template>
 
-        <calendar ... [monthviewDisplayEventTemplate]="template"></calendar>
+    <calendar ... [monthviewDisplayEventTemplate]="template"></calendar>
 ```
 * monthviewInactiveDisplayEventTemplate    
 Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the inactive monthview
 ``` html
-        <ng-template #template let-view="view" let-row="row" let-col="col">
-            {{view.dates[row*7+col].label}}
-        </ng-template>
+    <ng-template #template let-view="view" let-row="row" let-col="col">
+        {{view.dates[row*7+col].label}}
+    </ng-template>
 
-        <calendar ... [monthviewInactiveDisplayEventTemplate]="template"></calendar>
+    <calendar ... [monthviewInactiveDisplayEventTemplate]="template"></calendar>
 ```
 * monthviewEventDetailTemplate    
 Type: TemplateRef\<IMonthViewEventDetailTemplateContext\>    
 The template provides customized view for event detail section in the monthview
 ``` html
-        <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
-	    ... 
-        </ng-template>
+    <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+    ... 
+    </ng-template>
 
-        <calendar ... [monthviewEventDetailTemplate]="template"></calendar>
+    <calendar ... [monthviewEventDetailTemplate]="template"></calendar>
+```
+* weekviewHeaderTemplate     
+Type: TemplateRef\<IDisplayWeekViewHeader\>     
+The template provides customized view for day header in the weekview 
+``` html 
+    <ng-template #template let-viewDate="viewDate"> 
+        <div class="custom-day-header"> {{ viewDate.dayHeader }} </div> 
+    </ng-template> 
+ 
+    <calendar ... [weekviewHeaderTemplate]="template"></calendar>
 ```
 * weekviewAllDayEventTemplate    
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the weekview
 ``` html
-        <ng-template #template let-displayEvent="displayEvent">
-            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </ng-template>
+    <ng-template #template let-displayEvent="displayEvent">
+        <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+    </ng-template>
 
-        <calendar ... [weekviewAllDayEventTemplate]="template"></calendar>
+    <calendar ... [weekviewAllDayEventTemplate]="template"></calendar>
 ```
 * weekviewNormalEventTemplate    
 Type: TemplateRef\<IDisplayEvent\>    
 The template provides customized view for normal event in the weekview
 
 ``` html
-        <ng-template #template let-displayEvent="displayEvent">
-            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </ng-template>
+    <ng-template #template let-displayEvent="displayEvent">
+        <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+    </ng-template>
 
-        <calendar ... [weekviewNormalEventTemplate]="template"></calendar>
+    <calendar ... [weekviewNormalEventTemplate]="template"></calendar>
 ```
 
 * dayviewAllDayEventTemplate  
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the dayview
 ``` html
-        <ng-template #template let-displayEvent="displayEvent">
-            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </ng-template>
+    <ng-template #template let-displayEvent="displayEvent">
+        <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+    </ng-template>
 
-        <calendar ... [dayviewAllDayEventTemplate]="template"></calendar>
+    <calendar ... [dayviewAllDayEventTemplate]="template"></calendar>
 ```
 
 * dayviewNormalEventTemplate  
@@ -412,11 +429,11 @@ Type: TemplateRef\<IDisplayEvent\>
 The template provides customized view for normal event in the dayview
 
 ``` html
-        <ng-template #template let-displayEvent="displayEvent">
-            <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
-        </ng-template>
+    <ng-template #template let-displayEvent="displayEvent">
+        <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
+    </ng-template>
 
-        <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
+    <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
 ```
 
 * weekviewAllDayEventSectionTemplate (version >= 0.3)  
@@ -509,14 +526,14 @@ If allDay is set to true, the startTime has to be as a UTC date which time is se
 For example, if an allDay event starting from 2014-05-09, then startTime is
 
 ``` javascript
-        var startTime = new Date(Date.UTC(2014, 4, 8));
+    var startTime = new Date(Date.UTC(2014, 4, 8));
 ```
 
 * endTime    
 If allDay is set to true, the startTime has to be as a UTC date which time is set to 0:00 AM, because in an allDay event, only the date is considered, the exact time or timezone doesn't matter.    
 For example, if an allDay event ending to 2014-05-10, then endTime is
 ``` javascript
-        var endTime = new Date(Date.UTC(2014, 4, 9));
+    var endTime = new Date(Date.UTC(2014, 4, 9));
 ```
 * allDay    
 Indicates the event is allDay event or regular event
@@ -582,7 +599,8 @@ In the CPU profile, the default Intl based localization code occupies a big port
 
 ``` html
 <calendar ... [dateFormatter]="calendar.dateFormatter"></calendar>
-
+```
+``` typescript
 calendar = {
     dateFormatter: {
         formatMonthViewDay: function(date:Date) {
