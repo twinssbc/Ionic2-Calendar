@@ -3,7 +3,7 @@ import { Slides } from 'ionic-angular';
 import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef, ElementRef } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode, IDateFormatter } from './calendar';
+import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode, IDateFormatter, IDisplayWeekViewHeader } from './calendar';
 import { CalendarService } from './calendar.service';
 import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekViewNormalEventSectionTemplateContext } from "./calendar";
 
@@ -16,7 +16,12 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                     <thead>
                     <tr>
                         <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let dayHeader of views[0].dayHeaders">{{dayHeader}}
+                        <th class="weekview-header text-center" *ngFor="let date of views[0].dates"
+                            [ngClass]="getHighlightClass(date)"
+                            (click)="daySelected(date)">
+                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                [ngTemplateOutletContext]="{viewDate:date}">
+                            </ng-template>
                         </th>
                     </tr>
                     </thead>
@@ -89,7 +94,12 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                     <thead>
                     <tr>
                         <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let dayHeader of views[1].dayHeaders">{{dayHeader}}
+                        <th class="weekview-header text-center" *ngFor="let date of views[1].dates"
+                            [ngClass]="getHighlightClass(date)"
+                            (click)="daySelected(date)">
+                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                [ngTemplateOutletContext]="{viewDate:date}">
+                            </ng-template>
                         </th>
                     </tr>
                     </thead>
@@ -164,7 +174,12 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                     <thead>
                     <tr>
                         <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let dayHeader of views[2].dayHeaders">{{dayHeader}}
+                        <th class="weekview-header text-center" *ngFor="let date of views[2].dates"
+                            [ngClass]="getHighlightClass(date)"
+                            (click)="daySelected(date)">
+                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                [ngTemplateOutletContext]="{viewDate:date}">
+                            </ng-template>
                         </th>
                     </tr>
                     </thead>
@@ -313,7 +328,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
           line-height: 50px;
           text-align: center;
           width: 50px;
-          border-left: 1px solid #ddd;  
+          border-left: 1px solid #ddd;
         }
 
         [dir="rtl"] .weekview-allday-label {
@@ -345,6 +360,28 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
           overflow: hidden;
           white-space: nowrap;
           font-size: 14px;
+          /* cursor: pointer; */
+        }
+
+        .weekview-header th.weekview-with-event {
+          /* background-color: #3a87ad; */
+          /* color: white; */
+        }
+
+        .weekview-header th.weekview-current {
+          /* background-color: #f0f0f0; */
+        }
+
+        .weekview-header th.weekview-with-event.weekview-current {
+          /* color: #000; */
+        }
+
+        .weekview-header th.weekview-selected {
+          /* background-color: #009900; */
+          /* color: white; */
+        }
+        .weekview-header th.weekview-with-event.weekview-current.weekview-selected {
+          /* color: white; */
         }
 
         .weekview-allday-table {
@@ -427,6 +464,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @ViewChild('weekSlider') slider:Slides;
     @HostBinding('class.weekview') class = true;
 
+    @Input() weekviewHeaderTemplate:TemplateRef<IDisplayWeekViewHeader>;
     @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
     @Input() weekviewAllDayEventSectionTemplate:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
@@ -439,6 +477,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() allDayLabel:string;
     @Input() hourParts:number;
     @Input() eventSource:IEvent[];
+    @Input() autoSelect:boolean = true;
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
@@ -459,6 +498,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
     public views:IWeekView[] = [];
     public currentViewIndex = 0;
+    public selectedDate:IWeekViewDateRow;
     public range:IRange;
     public direction = 0;
     public mode:CalendarMode = 'week';
@@ -649,7 +689,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         while (i < n) {
             dates[i++] = {
                 date: new Date(current.getTime()),
-                events: []
+                events: [],
+                dayHeader: ''
             };
             current.setDate(current.getDate() + 1);
         }
@@ -666,15 +707,13 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
     getViewData(startTime:Date):IWeekView {
         let dates = WeekViewComponent.getDates(startTime, 7);
-        let dayHeaders:string[] = [];
         for (let i = 0; i < 7; i++) {
-            dayHeaders.push(this.formatDayHeader(dates[i].date));
+            dates[i].dayHeader = this.formatDayHeader(dates[i].date);
         }
 
         return {
             rows: WeekViewComponent.createDateObjects(startTime, this.startHour, this.endHour, this.hourSegments),
-            dates: dates,
-            dayHeaders: dayHeaders
+            dates: dates
         };
     }
 
@@ -721,6 +760,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
         for (let i = 0; i < 7; i += 1) {
             dates[i].events = [];
+            dates[i].hasEvent = false;
         }
 
         for (let day = 0; day < 7; day += 1) {
@@ -767,6 +807,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                         eventSet.push(displayAllDayEvent);
                         dates[allDayStartIndex].events = eventSet;
                     }
+                    dates[allDayStartIndex].hasEvent = true;
                 }
             } else {
                 if (eventEndTime <= startTime || eventStartTime >= endTime) {
@@ -853,6 +894,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                                 eventSet.push(displayEvent);
                                 rows[startRowIndex][dayIndex].events = eventSet;
                             }
+                            dates[dayIndex].hasEvent = true;
                         }
                         startRowIndex = 0;
                         startOffset = 0;
@@ -888,6 +930,33 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                 this.placeAllDayEvents(orderedAllDayEvents);
             }
         }
+
+        if (this.autoSelect) {
+            let findSelected = false;
+            for (let r = 0; r < 7; r += 1) {
+                if (dates[r].selected) {
+                    this.selectedDate = dates[r];
+                    findSelected = true;
+                    break;
+                }
+            }
+
+            if (findSelected) {
+                this.onTimeSelected.emit({
+                    selectedTime: this.selectedDate.date,
+                    events: this.convertDisplayEventsInEvents(this.selectedDate.events),
+                    disabled: false
+                });
+            }
+        }
+    }
+
+    convertDisplayEventsInEvents(displayEvents: IDisplayEvent[]): IEvent[] {
+        let events:IEvent[] = [];
+        for (let i = 0; i < displayEvents.length; i += 1) {
+            events.push(displayEvents[i].event);
+        }
+        return events;
     }
 
     refreshView() {
@@ -898,6 +967,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
             this.onTitleChanged.emit(title);
         }
         this.calendarService.populateAdjacentViews(this);
+        this.updateCurrentView(this.range.startTime, this.views[this.currentViewIndex]);
         this.calendarService.rangeChanged(this);
     }
 
@@ -905,6 +975,33 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         let firstDayOfWeek = new Date(this.range.startTime.getTime());
         firstDayOfWeek.setHours(12, 0, 0, 0);
         return this.formatTitle(firstDayOfWeek);
+    }
+
+    getHighlightClass(date: IWeekViewDateRow):string {
+        let className = '';
+
+        if (date.hasEvent) {
+            if (className) {
+                className += ' ';
+            }
+            className = 'weekview-with-event';
+        }
+
+        if (date.selected) {
+            if (className) {
+                className += ' ';
+            }
+            className += 'weekview-selected';
+        }
+
+        if (date.current) {
+            if (className) {
+                className += ' ';
+            }
+            className += 'weekview-current';
+        }
+
+        return className;
     }
 
     private static compareEventByStartOffset(eventA:IDisplayEvent, eventB:IDisplayEvent):number {
@@ -1037,8 +1134,51 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         }
     }
 
+    updateCurrentView(currentViewStartDate:Date, view:IWeekView) {
+        let currentCalendarDate = this.calendarService.currentDate,
+            today = new Date(),
+            oneDay = 86400000,
+            selectedDayDifference = Math.floor((currentCalendarDate.getTime() - currentViewStartDate.getTime() - (currentCalendarDate.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay),
+            currentDayDifference = Math.floor((today.getTime() - currentViewStartDate.getTime() - (today.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay);
+
+        for (let r = 0; r < 7; r += 1) {
+            view.dates[r].selected = false;
+        }
+
+        if (selectedDayDifference >= 0 && selectedDayDifference < 7  && (this.autoSelect)) {
+            view.dates[selectedDayDifference].selected = true;
+            this.selectedDate = view.dates[selectedDayDifference];
+        } else {
+            this.selectedDate = {
+                date: null,
+                events: [],
+                dayHeader: ''
+            };
+        }
+
+        if (currentDayDifference >= 0 && currentDayDifference < 7) {
+            view.dates[currentDayDifference].current = true;
+        }
+    }
+
     eventSelected(event:IEvent) {
         this.onEventSelected.emit(event);
+        let date = new Date(event.startTime.getTime());
+        date.setHours(12);
+        this.daySelected({
+            date: date,
+            events: [],
+            dayHeader: ''
+        });
+    }
+
+    daySelected(viewDate:IWeekViewDateRow) {
+        let selectedDate = viewDate.date,
+            events = viewDate.events;
+
+        this.calendarService.setCurrentDate(selectedDate);
+        this.refreshView();
+        this.direction = 0;
     }
 
     setScrollPosition(scrollPosition:number) {
