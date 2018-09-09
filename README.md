@@ -349,6 +349,46 @@ The callback function triggered when the view title is changed
     };
 ```
 # View Customization Option
+There are two ways to customize the look and feel. If you just want to simply change the color or size of certain element, you could override the styles of the predefined css classes. *CSS Customization* section lists some important css classes. If you need to change the layout of certain element, you could refer to the *Template Customization* part.
+
+## CSS Customization  
+
+* monthview-primary-with-event  
+The date that is in current month and having events
+
+* monthview-secondary-with-event  
+The date that is in previous/next month and having events
+
+* monthview-selected  
+The selected date
+
+* monthview-current  
+The current date
+
+* monthview-disabled  
+The disabled date
+
+* weekview-with-event  
+The date having all day events, applied to the day header in week view
+
+* week-view-current  
+The current date, applied to the day header in week view
+
+* weekview-selected  
+The selected date, applied to the day header in week view
+
+* weekview-allday-label  
+Applied to the all day label in week view
+
+* dayview-allday-label  
+Applied to the all day label in day view
+
+* calendar-hour-column  
+Applied to the hour column in both weekview and day view
+
+
+## Template Customization  
+
 Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation. You could refer to calendar.ts to get the definition of context types.   
 
 * monthviewDisplayEventTemplate    
@@ -381,7 +421,7 @@ The template provides customized view for event detail section in the monthview
 
     <calendar ... [monthviewEventDetailTemplate]="template"></calendar>
 ```
-* weekviewHeaderTemplate     
+* weekviewHeaderTemplate (version >= 0.4.5)  
 Type: TemplateRef\<IDisplayWeekViewHeader\>     
 The template provides customized view for day header in the weekview 
 ``` html 
@@ -438,7 +478,7 @@ The template provides customized view for normal event in the dayview
 
 * weekviewAllDayEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>    
-The template provides customized view for all day event section in the weekview
+The template provides customized view for all day event section (table part) in the weekview
 
 ``` html
         <ng-template #template let-day="day" let-eventTemplate="eventTemplate">
@@ -459,7 +499,7 @@ The template provides customized view for all day event section in the weekview
 
 * weekviewNormalEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>    
-The template provides customized view for normal event section in the weekview
+The template provides customized view for normal event section (table part) in the weekview
 
 ``` html
         <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
@@ -479,7 +519,7 @@ The template provides customized view for normal event section in the weekview
 
 * dayviewAllDayEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>    
-The template provides customized view for all day event section in the dayview
+The template provides customized view for all day event section (table part) in the dayview
 
 ``` html
         <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
@@ -498,7 +538,7 @@ The template provides customized view for all day event section in the dayview
 
 * dayviewNormalEventSectionTemplate (version >= 0.3)  
 Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>    
-The template provides customized view for normal event section in the dayview
+The template provides customized view for normal event section (table part) in the dayview
 
 ``` html
         <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">

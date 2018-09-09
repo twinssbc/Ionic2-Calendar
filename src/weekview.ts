@@ -360,28 +360,6 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
           overflow: hidden;
           white-space: nowrap;
           font-size: 14px;
-          /* cursor: pointer; */
-        }
-
-        .weekview-header th.weekview-with-event {
-          /* background-color: #3a87ad; */
-          /* color: white; */
-        }
-
-        .weekview-header th.weekview-current {
-          /* background-color: #f0f0f0; */
-        }
-
-        .weekview-header th.weekview-with-event.weekview-current {
-          /* color: #000; */
-        }
-
-        .weekview-header th.weekview-selected {
-          /* background-color: #009900; */
-          /* color: white; */
-        }
-        .weekview-header th.weekview-with-event.weekview-current.weekview-selected {
-          /* color: white; */
         }
 
         .weekview-allday-table {
@@ -498,7 +476,6 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
     public views:IWeekView[] = [];
     public currentViewIndex = 0;
-    public selectedDate:IWeekViewDateRow;
     public range:IRange;
     public direction = 0;
     public mode:CalendarMode = 'week';
@@ -933,30 +910,28 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
 
         if (this.autoSelect) {
             let findSelected = false;
+            let selectedDate;
             for (let r = 0; r < 7; r += 1) {
                 if (dates[r].selected) {
-                    this.selectedDate = dates[r];
+                    selectedDate = dates[r];
                     findSelected = true;
                     break;
                 }
             }
 
             if (findSelected) {
+                let disabled = false;
+                if (this.markDisabled) {
+                    disabled = this.markDisabled(selectedDate.date);
+                }
+
                 this.onTimeSelected.emit({
-                    selectedTime: this.selectedDate.date,
-                    events: this.convertDisplayEventsInEvents(this.selectedDate.events),
-                    disabled: false
+                    selectedTime: selectedDate.date,
+                    events: selectedDate.events.map(e => e.event),
+                    disabled: disabled
                 });
             }
         }
-    }
-
-    convertDisplayEventsInEvents(displayEvents: IDisplayEvent[]): IEvent[] {
-        let events:IEvent[] = [];
-        for (let i = 0; i < displayEvents.length; i += 1) {
-            events.push(displayEvents[i].event);
-        }
-        return events;
     }
 
     refreshView() {
@@ -1145,15 +1120,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
             view.dates[r].selected = false;
         }
 
-        if (selectedDayDifference >= 0 && selectedDayDifference < 7  && (this.autoSelect)) {
+        if (selectedDayDifference >= 0 && selectedDayDifference < 7 && this.autoSelect) {
             view.dates[selectedDayDifference].selected = true;
-            this.selectedDate = view.dates[selectedDayDifference];
-        } else {
-            this.selectedDate = {
-                date: null,
-                events: [],
-                dayHeader: ''
-            };
         }
 
         if (currentDayDifference >= 0 && currentDayDifference < 7) {
@@ -1161,24 +1129,29 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         }
     }
 
-    eventSelected(event:IEvent) {
-        this.onEventSelected.emit(event);
-        let date = new Date(event.startTime.getTime());
-        date.setHours(12);
-        this.daySelected({
-            date: date,
-            events: [],
-            dayHeader: ''
-        });
-    }
-
     daySelected(viewDate:IWeekViewDateRow) {
         let selectedDate = viewDate.date,
-            events = viewDate.events;
+            dates = this.views[this.currentViewIndex].dates,
+            currentViewStartDate = this.range.startTime,
+            oneDay = 86400000,
+            selectedDayDifference = Math.floor((selectedDate.getTime() - currentViewStartDate.getTime() - (selectedDate.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay);
 
         this.calendarService.setCurrentDate(selectedDate);
-        this.refreshView();
-        this.direction = 0;
+
+        for (let r = 0; r < 7; r += 1) {
+            dates[r].selected = false;
+        }
+
+        if (selectedDayDifference >= 0 && selectedDayDifference < 7) {
+            dates[selectedDayDifference].selected = true;
+        }
+
+        let disabled = false;
+        if (this.markDisabled) {
+            disabled = this.markDisabled(selectedDate);
+        }
+
+        this.onTimeSelected.emit({selectedTime: selectedDate, events: viewDate.events.map(e => e.event), disabled: disabled});
     }
 
     setScrollPosition(scrollPosition:number) {
