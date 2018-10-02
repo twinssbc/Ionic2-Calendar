@@ -41,8 +41,8 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                             <tr *ngFor="let tm of views[0].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                <td class="calendar-hour-column text-center" [innerHTML]="hourColumnLabels[i]">
+                                   
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -63,8 +63,8 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                             <tr *ngFor="let tm of views[0].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                <td class="calendar-hour-column text-center" [innerHTML]="hourColumnLabels[i]">
+                                    
                                 </td>
                                 <td class="calendar-cell">
                                 </td>
@@ -103,8 +103,8 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                             <tr *ngFor="let tm of views[1].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                <td class="calendar-hour-column text-center" [innerHTML]="hourColumnLabels[i]">
+                                    
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -125,8 +125,8 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                             <tr *ngFor="let tm of views[1].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                <td class="calendar-hour-column text-center" [innerHTML]="hourColumnLabels[i]">
+                                    
                                 </td>
                                 <td class="calendar-cell">
                                 </td>
@@ -165,8 +165,8 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                             <tr *ngFor="let tm of views[2].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                <td class="calendar-hour-column text-center" [innerHTML]="hourColumnLabels[i]">
+                                    
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -187,8 +187,8 @@ import { IDisplayAllDayEvent } from "./calendar";
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                             <tr *ngFor="let tm of views[2].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                <td class="calendar-hour-column text-center" [innerHTML]="hourColumnLabels[i]">
+                                   
                                 </td>
                                 <td class="calendar-cell">
                                 </td>
