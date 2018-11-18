@@ -349,7 +349,7 @@ The callback function triggered when the view title is changed
     };
 ```
 # View Customization Option
-There are two ways to customize the look and feel. If you just want to simply change the color or size of certain element, you could override the styles of the predefined css classes. *CSS Customization* section lists some important css classes. If you need to change the layout of certain element, you could refer to the *Template Customization* part.
+There are two ways to customize the look and feel. If you just want to simply change the color or size of certain element, you could override the styles of the predefined css classes. **CSS Customization** section lists some important css classes. If you need to change the layout of certain element, you could refer to the **Template Customization** part.
 
 ## CSS Customization  
 
