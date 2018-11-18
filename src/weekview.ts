@@ -553,7 +553,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
             this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
         }
 
-        let lockSwipes = changes['lockSwipesv'];
+        let lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
             this.slider.lockSwipes(lockSwipes.currentValue);
         }
