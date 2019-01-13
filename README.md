@@ -9,14 +9,15 @@ Ionic2 calendar directive
 https://twinssbc.github.io/Ionic2-Calendar/demo/
 
 # Dependency
-The latest version has below dependency:      
+version 0.2-0.4 has below dependency:      
 intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333    
 
 version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
 version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
 version 0.2.9+ depends on Ionic 2.3.0 version onwards.  
-version 0.3.x depends on Ionic 3.1.1 version onwards.
-version 0.4.x depends on Ionic 3.9.2 version onwards.
+version 0.3.x depends on Ionic 3.1.1 version onwards.  
+version 0.4.x depends on Ionic 3.9.2 version onwards.  
+version 0.5.x depends on Ionic 4.0.0-rc.1 onwards.
 
 
 # Usage
@@ -25,9 +26,34 @@ Install: `npm install ionic2-calendar --save`
 
 Import the ionic2-calendar module:
 
+version 0.1.x - 0.4.x
 ``` typescript
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
+import { MyApp } from './app/app.component';
+import { NgCalendarModule  } from 'ionic2-calendar';
+
+
+@NgModule({
+    declarations: [
+        MyApp
+    ],
+    imports: [
+        NgCalendarModule,
+        IonicModule.forRoot(MyApp)
+    ],
+    bootstrap: [IonicApp],
+    entryComponents: [
+        MyApp
+    ]
+})
+export class AppModule {}
+```
+
+version 0.5.x
+``` typescript
+import { NgModule } from '@angular/core';
+import { IonicApp, IonicModule } from '@ionic/angular';
 import { MyApp } from './app/app.component';
 import { NgCalendarModule  } from 'ionic2-calendar';
 
@@ -112,7 +138,7 @@ The format of the title displayed in the day view.
 Default value: 'MMMM dd, yyyy'
 * formatWeekTitle    
 The format of the title displayed in the week view.    
-Default value: (version 0.1-0.3) 'MMMM yyyy, Week $n', (version 0.4) 'MMMM yyyy, \'Week\' w'  
+Default value: (version 0.1-0.3) 'MMMM yyyy, Week $n', (version 0.4+) 'MMMM yyyy, \'Week\' w'  
 * formatMonthTitle    
 The format of the title displayed in the month view.    
 Default value: 'MMMM yyyy'
@@ -121,7 +147,7 @@ The format of the header displayed in the week view.
 Default value: 'EEE d'
 * formatHourColumn    
 The format of the hour column displayed in the week and day view.    
-Default value: (version 0.1-0.3) 'j', (version 0.4) 'ha'  
+Default value: (version 0.1-0.3) 'j', (version 0.4+) 'ha'  
 * calendarMode    
 The initial mode of the calendar.    
 Default value: 'month'
@@ -227,7 +253,7 @@ The format method in dateFormatter is optional, if omitted, the default Angular 
         };        
 ```
 * dir  
-If set to "rtl", the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards.  
+If set to "rtl", the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards, not supported since Ionic 4.0.0.  
 Default value: ""
 
 * scrollToHour  
@@ -627,7 +653,7 @@ import { NgModule, LOCALE_ID } from '@angular/core';
 })
 ```
 
-For version 0.4.x which depends on Ionic 3.9.2 and Angular 5.0, locale module needs to be registered explicitly in module file as below.
+For version 0.4.x+ which depends on Ionic 3.9.2+ and Angular 5.0+, locale module needs to be registered explicitly in module file as below.
 ``` typescript
 import { registerLocaleData } from '@angular/common';
 import localeZh from '@angular/common/locales/zh';
@@ -674,4 +700,4 @@ var mySwiper = document.querySelector('.swiper-container')['swiper'];
 ```
 
 * Error: Cannot read property 'dayHeaders' of undefined  
-Answer: Take a look at the Localization section. For version 0.4.x, you need to manually register the locale.
+Answer: Take a look at the Localization section. For version 0.4.x+, you need to manually register the locale.
