@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Slides } from 'ionic-angular';
+import { IonSlides } from '@ionic/angular';
 import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef, ElementRef } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { ICalendarComponent, IDisplayEvent, IEvent, ITimeSelected, IRange, IWeekView, IWeekViewRow, IWeekViewDateRow, CalendarMode, IDateFormatter, IDisplayWeekViewHeader } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -10,8 +10,8 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
 @Component({
     selector: 'weekview',
     template: `
-        <ion-slides #weekSlider [loop]="true" [dir]="dir" [spaceBetween]="spaceBetween" (ionSlideDidChange)="onSlideChanged()">
-            <ion-slide>
+        <ion-slides #weekSlider [options]="slideOptions" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
+            <ion-slide class="slide-container">
                 <table class="table table-bordered table-fixed weekview-header">
                     <thead>
                     <tr>
@@ -29,7 +29,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                 <div *ngIf="0===currentViewIndex">
                     <div class="weekview-allday-table">
                         <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
+                        <div class="weekview-allday-content-wrapper scroll-content">
                             <table class="table table-fixed weekview-allday-content-table">
                                 <tbody>
                                 <tr>
@@ -41,7 +41,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 </tr>
                                 </tbody>
                             </table>
-                        </ion-scroll>
+                        </div>
                     </div>
                     <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
@@ -63,7 +63,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                 <div *ngIf="0!==currentViewIndex">
                     <div class="weekview-allday-table">
                         <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
+                        <div class="weekview-allday-content-wrapper scroll-content">
                             <table class="table table-fixed weekview-allday-content-table">
                                 <tbody>
                                 <tr>
@@ -72,7 +72,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 </tr>
                                 </tbody>
                             </table>
-                        </ion-scroll>
+                        </div>
                     </div>
                     <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
@@ -89,7 +89,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                     </init-position-scroll>
                 </div>
             </ion-slide>
-            <ion-slide>
+            <ion-slide class="slide-container">
                 <table class="table table-bordered table-fixed weekview-header">
                     <thead>
                     <tr>
@@ -107,7 +107,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                 <div *ngIf="1===currentViewIndex">
                     <div class="weekview-allday-table">
                         <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
+                        <div class="weekview-allday-content-wrapper scroll-content">
                             <table class="table table-fixed weekview-allday-content-table">
                                 <tbody>
                                 <tr>
@@ -119,7 +119,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 </tr>
                                 </tbody>
                             </table>
-                        </ion-scroll>
+                        </div>
                     </div>
                     <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
@@ -143,7 +143,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                 <div *ngIf="1!==currentViewIndex">
                     <div class="weekview-allday-table">
                         <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
+                        <div class="weekview-allday-content-wrapper scroll-content">
                             <table class="table table-fixed weekview-allday-content-table">
                                 <tbody>
                                 <tr>
@@ -152,7 +152,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 </tr>
                                 </tbody>
                             </table>
-                        </ion-scroll>
+                        </div>
                     </div>
                     <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
@@ -169,7 +169,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                     </init-position-scroll>
                 </div>
             </ion-slide>
-            <ion-slide>
+            <ion-slide class="slide-container">
                 <table class="table table-bordered table-fixed weekview-header">
                     <thead>
                     <tr>
@@ -187,7 +187,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                 <div *ngIf="2===currentViewIndex">
                     <div class="weekview-allday-table">
                         <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
+                        <div class="weekview-allday-content-wrapper scroll-content">
                             <table class="table table-fixed weekview-allday-content-table">
                                 <tbody>
                                 <tr>
@@ -199,7 +199,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 </tr>
                                 </tbody>
                             </table>
-                        </ion-scroll>
+                        </div>
                     </div>
                     <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
@@ -223,7 +223,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                 <div *ngIf="2!==currentViewIndex">
                     <div class="weekview-allday-table">
                         <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <ion-scroll scrollY="true" class="weekview-allday-content-wrapper" zoom="false">
+                        <div class="weekview-allday-content-wrapper scroll-content">
                             <table class="table table-fixed weekview-allday-content-table">
                                 <tbody>
                                 <tr>
@@ -232,7 +232,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 </tr>
                                 </tbody>
                             </table>
-                        </ion-scroll>
+                        </div>
                     </div>
                     <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
                         <table class="table table-bordered table-fixed weekview-normal-event-table">
@@ -321,6 +321,14 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
           padding: 0 !important;
           height: 37px;
         }
+        
+        .slides-container {
+            height: 100%;
+        }
+        
+        .slide-container {
+            display: block;
+        }
 
         .weekview-allday-label {
           float: left;
@@ -331,20 +339,10 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
           border-left: 1px solid #ddd;
         }
 
-        [dir="rtl"] .weekview-allday-label {
-            float: right;
-            border-right: 1px solid #ddd;
-        }
-
         .weekview-allday-content-wrapper {
           margin-left: 50px;
           overflow: hidden;
           height: 51px;
-        }
-
-        [dir="rtl"] .weekview-allday-content-wrapper {
-          margin-left: 0;
-          margin-right: 50px;
         }
 
         .weekview-allday-content-table {
@@ -380,17 +378,14 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
           font-size: 14px;
         }
 
-        .weekview .slide-zoom {
-          height: 100%;
+        .scroll-content {
+            overflow-y: auto;
+            overflow-x: hidden;
         }
-
-        .weekview-allday-content-wrapper scroll-content {
-          width: 100%;
-        }
-
+        
         ::-webkit-scrollbar,
         *::-webkit-scrollbar {
-          display: none;
+            display: none;
         }
 
         .table > tbody > tr > td.calendar-hour-column {
@@ -429,17 +424,12 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
           .weekview-allday-content-wrapper {
             margin-left: 31px;
           }
-
-          [dir="rtl"] .weekview-allday-content-wrapper {
-            margin-left: 0;
-            margin-right: 31px;
-          }
         }
     `],
     encapsulation: ViewEncapsulation.None
 })
 export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('weekSlider') slider:Slides;
+    @ViewChild('weekSlider') slider:IonSlides;
     @HostBinding('class.weekview') class = true;
 
     @Input() weekviewHeaderTemplate:TemplateRef<IDisplayWeekViewHeader>;
@@ -459,7 +449,6 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
-    @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean;
     @Input() lockSwipeToPrev:boolean;
@@ -479,6 +468,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     public range:IRange;
     public direction = 0;
     public mode:CalendarMode = 'week';
+    public slideOptions: any;
 
     private inited = false;
     private callbackOnInit = true;
@@ -495,6 +485,11 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     ngOnInit() {
+        this.slideOptions = {
+            loop: true,
+            spaceBetween: this.spaceBetween
+        };
+
         this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
         if (this.dateFormatter && this.dateFormatter.formatWeekViewDayHeader) {
             this.formatDayHeader = this.dateFormatter.formatWeekViewDayHeader;
@@ -598,20 +593,22 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
             direction = 0,
             currentViewIndex = this.currentViewIndex;
 
-        currentSlideIndex = (currentSlideIndex + 2) % 3;
-        if (currentSlideIndex - currentViewIndex === 1) {
-            direction = 1;
-        } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
-            direction = 1;
-            this.slider.slideTo(1, 0, false);
-        } else if (currentViewIndex - currentSlideIndex === 1) {
-            direction = -1;
-        } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
-            direction = -1;
-            this.slider.slideTo(3, 0, false);
-        }
-        this.currentViewIndex = currentSlideIndex;
-        this.move(direction);
+        this.slider.getActiveIndex().then((currentSlideIndex) => {
+            currentSlideIndex = (currentSlideIndex + 2) % 3;
+            if (currentSlideIndex - currentViewIndex === 1) {
+                direction = 1;
+            } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
+                direction = 1;
+                this.slider.slideTo(1, 0, false);
+            } else if (currentViewIndex - currentSlideIndex === 1) {
+                direction = -1;
+            } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
+                direction = -1;
+                this.slider.slideTo(3, 0, false);
+            }
+            this.currentViewIndex = currentSlideIndex;
+            this.move(direction);
+        });
     }
 
     move(direction:number) {
@@ -1044,12 +1041,6 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
                 events[i].position = col;
             } else {
                 events[i].position = maxColumn++;
-            }
-        }
-
-        if (this.dir === 'rtl') {
-            for (let i = 0; i < len; i += 1) {
-                events[i].position = maxColumn - 1 - events[i].position;
             }
         }
     }

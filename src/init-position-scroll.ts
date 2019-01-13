@@ -1,15 +1,32 @@
-import { Scroll } from 'ionic-angular';
-import { Component, Input, Output, EventEmitter, ElementRef, SimpleChanges } from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    ElementRef,
+    SimpleChanges,
+    OnChanges,
+    AfterViewInit,
+    OnDestroy,
+    ViewEncapsulation
+} from '@angular/core';
 
 @Component({
     selector: 'init-position-scroll',
     template: `
-        <ion-scroll scrollY="true" zoom="false" style="height:100%">
+        <div class="scroll-content" style="height:100%">
             <ng-content></ng-content>
-        </ion-scroll>
-    `
+        </div>
+    `,
+    styles: [`
+        .scroll-content {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }        
+    `],
+    encapsulation: ViewEncapsulation.None
 })
-export class initPositionScrollComponent extends Scroll {
+export class initPositionScrollComponent implements OnChanges, AfterViewInit, OnDestroy {
     @Input() initPosition:number;
     @Input() emitEvent:boolean;
     @Output() onScroll = new EventEmitter<number>();
@@ -20,7 +37,6 @@ export class initPositionScrollComponent extends Scroll {
     private listenerAttached:boolean = false;
 
     constructor(el:ElementRef) {
-        super();
         this.element = el;
     }
 

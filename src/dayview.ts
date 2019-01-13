@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Slides } from 'ionic-angular';
+import { IonSlides } from '@ionic/angular';
 import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef, ElementRef } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode, IDateFormatter } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -10,11 +10,11 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
 @Component({
     selector: 'dayview',
     template: `
-        <ion-slides #daySlider [loop]="true" [dir]="dir" [spaceBetween]="spaceBetween" (ionSlideDidChange)="onSlideChanged()">
-            <ion-slide>
+        <ion-slides #daySlider [options]="slideOptions" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
+            <ion-slide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
-                    <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
+                    <div class="dayview-allday-content-wrapper scroll-content">
                         <table class="table table-bordered dayview-allday-content-table">
                             <tbody>
                             <tr>
@@ -30,7 +30,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                             </tr>
                             </tbody>
                         </table>
-                    </ion-scroll>
+                    </div>
                 </div>
                 <init-position-scroll *ngIf="0===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
@@ -62,10 +62,10 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                     </table>
                 </init-position-scroll>
             </ion-slide>
-            <ion-slide>
+            <ion-slide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
-                    <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
+                    <div class="dayview-allday-content-wrapper scroll-content">
                         <table class="table table-bordered dayview-allday-content-table">
                             <tbody>
                             <tr>
@@ -81,7 +81,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                             </tr>
                             </tbody>
                         </table>
-                    </ion-scroll>
+                    </div>
                 </div>
                 <init-position-scroll *ngIf="1===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
@@ -113,10 +113,10 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                     </table>
                 </init-position-scroll>
             </ion-slide>
-            <ion-slide>
+            <ion-slide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
-                    <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
+                    <div class="dayview-allday-content-wrapper scroll-content">
                         <table class="table table-bordered dayview-allday-content-table">
                             <tbody>
                             <tr>
@@ -132,7 +132,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                             </tr>
                             </tbody>
                         </table>
-                    </ion-scroll>
+                    </div>
                 </div>
                 <init-position-scroll *ngIf="2===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
@@ -232,6 +232,14 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
           z-index: 10000;
         }
 
+        .slides-container {
+            height: 100%;
+        }
+
+        .slide-container {
+            display: block;
+        }
+
         .calendar-cell {
           padding: 0 !important;
           height: 37px;
@@ -246,20 +254,10 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
           border-left: 1px solid #ddd;
         }
 
-        [dir="rtl"] .dayview-allday-label {
-            border-right: 1px solid #ddd;
-            float: right;
-        }
-
         .dayview-allday-content-wrapper {
           margin-left: 50px;
           overflow: hidden;
           height: 51px;
-        }
-
-        [dir="rtl"] .dayview-allday-content-wrapper {
-          margin-left: 0;
-          margin-right: 50px;
         }
 
         .dayview-allday-content-table {
@@ -289,12 +287,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
           font-size: 14px;
         }
 
-        .dayview .slide-zoom {
-          height: 100%;
-        }
-
-        .dayview-allday-content-wrapper scroll-content {
-          width: 100%;
+        .scroll-content {
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         ::-webkit-scrollbar,
@@ -332,17 +327,12 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
           .dayview-allday-content-wrapper {
             margin-left: 31px;
           }
-
-          [dir="rtl"] .dayview-allday-content-wrapper {
-            margin-left: 0;
-            margin-right: 31px;
-          }
         }
     `],
     encapsulation: ViewEncapsulation.None
 })
 export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('daySlider') slider:Slides;
+    @ViewChild('daySlider') slider:IonSlides;
     @HostBinding('class.dayview') class = true;
 
     @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
@@ -358,7 +348,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
-    @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean;
     @Input() lockSwipeToPrev:boolean;
@@ -373,15 +362,12 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
     @Output() onTitleChanged = new EventEmitter<string>(true);
 
-    public slideOption = {
-        runCallbacksOnInit: false,
-        loop: true
-    };
     public views:IDayView[] = [];
     public currentViewIndex = 0;
     public direction = 0;
     public mode:CalendarMode = 'day';
     public range:IRange;
+    public slideOptions: any;
 
     private inited = false;
     private callbackOnInit = true;
@@ -397,6 +383,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     }
 
     ngOnInit() {
+        this.slideOptions = {
+            loop: true,
+            spaceBetween: this.spaceBetween
+        };
+
         this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
         if (this.dateFormatter && this.dateFormatter.formatDayViewTitle) {
             this.formatTitle = this.dateFormatter.formatDayViewTitle;
@@ -488,24 +479,25 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             return;
         }
 
-        let currentSlideIndex = this.slider.getActiveIndex(),
-            direction = 0,
+        let direction = 0,
             currentViewIndex = this.currentViewIndex;
 
-        currentSlideIndex = (currentSlideIndex + 2) % 3;
-        if (currentSlideIndex - currentViewIndex === 1) {
-            direction = 1;
-        } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
-            direction = 1;
-            this.slider.slideTo(1, 0, false);
-        } else if (currentViewIndex - currentSlideIndex === 1) {
-            direction = -1;
-        } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
-            direction = -1;
-            this.slider.slideTo(3, 0, false);
-        }
-        this.currentViewIndex = currentSlideIndex;
-        this.move(direction);
+        this.slider.getActiveIndex().then((currentSlideIndex) => {
+            currentSlideIndex = (currentSlideIndex + 2) % 3;
+            if (currentSlideIndex - currentViewIndex === 1) {
+                direction = 1;
+            } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
+                direction = 1;
+                this.slider.slideTo(1, 0, false);
+            } else if (currentViewIndex - currentSlideIndex === 1) {
+                direction = -1;
+            } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
+                direction = -1;
+                this.slider.slideTo(3, 0, false);
+            }
+            this.currentViewIndex = currentSlideIndex;
+            this.move(direction);
+        });
     }
 
     move(direction:number) {
@@ -779,12 +771,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                 events[i].position = col;
             } else {
                 events[i].position = maxColumn++;
-            }
-        }
-
-        if (this.dir === 'rtl') {
-            for (let i = 0; i < len; i += 1) {
-                events[i].position = maxColumn - 1 - events[i].position;
             }
         }
     }

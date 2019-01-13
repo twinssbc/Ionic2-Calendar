@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild, TemplateRef } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DatePipe } from '@angular/common';
-import { Slides } from 'ionic-angular';
+import { IonSlides } from '@ionic/angular';
 
 import { ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode, IDateFormatter } from './calendar';
 import { CalendarService } from './calendar.service';
@@ -11,7 +11,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
     selector: 'monthview',
     template: `
         <div>
-            <ion-slides #monthSlider [loop]="true" [dir]="dir" [spaceBetween]="spaceBetween" (ionSlideDidChange)="onSlideChanged()">
+            <ion-slides #monthSlider [options]="slideOptions" (ionSlideDidChange)="onSlideChanged()">
                 <ion-slide>
                     <table *ngIf="0===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
@@ -226,7 +226,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
     `]
 })
 export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('monthSlider') slider:Slides;
+    @ViewChild('monthSlider') slider:IonSlides;
 
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
@@ -243,7 +243,6 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
-    @Input() dir:string = "";
     @Input() lockSwipeToPrev:boolean;
     @Input() lockSwipes:boolean;
     @Input() spaceBetween:number;
@@ -259,6 +258,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     public range:IRange;
     public mode:CalendarMode = 'month';
     public direction = 0;
+    public slideOptions: any;
 
     private moveOnSelected = false;
     private inited = false;
@@ -273,6 +273,10 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     }
 
     ngOnInit() {
+        this.slideOptions = {
+            loop: true,
+            spaceBetween: this.spaceBetween
+        };
         if (this.dateFormatter && this.dateFormatter.formatMonthViewDay) {
             this.formatDayLabel = this.dateFormatter.formatMonthViewDay;
         } else {
@@ -366,20 +370,22 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             direction = 0,
             currentViewIndex = this.currentViewIndex;
 
-        currentSlideIndex = (currentSlideIndex + 2) % 3;
-        if (currentSlideIndex - currentViewIndex === 1) {
-            direction = 1;
-        } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
-            direction = 1;
-            this.slider.slideTo(1, 0, false);
-        } else if (currentViewIndex - currentSlideIndex === 1) {
-            direction = -1;
-        } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
-            direction = -1;
-            this.slider.slideTo(3, 0, false);
-        }
-        this.currentViewIndex = currentSlideIndex;
-        this.move(direction);
+        this.slider.getActiveIndex().then((currentSlideIndex) => {
+            currentSlideIndex = (currentSlideIndex + 2) % 3;
+            if (currentSlideIndex - currentViewIndex === 1) {
+                direction = 1;
+            } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
+                direction = 1;
+                this.slider.slideTo(1, 0, false);
+            } else if (currentViewIndex - currentSlideIndex === 1) {
+                direction = -1;
+            } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
+                direction = -1;
+                this.slider.slideTo(3, 0, false);
+            }
+            this.currentViewIndex = currentSlideIndex;
+            this.move(direction);
+        });
     }
 
     move(direction:number) {
