@@ -253,7 +253,7 @@ The format method in dateFormatter is optional, if omitted, the default Angular 
         };        
 ```
 * dir  
-If set to "rtl", the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards, not supported since Ionic 4.0.0.  
+If set to "rtl", the calendar supports RTL language. This feature is only supported in Ionic 2.3.0 version onwards.  
 Default value: ""
 
 * scrollToHour  
