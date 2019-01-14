@@ -10,7 +10,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
 @Component({
     selector: 'dayview',
     template: `
-        <ion-slides #daySlider [options]="slideOptions" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
+        <ion-slides #daySlider [options]="slideOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
             <ion-slide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
@@ -254,10 +254,20 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
           border-left: 1px solid #ddd;
         }
 
+        [dir="rtl"] .dayview-allday-label {
+            border-right: 1px solid #ddd;
+            float: right;
+        }
+
         .dayview-allday-content-wrapper {
           margin-left: 50px;
           overflow: hidden;
           height: 51px;
+        }
+
+        [dir="rtl"] .dayview-allday-content-wrapper {
+          margin-left: 0;
+          margin-right: 50px;
         }
 
         .dayview-allday-content-table {
@@ -327,6 +337,11 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
           .dayview-allday-content-wrapper {
             margin-left: 31px;
           }
+
+          [dir="rtl"] .dayview-allday-content-wrapper {
+            margin-left: 0;
+            margin-right: 31px;
+          }
         }
     `],
     encapsulation: ViewEncapsulation.None
@@ -348,6 +363,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
+    @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean;
     @Input() lockSwipeToPrev:boolean;
@@ -771,6 +787,12 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                 events[i].position = col;
             } else {
                 events[i].position = maxColumn++;
+            }
+        }
+
+        if (this.dir === 'rtl') {
+            for (let i = 0; i < len; i += 1) {
+                events[i].position = maxColumn - 1 - events[i].position;
             }
         }
     }

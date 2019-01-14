@@ -232,6 +232,7 @@ export enum Step {
                 [monthviewEventDetailTemplate]="monthviewEventDetailTemplate||monthviewDefaultEventDetailTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
+                [dir]="dir"
                 [lockSwipeToPrev]="lockSwipeToPrev"
                 [lockSwipes]="lockSwipes"
                 [spaceBetween]="spaceBetween"
@@ -258,6 +259,7 @@ export enum Step {
                 [weekviewNormalEventSectionTemplate]="weekviewNormalEventSectionTemplate||defaultNormalEventSectionTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
+                [dir]="dir"
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
                 [lockSwipeToPrev]="lockSwipeToPrev"
@@ -284,6 +286,7 @@ export enum Step {
                 [dayviewNormalEventSectionTemplate]="dayviewNormalEventSectionTemplate||defaultNormalEventSectionTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
+                [dir]="dir"
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
                 [lockSwipeToPrev]="lockSwipeToPrev"
@@ -330,7 +333,7 @@ export enum Step {
           width: 100%;
           padding: 2px;
           line-height: 15px;
-          text-align: left;
+          text-align: initial;
         }
 
         @media (max-width: 750px) {
@@ -389,6 +392,7 @@ export class CalendarComponent implements OnInit {
     @Input() dayviewAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
     @Input() dayviewNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
     @Input() dateFormatter:IDateFormatter;
+    @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean = false;
     @Input() lockSwipeToPrev:boolean = false;

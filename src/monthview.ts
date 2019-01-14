@@ -11,7 +11,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
     selector: 'monthview',
     template: `
         <div>
-            <ion-slides #monthSlider [options]="slideOptions" (ionSlideDidChange)="onSlideChanged()">
+            <ion-slides #monthSlider [options]="slideOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
                 <ion-slide>
                     <table *ngIf="0===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
@@ -243,6 +243,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() markDisabled:(date:Date) => boolean;
     @Input() locale:string;
     @Input() dateFormatter:IDateFormatter;
+    @Input() dir:string = "";
     @Input() lockSwipeToPrev:boolean;
     @Input() lockSwipes:boolean;
     @Input() spaceBetween:number;
