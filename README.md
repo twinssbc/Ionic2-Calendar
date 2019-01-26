@@ -2,6 +2,9 @@
 
 Ionic2 calendar directive
 
+[![version](https://img.shields.io/npm/v/ionic2-calendar/latest.svg)](https://www.npmjs.com/package/ionic2-calendar)
+[![GitHub License](https://img.shields.io/npm/l/ionic2-calendar.svg)](https://raw.githubusercontent.com/twinssbc/Ionic2-Calendar/master/LICENSE)
+
 # Demo
 https://twinssbc.github.io/Ionic2-Calendar/demo/
 
