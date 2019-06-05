@@ -701,3 +701,27 @@ var mySwiper = document.querySelector('.swiper-container')['swiper'];
 
 * Error: Cannot read property 'dayHeaders' of undefined  
 Answer: Take a look at the Localization section. For version 0.4.x+, you need to manually register the locale.
+
+* How to adjust the hour column width in weekview and dayview  
+Answer: Add below styles in global.scss.
+```
+.calendar-hour-column, .weekview-allday-label, .dayview-allday-label {
+  width: 70px !important;
+}
+```
+
+* How to hide allday row in weekview and dayview  
+Answer: Add below styles in global.scss.
+```
+.weekview-allday-table, .dayview-allday-table {
+  display: none;
+}
+
+.weekview-normal-event-container {
+  margin-top: 37px !important;
+}
+
+.dayview-normal-event-container {
+  margin-top: 0 !important;
+}
+```
