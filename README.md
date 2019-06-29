@@ -291,7 +291,7 @@ If set to true, swiping is disabled.
 Default value: false  
 *Note:* Since swiping is disabled, you could set currentDate to move the calendar to previous/next view. Do not set lockSwipeToPrev in the constructor phase. It will cause the view not updating when changing the currentDate. You could either set it in some callback function after initialization phase or use setTimeout to trigger some delay.  
 ``` html
-        <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
+        <calendar ... [lockSwipes]="lockSwipes"></calendar>
 ```
 ``` typescript
         ngAfterViewInit() {
