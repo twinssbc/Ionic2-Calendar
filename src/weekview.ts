@@ -490,8 +490,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
     private eventSourceChangedSubscription:Subscription;
-    private hourColumnLabels:string[];
-    private initScrollPosition:number;
+    public hourColumnLabels:string[];
+    public initScrollPosition:number;
     private formatDayHeader:(date:Date) => string;
     private formatTitle:(date:Date) => string;
     private formatHourColumnLabel:(date:Date) => string;

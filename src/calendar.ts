@@ -409,8 +409,8 @@ export class CalendarComponent implements OnInit {
     @Output() onTitleChanged = new EventEmitter<string>();
 
     private _currentDate:Date;
-    private hourParts = 1;
-    private hourSegments = 1;
+    public hourParts = 1;
+    public hourSegments = 1;
     private currentDateChangedFromChildrenSubscription:Subscription;
 
     constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private appLocale:string) {
