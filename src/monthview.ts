@@ -11,7 +11,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
     selector: 'monthview',
     template: `
         <div>
-            <ion-slides #monthSlider [options]="slideOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
+            <ion-slides #monthSlider [options]="sliderOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
                 <ion-slide>
                     <table *ngIf="0===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
@@ -246,7 +246,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     @Input() dir:string = "";
     @Input() lockSwipeToPrev:boolean;
     @Input() lockSwipes:boolean;
-    @Input() spaceBetween:number;
+    @Input() sliderOptions:any;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -259,7 +259,6 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     public range:IRange;
     public mode:CalendarMode = 'month';
     public direction = 0;
-    public slideOptions: any;
 
     private moveOnSelected = false;
     private inited = false;
@@ -274,10 +273,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     }
 
     ngOnInit() {
-        this.slideOptions = {
-            loop: true,
-            spaceBetween: this.spaceBetween
-        };
+        if(!this.sliderOptions) {
+            this.sliderOptions = {};
+        }
+        this.sliderOptions.loop = true;
+
         if (this.dateFormatter && this.dateFormatter.formatMonthViewDay) {
             this.formatDayLabel = this.dateFormatter.formatMonthViewDay;
         } else {

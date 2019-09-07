@@ -1,6 +1,6 @@
-# Ionic2-Calendar directive
+# Ionic-Calendar directive
 
-Ionic2 calendar directive
+Ionic calendar directive
 
 [![version](https://img.shields.io/npm/v/ionic2-calendar/latest.svg)](https://www.npmjs.com/package/ionic2-calendar)
 [![GitHub License](https://img.shields.io/npm/l/ionic2-calendar.svg)](https://raw.githubusercontent.com/twinssbc/Ionic2-Calendar/master/LICENSE)
@@ -200,7 +200,7 @@ Default value: undefined (which means the local language)
 ``` html
     <calendar ... [locale]="calendar.locale"></calendar>
 ```
-``` json
+``` typescript
     calendar = {
         locale: 'en-GB'
     };
@@ -317,12 +317,18 @@ Default value: 24
     <calendar ... endHour="19"></calendar>
 ```
 
-* spaceBetween  
-Distance between slides.  
-Default value: 0
+* sliderOptions  
+Options to pass to the underlying swiper instance. See http://idangero.us/swiper/api/ for valid options.  
 ``` html
-    <calendar ... spaceBetween="10"></calendar>
+    <calendar ... sliderOptions="sliderOptions"></calendar>
 ```
+``` typescript
+    options = {
+        spaceBetween: 10,
+        threshold: 50
+    };
+```
+
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
 ``` html

@@ -10,7 +10,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
 @Component({
     selector: 'weekview',
     template: `
-        <ion-slides #weekSlider [options]="slideOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
+        <ion-slides #weekSlider [options]="sliderOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
             <ion-slide class="slide-container">
                 <table class="table table-bordered table-fixed weekview-header">
                     <thead>
@@ -471,7 +471,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() lockSwipes:boolean;
     @Input() startHour:number;
     @Input() endHour:number;
-    @Input() spaceBetween:number;
+    @Input() sliderOptions:any;
     @Input() hourSegments:number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
@@ -484,7 +484,6 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     public range:IRange;
     public direction = 0;
     public mode:CalendarMode = 'week';
-    public slideOptions: any;
 
     private inited = false;
     private callbackOnInit = true;
@@ -501,10 +500,10 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     }
 
     ngOnInit() {
-        this.slideOptions = {
-            loop: true,
-            spaceBetween: this.spaceBetween
-        };
+        if(!this.sliderOptions) {
+            this.sliderOptions = {};
+        }
+        this.sliderOptions.loop = true;
 
         this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
         if (this.dateFormatter && this.dateFormatter.formatWeekViewDayHeader) {

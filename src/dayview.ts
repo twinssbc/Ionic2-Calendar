@@ -10,7 +10,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
 @Component({
     selector: 'dayview',
     template: `
-        <ion-slides #daySlider [options]="slideOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
+        <ion-slides #daySlider [options]="sliderOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
             <ion-slide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
@@ -370,7 +370,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() lockSwipes:boolean;
     @Input() startHour:number;
     @Input() endHour:number;
-    @Input() spaceBetween:number;
+    @Input() sliderOptions:any;
     @Input() hourSegments:number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
@@ -383,7 +383,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     public direction = 0;
     public mode:CalendarMode = 'day';
     public range:IRange;
-    public slideOptions: any;
 
     private inited = false;
     private callbackOnInit = true;
@@ -399,10 +398,10 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     }
 
     ngOnInit() {
-        this.slideOptions = {
-            loop: true,
-            spaceBetween: this.spaceBetween
-        };
+        if(!this.sliderOptions) {
+            this.sliderOptions = {};
+        }
+        this.sliderOptions.loop = true;
 
         this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
         if (this.dateFormatter && this.dateFormatter.formatDayViewTitle) {
