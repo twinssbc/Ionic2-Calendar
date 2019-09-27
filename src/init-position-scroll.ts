@@ -43,7 +43,10 @@ export class initPositionScrollComponent implements OnChanges, AfterViewInit, On
     ngOnChanges(changes:SimpleChanges) {
         let initPosition = changes['initPosition'];
         if (initPosition && initPosition.currentValue !== undefined && this.scrollContent) {
-            this.scrollContent.scrollTop = initPosition.currentValue;
+            const me =this;
+            setTimeout(function() {
+                me.scrollContent.scrollTop = initPosition.currentValue;
+            }, 0);
         }
     }
 

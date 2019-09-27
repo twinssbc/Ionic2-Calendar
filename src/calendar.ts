@@ -215,6 +215,10 @@ export enum Step {
                 </div>
             </div>
         </ng-template>
+        <ng-template #defaultInactiveAllDayEventSectionTemplate>
+        </ng-template>
+        <ng-template #defaultInactiveNormalEventSectionTemplate>
+        </ng-template>
 
         <div [ngSwitch]="calendarMode" class="{{calendarMode}}view-container">
             <monthview *ngSwitchCase="'month'"
@@ -257,6 +261,8 @@ export enum Step {
                 [weekviewNormalEventTemplate]="weekviewNormalEventTemplate||defaultNormalEventTemplate"
                 [weekviewAllDayEventSectionTemplate]="weekviewAllDayEventSectionTemplate||defaultWeekViewAllDayEventSectionTemplate"
                 [weekviewNormalEventSectionTemplate]="weekviewNormalEventSectionTemplate||defaultNormalEventSectionTemplate"
+                [weekviewInactiveAllDayEventSectionTemplate]="weekviewInactiveAllDayEventSectionTemplate||defaultInactiveAllDayEventSectionTemplate"
+                [weekviewInactiveNormalEventSectionTemplate]="weekviewInactiveNormalEventSectionTemplate||defaultInactiveNormalEventSectionTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
                 [dir]="dir"
@@ -284,6 +290,8 @@ export enum Step {
                 [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
                 [dayviewAllDayEventSectionTemplate]="dayviewAllDayEventSectionTemplate||defaultDayViewAllDayEventSectionTemplate" 
                 [dayviewNormalEventSectionTemplate]="dayviewNormalEventSectionTemplate||defaultNormalEventSectionTemplate"
+                [dayviewInactiveAllDayEventSectionTemplate]="dayviewInactiveAllDayEventSectionTemplate||defaultInactiveAllDayEventSectionTemplate" 
+                [dayviewInactiveNormalEventSectionTemplate]="dayviewInactiveNormalEventSectionTemplate||defaultInactiveNormalEventSectionTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
                 [dir]="dir"
@@ -391,6 +399,10 @@ export class CalendarComponent implements OnInit {
     @Input() weekviewNormalEventSectionTemplate:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
     @Input() dayviewAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
     @Input() dayviewNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() weekviewInactiveAllDayEventSectionTemplate:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
+    @Input() weekviewInactiveNormalEventSectionTemplate:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
+    @Input() dayviewInactiveAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewInactiveNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
     @Input() dateFormatter:IDateFormatter;
     @Input() dir:string = "";
     @Input() scrollToHour:number = 0;

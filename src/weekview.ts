@@ -68,6 +68,9 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 <tbody>
                                 <tr>
                                     <td *ngFor="let day of views[0].dates" class="calendar-cell">
+                                        <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
+                                                     [ngTemplateOutletContext]="{day:day}">
+                                        </ng-template>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -82,6 +85,9 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                     {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell">
+                                    <ng-template [ngTemplateOutlet]="weekviewInactiveNormalEventSectionTemplate"
+                                                 [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                    </ng-template>
                                 </td>
                             </tr>
                             </tbody>
@@ -148,6 +154,9 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 <tbody>
                                 <tr>
                                     <td *ngFor="let day of views[1].dates" class="calendar-cell">
+                                        <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
+                                                     [ngTemplateOutletContext]="{day:day}">
+                                        </ng-template>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -162,6 +171,11 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                     {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell">
+                                    <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                        <ng-template [ngTemplateOutlet]="weekviewInactiveNormalEventSectionTemplate"
+                                                     [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                        </ng-template>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody>
@@ -228,6 +242,9 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                 <tbody>
                                 <tr>
                                     <td *ngFor="let day of views[2].dates" class="calendar-cell">
+                                        <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
+                                                     [ngTemplateOutletContext]="{day:day}">
+                                        </ng-template>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -242,6 +259,11 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
                                     {{hourColumnLabels[i]}}
                                 </td>
                                 <td *ngFor="let tm of row" class="calendar-cell">
+                                    <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                        <ng-template [ngTemplateOutlet]="weekviewInactiveNormalEventSectionTemplate"
+                                                     [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                        </ng-template>
+                                    </div>
                                 </td>
                             </tr>
                             </tbody>
@@ -452,6 +474,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
     @Input() weekviewAllDayEventSectionTemplate:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
     @Input() weekviewNormalEventSectionTemplate:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
+    @Input() weekviewInactiveAllDayEventSectionTemplate:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
+    @Input() weekviewInactiveNormalEventSectionTemplate:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
 
     @Input() formatWeekTitle:string;
     @Input() formatWeekViewDayHeader:string;

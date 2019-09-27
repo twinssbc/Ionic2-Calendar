@@ -26,6 +26,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                                     </ng-template>
                                 </td>
                                 <td class="calendar-cell" *ngIf="0!==currentViewIndex">
+                                    <ng-template [ngTemplateOutlet]="dayviewInactiveAllDayEventSectionTemplate"
+                                                 [ngTemplateOutletContext]="{allDayEvents:views[0].allDayEvents}">
+                                    </ng-template>
                                 </td>
                             </tr>
                             </tbody>
@@ -56,6 +59,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                                 {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell">
+                                <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
+                                             [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                </ng-template>
                             </td>
                         </tr>
                         </tbody>
@@ -77,6 +83,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                                     </ng-template>
                                 </td>
                                 <td class="calendar-cell" *ngIf="1!==currentViewIndex">
+                                    <ng-template [ngTemplateOutlet]="dayviewInactiveAllDayEventSectionTemplate"
+                                                 [ngTemplateOutletContext]="{allDayEvents:views[1].allDayEvents}">
+                                    </ng-template>
                                 </td>
                             </tr>
                             </tbody>
@@ -107,6 +116,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                                 {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell">
+                                <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
+                                             [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                </ng-template>
                             </td>
                         </tr>
                         </tbody>
@@ -128,6 +140,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                                     </ng-template>
                                 </td>
                                 <td class="calendar-cell" *ngIf="2!==currentViewIndex">
+                                    <ng-template [ngTemplateOutlet]="dayviewInactiveAllDayEventSectionTemplate"
+                                                 [ngTemplateOutletContext]="{allDayEvents:views[2].allDayEvents}">
+                                    </ng-template>
                                 </td>
                             </tr>
                             </tbody>
@@ -158,6 +173,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                                 {{hourColumnLabels[i]}}
                             </td>
                             <td class="calendar-cell">
+                                <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
+                                             [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                </ng-template>
                             </td>
                         </tr>
                         </tbody>
@@ -354,6 +372,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
     @Input() dayviewAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
     @Input() dayviewNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() dayviewInactiveAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewInactiveNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
 
     @Input() formatHourColumn:string;
     @Input() formatDayTitle:string;
