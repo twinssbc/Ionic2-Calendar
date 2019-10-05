@@ -473,7 +473,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             let me = this;
             setTimeout(function () {
                 me.initScrollPosition = hourColumns[me.scrollToHour - me.startHour].offsetTop;
-            }, 0);
+            }, 5);
         }
     }
 
