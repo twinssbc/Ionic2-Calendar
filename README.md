@@ -592,6 +592,90 @@ The template provides customized view for normal event section (table part) in t
         <calendar ... [dayviewNormalEventSectionTemplate]="template"></calendar>
 ```
 
+
+```
+* weekviewInactiveAllDayEventSectionTemplate (version >= 0.5)  
+Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>    
+The template provides customized view for all day event section (table part) in the inactive weekview
+
+``` html
+        <ng-template #template let-day="day" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
+                 [ngStyle]="{height: 25*day.events.length+'px'}">
+                <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
+                     (click)="onEventSelected(displayEvent.event)"
+                     [ngStyle]="{top: 25*displayEvent.position+'px', width: 100*(displayEvent.endIndex-displayEvent.startIndex)+'%', height: '25px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [weekviewInactiveAllDayEventSectionTemplate]="template"></calendar>
+```
+
+* weekviewInactiveNormalEventSectionTemplate (version >= 0.5)  
+Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>    
+The template provides customized view for normal event section (table part) in the inactive weekview
+
+``` html
+        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                     (click)="onEventSelected(displayEvent.event)"
+                     [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [weekviewInactiveNormalEventSectionTemplate]="template"></calendar>
+```
+
+* dayviewInactiveAllDayEventSectionTemplate (version >= 0.5)  
+Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>    
+The template provides customized view for all day event section (table part) in the inactive dayview
+
+``` html
+        <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
+            <div *ngFor="let displayEvent of allDayEvents; let eventIndex=index"
+                 class="calendar-event" tappable
+                 (click)="onEventSelected(displayEvent.event)"
+                 [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
+                <ng-template [ngTemplateOutlet]="eventTemplate"
+                             [ngTemplateOutletContext]="{displayEvent:displayEvent}">
+                </ng-template>
+            </div>
+        </ng-template>
+
+        <calendar ... [dayviewInactiveAllDayEventSectionTemplate]="template"></calendar>
+```
+
+* dayviewInactiveNormalEventSectionTemplate (version >= 0.5)  
+Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>    
+The template provides customized view for normal event section (table part) in the inactive dayview
+
+``` html
+        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+            <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                     (click)="onEventSelected(displayEvent.event)"
+                     [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px',left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                    <ng-template [ngTemplateOutlet]="eventTemplate"
+                                 [ngTemplateOutletContext]="{displayEvent:displayEvent}">
+                    </ng-template>
+                </div>
+            </div>
+        </ng-template>
+
+        <calendar ... [dayviewInactiveNormalEventSectionTemplate]="template"></calendar>
+```
+
+
+
 # EventSource
 
 EventSource is an array of event object which contains at least below fields:
@@ -708,3 +792,6 @@ var mySwiper = document.querySelector('.swiper-container')['swiper'];
 
 * Error: Cannot read property 'dayHeaders' of undefined  
 Answer: Take a look at the Localization section. For version 0.4.x+, you need to manually register the locale.
+
+* Error: TypeError: event_1.startTime.getTime is not a function  
+Answer: This is due to the startTime field of the event object is not a valid Date object. Be aware that different browser has different implementation of new Date() constructor. Some date string format may not be supported. It is recommended to use millisecond or year/month/date parameters.
