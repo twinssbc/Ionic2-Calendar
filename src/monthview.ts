@@ -265,6 +265,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
     private eventSourceChangedSubscription:Subscription;
+    private slideChangedSubscription:Subscription;
+
     private formatDayLabel:(date:Date) => string;
     private formatDayHeaderLabel:(date:Date) => string;
     private formatTitle:(date:Date) => string;
@@ -323,6 +325,14 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
             this.onDataLoaded();
         });
+
+        this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
+           if(direction == 1) {
+               this.slider.slideNext();
+           } else if(direction == -1) {
+               this.slider.slidePrev();
+           }
+        });
     }
 
     ngOnDestroy() {
@@ -334,6 +344,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.eventSourceChangedSubscription) {
             this.eventSourceChangedSubscription.unsubscribe();
             this.eventSourceChangedSubscription = null;
+        }
+
+        if(this.slideChangedSubscription) {
+            this.slideChangedSubscription.unsubscribe();
+            this.slideChangedSubscription = null;
         }
     }
 
@@ -367,8 +382,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             return;
         }
 
-        let currentSlideIndex = this.slider.getActiveIndex(),
-            direction = 0,
+        let direction = 0,
             currentViewIndex = this.currentViewIndex;
 
         this.slider.getActiveIndex().then((currentSlideIndex) => {

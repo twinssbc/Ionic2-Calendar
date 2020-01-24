@@ -712,7 +712,7 @@ import { CalendarComponent } from "ionic2-calendar/calendar";
     templateUrl: 'home.html'
 })
 export class HomePage {
-    @ViewChild(CalendarComponent) myCalendar:CalendarComponent;
+    @ViewChild(CalendarComponent, null) myCalendar:CalendarComponent;
     eventSource;
     …
     loadEvents: function() {
@@ -723,6 +723,44 @@ export class HomePage {
             allDay: false
         });
         this.myCalendar.loadEvents();
+    }
+}
+```
+
+* slideNext  (version >= 0.5)  
+Slide the calendar to the next date range.
+
+``` typescript
+import { CalendarComponent } from "ionic2-calendar/calendar";
+
+@Component({
+    selector: 'page-home',
+    templateUrl: 'home.html'
+})
+export class HomePage {
+    @ViewChild(CalendarComponent, null) myCalendar:CalendarComponent;
+    …
+    slideNext: function() {
+        this.myCalendar.slideNext();
+    }
+}
+```
+
+* slidePrev  (version >= 0.5)  
+Slide the calendar to the previous date range.
+
+``` typescript
+import { CalendarComponent } from "ionic2-calendar/calendar";
+
+@Component({
+    selector: 'page-home',
+    templateUrl: 'home.html'
+})
+export class HomePage {
+    @ViewChild(CalendarComponent, null) myCalendar:CalendarComponent;
+    …
+    slidePrev: function() {
+        this.myCalendar.slidePrev();
     }
 }
 ```
@@ -784,14 +822,18 @@ Answer: This calendar has dependency on 'Intl'. Run *npm install intl@1.2.5* to 
 Answer: If you bind currentDate like this: [currentDate]="calendar.currentDate". You need to assign calendar.currentDate a valid Date object
 
 * How to switch the calendar to previous/next month programmatically?  
-Answer: You can change currentDate to the date in previous/next month. You could also retrieve the Swiper element and then call the Swiper API directly.
-```
-var mySwiper = document.querySelector('.swiper-container')['swiper'];
-    mySwiper.slideNext();
-```
+Answer: You can change currentDate to the date in previous/next month. You could also call the instance method slideNext/slidePrev.
 
 * Error: Cannot read property 'dayHeaders' of undefined  
 Answer: Take a look at the Localization section. For version 0.4.x+, you need to manually register the locale.
 
 * Error: TypeError: event_1.startTime.getTime is not a function  
 Answer: This is due to the startTime field of the event object is not a valid Date object. Be aware that different browser has different implementation of new Date() constructor. Some date string format may not be supported. It is recommended to use millisecond or year/month/date parameters.
+
+* Error: How to override css  
+Answer: By default, the css applied on each component is view encapsulated, for example, .table-bordered[_ngcontent-jto-c5]. You need to remove the encapsulated part.
+```css
+.table-bordered[_ngcontent-jto-c5] {
+    border: 1px solid #ddd !important;
+}
+```

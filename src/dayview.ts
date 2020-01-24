@@ -408,6 +408,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
     private eventSourceChangedSubscription:Subscription;
+    private slideChangedSubscription:Subscription;
+
     public hourColumnLabels:string[];
     public initScrollPosition:number;
     private formatTitle:(date:Date) => string;
@@ -462,6 +464,14 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
             this.onDataLoaded();
         });
+
+        this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
+            if(direction == 1) {
+                this.slider.slideNext();
+            } else if(direction == -1) {
+                this.slider.slidePrev();
+            }
+        });
     }
 
     ngAfterViewInit() {
@@ -505,6 +515,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         if (this.eventSourceChangedSubscription) {
             this.eventSourceChangedSubscription.unsubscribe();
             this.eventSourceChangedSubscription = null;
+        }
+
+        if(this.slideChangedSubscription) {
+            this.slideChangedSubscription.unsubscribe();
+            this.slideChangedSubscription = null;
         }
     }
 

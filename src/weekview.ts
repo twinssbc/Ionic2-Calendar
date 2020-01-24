@@ -343,11 +343,11 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
           padding: 0 !important;
           height: 37px;
         }
-        
+
         .slides-container {
             height: 100%;
         }
-        
+
         .slide-container {
             display: block;
         }
@@ -414,7 +414,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
             overflow-y: auto;
             overflow-x: hidden;
         }
-        
+
         ::-webkit-scrollbar,
         *::-webkit-scrollbar {
             display: none;
@@ -513,6 +513,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
     private eventSourceChangedSubscription:Subscription;
+    private slideChangedSubscription:Subscription;
+
     public hourColumnLabels:string[];
     public initScrollPosition:number;
     private formatDayHeader:(date:Date) => string;
@@ -576,6 +578,14 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
             this.onDataLoaded();
         });
+
+        this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
+            if(direction == 1) {
+                this.slider.slideNext();
+            } else if(direction == -1) {
+                this.slider.slidePrev();
+            }
+        });
     }
 
     ngAfterViewInit() {
@@ -619,6 +629,11 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         if (this.eventSourceChangedSubscription) {
             this.eventSourceChangedSubscription.unsubscribe();
             this.eventSourceChangedSubscription = null;
+        }
+
+        if(this.slideChangedSubscription) {
+            this.slideChangedSubscription.unsubscribe();
+            this.slideChangedSubscription = null;
         }
     }
 

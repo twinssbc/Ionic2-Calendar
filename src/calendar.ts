@@ -239,7 +239,7 @@ export enum Step {
                 [dir]="dir"
                 [lockSwipeToPrev]="lockSwipeToPrev"
                 [lockSwipes]="lockSwipes"
-                [sliderOptions]="sliderOptions"       
+                [sliderOptions]="sliderOptions"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -288,9 +288,9 @@ export enum Step {
                 [markDisabled]="markDisabled"
                 [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
-                [dayviewAllDayEventSectionTemplate]="dayviewAllDayEventSectionTemplate||defaultDayViewAllDayEventSectionTemplate" 
+                [dayviewAllDayEventSectionTemplate]="dayviewAllDayEventSectionTemplate||defaultDayViewAllDayEventSectionTemplate"
                 [dayviewNormalEventSectionTemplate]="dayviewNormalEventSectionTemplate||defaultNormalEventSectionTemplate"
-                [dayviewInactiveAllDayEventSectionTemplate]="dayviewInactiveAllDayEventSectionTemplate||defaultInactiveAllDayEventSectionTemplate" 
+                [dayviewInactiveAllDayEventSectionTemplate]="dayviewInactiveAllDayEventSectionTemplate||defaultInactiveAllDayEventSectionTemplate"
                 [dayviewInactiveNormalEventSectionTemplate]="dayviewInactiveNormalEventSectionTemplate||defaultInactiveNormalEventSectionTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
@@ -479,5 +479,13 @@ export class CalendarComponent implements OnInit {
 
     loadEvents() {
         this.calendarService.loadEvents();
+    }
+
+    slideNext() {
+        this.calendarService.slide(1);
+    }
+
+    slidePrev() {
+        this.calendarService.slide(-1);
     }
 }
