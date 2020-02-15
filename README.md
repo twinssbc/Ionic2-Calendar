@@ -18,7 +18,7 @@ version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide
 version 0.2.9+ depends on Ionic 2.3.0 version onwards.  
 version 0.3.x depends on Ionic 3.1.1 version onwards.  
 version 0.4.x depends on Ionic 3.9.2 version onwards.  
-version 0.5.x depends on Ionic 4.0.0-rc.1 onwards.
+version 0.5.x depends on Ionic 4.0.0-rc.1 onwards, also supports Ionic 5.0.0.
 
 
 # Usage
@@ -592,8 +592,6 @@ The template provides customized view for normal event section (table part) in t
         <calendar ... [dayviewNormalEventSectionTemplate]="template"></calendar>
 ```
 
-
-```
 * weekviewInactiveAllDayEventSectionTemplate (version >= 0.5)  
 Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>    
 The template provides customized view for all day event section (table part) in the inactive weekview
