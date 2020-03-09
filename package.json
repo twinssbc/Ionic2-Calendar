@@ -15,25 +15,28 @@
         "url": "git+https://github.com/twinssbc/Ionic2-Calendar.git"
     },
     "scripts": {
-        "build": "rm -rf dist && node_modules/.bin/ngc -p tsconfig.json",
+        "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
+        "build": "rimraf dist && npx ngc -p tsconfig.json",
         "copy_static_files": "cp -r package.json README.md LICENSE tsconfig.json dist/",
         "dev": "tsc --watch"
     },
     "main": "./index.js",
     "dependencies": {},
     "devDependencies": {
-        "typescript": "3.1.6",
-        "@angular/common": "^7.2.1",
-        "@angular/compiler": "^7.2.1",
-        "@angular/compiler-cli": "^7.2.1",
-        "@angular/core": "^7.2.1",
-        "@angular/forms": "^7.2.1",
-        "@angular/platform-browser": "^7.2.1",
-        "@angular/platform-browser-dynamic": "^7.2.1",
-        "@ionic/angular": "4.0.0",
-        "@angular/router": "^7.2.1",
-        "tsickle": "^0.34.0",
-        "rxjs": "^6.2.0",
-        "zone.js": "^0.8.28"
+        "@angular/common": "^9.0.5",
+        "@angular/compiler": "^9.0.5",
+        "@angular/compiler-cli": "^9.0.5",
+        "@angular/core": "^9.0.5",
+        "@angular/forms": "^9.0.5",
+        "@angular/platform-browser": "^9.0.5",
+        "@angular/platform-browser-dynamic": "^9.0.5",
+        "@angular/router": "^9.0.5",
+        "@ionic/angular": "5.0.4",
+        "rimraf": "^3.0.2",
+        "rxjs": "^6.5.4",
+        "tsickle": "^0.38.1",
+        "tslib": "^1.11.1",
+        "typescript": "3.7.5",
+        "zone.js": "^0.10.2"
     }
 }
