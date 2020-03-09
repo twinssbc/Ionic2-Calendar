@@ -15,7 +15,6 @@
         "url": "git+https://github.com/twinssbc/Ionic2-Calendar.git"
     },
     "scripts": {
-        "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
         "build": "rimraf dist && npx ngc -p tsconfig.json && npm run copy_static_files",
         "copy_static_files": "cpx package.json dist/ &&  cpx README.md dist/ && cpx LICENSE dist/ && cpx tsconfig.json dist/",
         "dev": "tsc --watch"
