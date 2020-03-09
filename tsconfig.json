@@ -2,12 +2,13 @@
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "allowUnreachableCode": false,
+
         "declaration": true,
         "declarationDir": "dist",
         "experimentalDecorators": true,
         "forceConsistentCasingInFileNames": true,
-        "lib": ["dom", "es2017"],
-        "module": "es2015",
+        "lib": ["dom", "es2018"],
+        "module": "esnext",
         "moduleResolution": "node",
         "noImplicitAny": true,
         "noImplicitReturns": true,
@@ -17,12 +18,15 @@
         "importHelpers": true,
         "rootDir": "src",
         "strictPropertyInitialization": false,
-        "target": "es5"
+        "target": "es2015",
+        "typeRoots": ["node_modules/@types"]
     },
-    "files": [
-        "src/index.ts"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+    "angularCompilerOptions": {
+        "fullTemplateTypeCheck": true,
+        "strictInjectionParameters": true,
+
+        "enableIvy": true
+    },
+    "files": ["src/index.ts"],
+    "exclude": ["node_modules"]
 }

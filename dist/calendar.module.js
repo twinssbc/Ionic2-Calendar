@@ -9,14 +9,10 @@ import { initPositionScrollComponent } from './init-position-scroll';
 import * as i0 from "@angular/core";
 import * as i1 from "@ionic/angular";
 import * as i2 from "@angular/common";
-var NgCalendarModule = /** @class */ (function () {
-    function NgCalendarModule() {
-    }
-    NgCalendarModule.ɵmod = i0.ɵɵdefineNgModule({ type: NgCalendarModule });
-    NgCalendarModule.ɵinj = i0.ɵɵdefineInjector({ factory: function NgCalendarModule_Factory(t) { return new (t || NgCalendarModule)(); }, imports: [[IonicModule, CommonModule]] });
-    return NgCalendarModule;
-}());
-export { NgCalendarModule };
+export class NgCalendarModule {
+}
+NgCalendarModule.ɵmod = i0.ɵɵdefineNgModule({ type: NgCalendarModule });
+NgCalendarModule.ɵinj = i0.ɵɵdefineInjector({ factory: function NgCalendarModule_Factory(t) { return new (t || NgCalendarModule)(); }, imports: [[IonicModule, CommonModule]] });
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && i0.ɵɵsetNgModuleScope(NgCalendarModule, { declarations: [MonthViewComponent, WeekViewComponent, DayViewComponent, CalendarComponent, initPositionScrollComponent], imports: [IonicModule, CommonModule], exports: [CalendarComponent] }); })();
 /*@__PURE__*/ (function () { i0.ɵsetClassMetadata(NgCalendarModule, [{
         type: NgModule,
