@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "allowUnreachableCode": false,
+        "declaration": true,
+        "declarationDir": "dist",
+        "experimentalDecorators": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": ["dom", "es2017"],
+        "module": "es2015",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "outDir": "dist",
+        "pretty": true,
+        "removeComments": false,
+        "importHelpers": true,
+        "rootDir": "src",
+        "strictPropertyInitialization": false,
+        "target": "es5"
+    },
+    "files": [
+        "src/index.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
