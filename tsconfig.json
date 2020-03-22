@@ -19,6 +19,9 @@
         "strictPropertyInitialization": false,
         "target": "es5"
     },
+    "angularCompilerOptions": {
+        "enableIvy": false
+    },
     "files": [
         "src/index.ts"
     ],
