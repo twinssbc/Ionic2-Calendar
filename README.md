@@ -15,10 +15,11 @@ intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
 
 version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
 version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
-version 0.2.9+ depends on Ionic 2.3.0 version onwards.  
-version 0.3.x depends on Ionic 3.1.1 version onwards.  
-version 0.4.x depends on Ionic 3.9.2 version onwards.  
-version 0.5.x depends on Ionic 4.0.0-rc.1 onwards, also supports Ionic 5.0.0.
+version 0.2.9+ depends on Ionic (>=2.3.0).  
+version 0.3.x depends on Ionic (>=3.1.1).  
+version 0.4.x depends on Ionic (>=3.9.2).  
+version 0.5.x depends on Ionic (>=4.0.0-rc.1), also supports Ionic 5.0.0.
+Version 0.6.x depends on Ionic (>=5.0.0) and Angular (>=9.1.0).
 
 
 # Usage
@@ -109,21 +110,6 @@ Add the directive in the html page
         step="30">
         
     </calendar>
-```
-
-# Note for Ionic Build/Run command
-ionic serve uses tsc to compile the code, while ionic build/run uses ngc to compile the code.    
-It requires explicit dependency on the compiled ngfactory files for each component.    
-I couldn’t find a way to configure the build command includes the ngfactory of the child components automatically.    
-So the workaround is to import them explicitly.    
-Add below lines in *main.prod.ts*
-
-
-``` typescript
-import { CalendarComponent } from 'ionic2-calendar/calendar';
-import { MonthViewComponent } from 'ionic2-calendar/monthview';
-import { WeekViewComponent } from 'ionic2-calendar/weekview';
-import { DayViewComponent } from 'ionic2-calendar/dayview';
 ```
 
 

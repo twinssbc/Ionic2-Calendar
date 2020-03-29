@@ -17,10 +17,13 @@
         "importHelpers": true,
         "rootDir": "src",
         "strictPropertyInitialization": false,
-        "target": "es5"
+        "target": "es2015",
+        "typeRoots": ["node_modules/@types"]
     },
     "angularCompilerOptions": {
-        "enableIvy": false
+        "fullTemplateTypeCheck": true,
+        "strictInjectionParameters": true,
+        "enableIvy": true
     },
     "files": [
         "src/index.ts"

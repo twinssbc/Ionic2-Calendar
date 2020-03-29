@@ -16,9 +16,8 @@
     },
     "scripts": {
         "build": "rm -rf dist && node_modules/.bin/ngc -p tsconfig.json",
-        "copy_static_files": "cp -r README.md LICENSE tsconfig.json dist/ & cp package-publish.json dist/package.json",
-        "dev": "tsc --watch",
-        "postinstall": "ngcc"
+        "copy_static_files": "cp -r package.json README.md LICENSE tsconfig.json dist/",
+        "dev": "tsc --watch"
     },
     "main": "./index.js",
     "dependencies": {},

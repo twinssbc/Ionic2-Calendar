@@ -12,7 +12,6 @@ import { initPositionScrollComponent } from './init-position-scroll';
         MonthViewComponent, WeekViewComponent, DayViewComponent, CalendarComponent, initPositionScrollComponent
     ],
     imports: [IonicModule, CommonModule],
-    exports: [CalendarComponent],
-    entryComponents: [CalendarComponent]
+    exports: [CalendarComponent]
 })
 export class NgCalendarModule {}

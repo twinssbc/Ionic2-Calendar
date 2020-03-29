@@ -226,7 +226,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
     `]
 })
 export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('monthSlider') slider:IonSlides;
+    @ViewChild('monthSlider', {static: false}) slider:IonSlides;
 
     @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;

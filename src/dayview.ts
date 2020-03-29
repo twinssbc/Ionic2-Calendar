@@ -365,7 +365,7 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
     encapsulation: ViewEncapsulation.None
 })
 export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('daySlider') slider:IonSlides;
+    @ViewChild('daySlider', {static: false}) slider:IonSlides;
     @HostBinding('class.dayview') class = true;
 
     @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
