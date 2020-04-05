@@ -466,7 +466,7 @@ import { IDisplayAllDayEvent, IWeekViewAllDayEventSectionTemplateContext, IWeekV
     encapsulation: ViewEncapsulation.None
 })
 export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('weekSlider', {static: false}) slider:IonSlides;
+    @ViewChild('weekSlider', {static: true}) slider:IonSlides;
     @HostBinding('class.weekview') class = true;
 
     @Input() weekviewHeaderTemplate:TemplateRef<IDisplayWeekViewHeader>;
