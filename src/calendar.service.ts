@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from "rxjs";
+import {Injectable} from '@angular/core';
+import {Observable, Subject} from 'rxjs';
 
-import { ICalendarComponent, IView, CalendarMode, QueryMode } from './calendar';
+import {ICalendarComponent, IView, CalendarMode, QueryMode} from './calendar';
 
 @Injectable()
 export class CalendarService {
@@ -25,7 +25,7 @@ export class CalendarService {
     }
 
     setCurrentDate(val: Date, fromParent: boolean = false) {
-        this._currentDate = val;
+        this._currentDate = new Date(val);
         if (fromParent) {
             this.currentDateChangedFromParent.next(val);
         } else {
@@ -43,7 +43,22 @@ export class CalendarService {
                 component.onDataLoaded();
             }
         } else if (this.queryMode === 'remote') {
-            component.onRangeChanged.emit(component.range);
+            let rangeStart = new Date(component.range.startTime.getTime()),
+                rangeEnd = new Date(component.range.endTime.getTime());
+
+            rangeStart.setHours(0);
+            if (rangeStart.getHours() === 23) {
+                rangeStart.setTime(rangeStart.getTime() + 3600000);
+            }
+
+            rangeEnd.setHours(0);
+            if (rangeEnd.getHours() === 23) {
+                rangeEnd.setTime(rangeEnd.getTime() + 3600000);
+            }
+            component.onRangeChanged.emit({
+                startTime: rangeStart,
+                endTime: rangeEnd
+            });
         }
     }
 
@@ -71,16 +86,16 @@ export class CalendarService {
     }
 
     getAdjacentCalendarDate(mode: CalendarMode, direction: number): Date {
-        let step = this.getStep(mode);
-        let calculateCalendarDate = new Date(this.currentDate.getTime()),
+        let calculateCalendarDate = this.currentDate;
+        const step = this.getStep(mode),
             year = calculateCalendarDate.getFullYear() + direction * step.years,
             month = calculateCalendarDate.getMonth() + direction * step.months,
             date = calculateCalendarDate.getDate() + direction * step.days;
 
-        calculateCalendarDate.setFullYear(year, month, date);
+        calculateCalendarDate = new Date(year, month, date, 12, 0, 0);
 
         if (mode === 'month') {
-            let firstDayInNextMonth = new Date(year, month + 1, 1);
+            const firstDayInNextMonth = new Date(year, month + 1, 1, 12, 0, 0);
             if (firstDayInNextMonth.getTime() <= calculateCalendarDate.getTime()) {
                 calculateCalendarDate = new Date(firstDayInNextMonth.getTime() - 24 * 60 * 60 * 1000);
             }

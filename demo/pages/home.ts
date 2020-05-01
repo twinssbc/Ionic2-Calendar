@@ -46,6 +46,12 @@ export class HomePage {
 
     loadEvents() {
         this.eventSource = this.createRandomEvents();
+        // this.eventSource = this.createStaticAllDayEvents();
+        //  let eventSource = this.createStaticNormalDayEvents();
+        //  let eventSource1 = this.createStaticNormalDayEvents2();
+        //  let eventSource2 = this.createStaticNormalDayEvents3();
+        //  this.eventSource = eventSource.concat(eventSource1).concat(eventSource2);
+        //  this.eventSource = this.createStaticCrossDayEvents();
     }
 
     onViewTitleChanged(title) {
@@ -110,6 +116,100 @@ export class HomePage {
                 });
             }
         }
+        return events;
+    }
+
+    createStaticAllDayEvents() {
+        var events = [];
+        for (var i = -50; i < 50; i += 1) {
+            var date = new Date();
+            var startTime;
+            var endTime;
+            startTime = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + i));
+            endTime = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + i + 1));
+            events.push({
+                title: 'All Day - ' + i,
+                startTime: startTime,
+                endTime: endTime,
+                allDay: true
+            });
+        }
+
+        return events;
+    }
+
+    createStaticNormalDayEvents(): any[] {
+        var events = [];
+        for (var i = -50; i < 50; i += 1) {
+            var date = new Date();
+            var startTime;
+            var endTime;
+            startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i, 0, 0, 0);
+            endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i, 1, 0, 0);
+            events.push({
+                title: 'Day - ' + i,
+                startTime: startTime,
+                endTime: endTime,
+                allDay: false
+            });
+        }
+        return events;
+    }
+
+    createStaticNormalDayEvents2(): any[] {
+        var events = [];
+        for (var i = -50; i < 50; i += 1) {
+            var date = new Date();
+            var startTime;
+            var endTime;
+            startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i, 12, 0, 0);
+            endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i, 14, 0, 0);
+            events.push({
+                title: 'Day - ' + i,
+                startTime: startTime,
+                endTime: endTime,
+                allDay: false
+            });
+        }
+
+        return events;
+    }
+
+    createStaticNormalDayEvents3(): any[] {
+        var events = [];
+        for (var i = -50; i < 50; i += 1) {
+            var date = new Date();
+            var startTime;
+            var endTime;
+            startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i, 23, 0, 0);
+            endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i, 23, 59, 0);
+            events.push({
+                title: 'Day - ' + i,
+                startTime: startTime,
+                endTime: endTime,
+                allDay: false
+            });
+        }
+
+        return events;
+    }
+
+    createStaticCrossDayEvents(): any[] {
+        var events = [];
+        for (var i = -50; i < 50; i += 1) {
+            var date = new Date();
+            var startTime;
+            var endTime;
+            startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i, 20, 0, 0);
+            endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + i + 1, 11, 0, 0);
+            events.push({
+                title: 'Day - ' + i,
+                startTime: startTime,
+                endTime: endTime,
+                allDay: false
+            });
+        }
+
         return events;
     }
 

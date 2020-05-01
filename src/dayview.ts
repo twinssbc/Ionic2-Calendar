@@ -1,11 +1,35 @@
-import { DatePipe } from '@angular/common';
-import { IonSlides } from '@ionic/angular';
-import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef, ElementRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import {DatePipe} from '@angular/common';
+import {IonSlides} from '@ionic/angular';
+import {
+    Component,
+    OnInit,
+    OnChanges,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    ViewChild,
+    ViewEncapsulation,
+    TemplateRef,
+    ElementRef,
+    AfterViewInit, OnDestroy
+} from '@angular/core';
+import {Subscription} from 'rxjs';
 
-import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode, IDateFormatter } from './calendar';
-import { CalendarService } from './calendar.service';
-import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext } from "./calendar";
+import {
+    ICalendarComponent,
+    IDayView,
+    IDayViewRow,
+    IDisplayEvent,
+    IEvent,
+    ITimeSelected,
+    IRange,
+    CalendarMode,
+    IDateFormatter
+} from './calendar';
+import {CalendarService} from './calendar.service';
+import {IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext} from './calendar';
 
 @Component({
     selector: 'dayview',
@@ -35,7 +59,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                         </table>
                     </div>
                 </div>
-                <init-position-scroll *ngIf="0===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
+                <init-position-scroll *ngIf="0===currentViewIndex" class="dayview-normal-event-container"
+                                      [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition"
+                                      (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                         <tr *ngFor="let tm of views[0].rows; let i = index">
@@ -51,7 +77,8 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                         </tbody>
                     </table>
                 </init-position-scroll>
-                <init-position-scroll *ngIf="0!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
+                <init-position-scroll *ngIf="0!==currentViewIndex" class="dayview-normal-event-container"
+                                      [initPosition]="initScrollPosition">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                         <tr *ngFor="let tm of views[0].rows; let i = index">
@@ -92,7 +119,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                         </table>
                     </div>
                 </div>
-                <init-position-scroll *ngIf="1===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
+                <init-position-scroll *ngIf="1===currentViewIndex" class="dayview-normal-event-container"
+                                      [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition"
+                                      (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                         <tr *ngFor="let tm of views[1].rows; let i = index">
@@ -108,7 +137,8 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                         </tbody>
                     </table>
                 </init-position-scroll>
-                <init-position-scroll *ngIf="1!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
+                <init-position-scroll *ngIf="1!==currentViewIndex" class="dayview-normal-event-container"
+                                      [initPosition]="initScrollPosition">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                         <tr *ngFor="let tm of views[1].rows; let i = index">
@@ -149,7 +179,9 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                         </table>
                     </div>
                 </div>
-                <init-position-scroll *ngIf="2===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
+                <init-position-scroll *ngIf="2===currentViewIndex" class="dayview-normal-event-container"
+                                      [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition"
+                                      (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                         <tr *ngFor="let tm of views[2].rows; let i = index">
@@ -165,7 +197,8 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
                         </tbody>
                     </table>
                 </init-position-scroll>
-                <init-position-scroll *ngIf="2!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
+                <init-position-scroll *ngIf="2!==currentViewIndex" class="dayview-normal-event-container"
+                                      [initPosition]="initScrollPosition">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                         <tr *ngFor="let tm of views[2].rows; let i = index">
@@ -186,68 +219,68 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
     `,
     styles: [`
         .table-fixed {
-          table-layout: fixed;
+            table-layout: fixed;
         }
 
         .table {
-          width: 100%;
-          max-width: 100%;
-          background-color: transparent;
+            width: 100%;
+            max-width: 100%;
+            background-color: transparent;
         }
 
         .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td,
         .table > tbody > tr > td, .table > tfoot > tr > td {
-          padding: 8px;
-          line-height: 20px;
-          vertical-align: top;
+            padding: 8px;
+            line-height: 20px;
+            vertical-align: top;
         }
 
         .table > thead > tr > th {
-          vertical-align: bottom;
-          border-bottom: 2px solid #ddd;
+            vertical-align: bottom;
+            border-bottom: 2px solid #ddd;
         }
 
         .table > thead:first-child > tr:first-child > th, .table > thead:first-child > tr:first-child > td {
-          border-top: 0
+            border-top: 0
         }
 
         .table > tbody + tbody {
-          border-top: 2px solid #ddd;
+            border-top: 2px solid #ddd;
         }
 
         .table-bordered {
-          border: 1px solid #ddd;
+            border: 1px solid #ddd;
         }
 
         .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th,
         .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
-          border: 1px solid #ddd;
+            border: 1px solid #ddd;
         }
 
         .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
-          border-bottom-width: 2px;
+            border-bottom-width: 2px;
         }
 
         .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
-          background-color: #f9f9f9
+            background-color: #f9f9f9
         }
 
         .calendar-hour-column {
-          width: 50px;
-          white-space: nowrap;
+            width: 50px;
+            white-space: nowrap;
         }
 
         .calendar-event-wrap {
-          position: relative;
-          width: 100%;
-          height: 100%;
+            position: relative;
+            width: 100%;
+            height: 100%;
         }
 
         .calendar-event {
-          position: absolute;
-          padding: 2px;
-          cursor: pointer;
-          z-index: 10000;
+            position: absolute;
+            padding: 2px;
+            cursor: pointer;
+            z-index: 10000;
         }
 
         .slides-container {
@@ -259,17 +292,17 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
         }
 
         .calendar-cell {
-          padding: 0 !important;
-          height: 37px;
+            padding: 0 !important;
+            height: 37px;
         }
 
         .dayview-allday-label {
-          float: left;
-          height: 100%;
-          line-height: 50px;
-          text-align: center;
-          width: 50px;
-          border-left: 1px solid #ddd;
+            float: left;
+            height: 100%;
+            line-height: 50px;
+            text-align: center;
+            width: 50px;
+            border-left: 1px solid #ddd;
         }
 
         [dir="rtl"] .dayview-allday-label {
@@ -278,41 +311,41 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
         }
 
         .dayview-allday-content-wrapper {
-          margin-left: 50px;
-          overflow: hidden;
-          height: 51px;
+            margin-left: 50px;
+            overflow: hidden;
+            height: 51px;
         }
 
         [dir="rtl"] .dayview-allday-content-wrapper {
-          margin-left: 0;
-          margin-right: 50px;
+            margin-left: 0;
+            margin-right: 50px;
         }
 
         .dayview-allday-content-table {
-          min-height: 50px;
+            min-height: 50px;
         }
 
         .dayview-allday-content-table td {
-          border-left: 1px solid #ddd;
-          border-right: 1px solid #ddd;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
         }
 
         .dayview-allday-table {
-          height: 50px;
-          position: relative;
-          border-bottom: 1px solid #ddd;
-          font-size: 14px;
+            height: 50px;
+            position: relative;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
         }
 
         .dayview-normal-event-container {
-          margin-top: 50px;
-          overflow: hidden;
-          left: 0;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          position: absolute;
-          font-size: 14px;
+            margin-top: 50px;
+            overflow: hidden;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            font-size: 14px;
         }
 
         .scroll-content {
@@ -322,105 +355,195 @@ import { IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayVie
 
         ::-webkit-scrollbar,
         *::-webkit-scrollbar {
-          display: none;
+            display: none;
         }
 
         .table > tbody > tr > td.calendar-hour-column {
-          padding-left: 0;
-          padding-right: 0;
-          vertical-align: middle;
-        }
-
-        @media (max-width: 750px) {
-          .dayview-allday-label, .calendar-hour-column {
-            width: 31px;
-            font-size: 12px;
-          }
-
-          .dayview-allday-label {
-            padding-top: 4px;
-          }
-
-          .table > tbody > tr > td.calendar-hour-column {
             padding-left: 0;
             padding-right: 0;
             vertical-align: middle;
-            line-height: 12px;
-          }
+        }
 
-          .dayview-allday-label {
-            line-height: 20px;
-          }
+        @media (max-width: 750px) {
+            .dayview-allday-label, .calendar-hour-column {
+                width: 31px;
+                font-size: 12px;
+            }
 
-          .dayview-allday-content-wrapper {
-            margin-left: 31px;
-          }
+            .dayview-allday-label {
+                padding-top: 4px;
+            }
 
-          [dir="rtl"] .dayview-allday-content-wrapper {
-            margin-left: 0;
-            margin-right: 31px;
-          }
+            .table > tbody > tr > td.calendar-hour-column {
+                padding-left: 0;
+                padding-right: 0;
+                vertical-align: middle;
+                line-height: 12px;
+            }
+
+            .dayview-allday-label {
+                line-height: 20px;
+            }
+
+            .dayview-allday-content-wrapper {
+                margin-left: 31px;
+            }
+
+            [dir="rtl"] .dayview-allday-content-wrapper {
+                margin-left: 0;
+                margin-right: 31px;
+            }
         }
     `],
     encapsulation: ViewEncapsulation.None
 })
-export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('daySlider', {static: true}) slider:IonSlides;
+export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, OnDestroy, AfterViewInit {
+
+    constructor(private calendarService: CalendarService, private elm: ElementRef) {
+    }
+
+    @ViewChild('daySlider', {static: true}) slider: IonSlides;
     @HostBinding('class.dayview') class = true;
 
-    @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
-    @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
-    @Input() dayviewAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input() dayviewNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
-    @Input() dayviewInactiveAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input() dayviewInactiveNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() dayviewAllDayEventTemplate: TemplateRef<IDisplayAllDayEvent>;
+    @Input() dayviewNormalEventTemplate: TemplateRef<IDisplayEvent>;
+    @Input() dayviewAllDayEventSectionTemplate: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewNormalEventSectionTemplate: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() dayviewInactiveAllDayEventSectionTemplate: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewInactiveNormalEventSectionTemplate: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
 
-    @Input() formatHourColumn:string;
-    @Input() formatDayTitle:string;
-    @Input() allDayLabel:string;
-    @Input() hourParts:number;
-    @Input() eventSource:IEvent[];
-    @Input() markDisabled:(date:Date) => boolean;
-    @Input() locale:string;
-    @Input() dateFormatter:IDateFormatter;
-    @Input() dir:string = "";
-    @Input() scrollToHour:number = 0;
-    @Input() preserveScrollPosition:boolean;
-    @Input() lockSwipeToPrev:boolean;
-    @Input() lockSwipes:boolean;
-    @Input() startHour:number;
-    @Input() endHour:number;
-    @Input() sliderOptions:any;
-    @Input() hourSegments:number;
+    @Input() formatHourColumn: string;
+    @Input() formatDayTitle: string;
+    @Input() allDayLabel: string;
+    @Input() hourParts: number;
+    @Input() eventSource: IEvent[];
+    @Input() markDisabled: (date: Date) => boolean;
+    @Input() locale: string;
+    @Input() dateFormatter: IDateFormatter;
+    @Input() dir = '';
+    @Input() scrollToHour = 0;
+    @Input() preserveScrollPosition: boolean;
+    @Input() lockSwipeToPrev: boolean;
+    @Input() lockSwipes: boolean;
+    @Input() startHour: number;
+    @Input() endHour: number;
+    @Input() sliderOptions: any;
+    @Input() hourSegments: number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
     @Output() onTitleChanged = new EventEmitter<string>(true);
 
-    public views:IDayView[] = [];
+    public views: IDayView[] = [];
     public currentViewIndex = 0;
     public direction = 0;
-    public mode:CalendarMode = 'day';
-    public range:IRange;
+    public mode: CalendarMode = 'day';
+    public range: IRange;
 
     private inited = false;
     private callbackOnInit = true;
-    private currentDateChangedFromParentSubscription:Subscription;
-    private eventSourceChangedSubscription:Subscription;
-    private slideChangedSubscription:Subscription;
+    private currentDateChangedFromParentSubscription: Subscription;
+    private eventSourceChangedSubscription: Subscription;
+    private slideChangedSubscription: Subscription;
 
-    public hourColumnLabels:string[];
-    public initScrollPosition:number;
-    private formatTitle:(date:Date) => string;
-    private formatHourColumnLabel:(date:Date) => string;
-    private hourRange:number;
+    public hourColumnLabels: string[];
+    public initScrollPosition: number;
+    private formatTitle: (date: Date) => string;
+    private formatHourColumnLabel: (date: Date) => string;
+    private hourRange: number;
 
-    constructor(private calendarService:CalendarService, private elm:ElementRef) {
+    static createDateObjects(startTime: Date, startHour: number, endHour: number, timeInterval: number): IDayViewRow[] {
+        const rows: IDayViewRow[] = [],
+            currentHour = 0,
+            currentDate = startTime.getDate();
+        let time: Date,
+            hourStep,
+            minStep;
+
+        if (timeInterval < 1) {
+            hourStep = Math.floor(1 / timeInterval);
+            minStep = 60;
+        } else {
+            hourStep = 1;
+            minStep = Math.floor(60 / timeInterval);
+        }
+
+        for (let hour = startHour; hour < endHour; hour += hourStep) {
+            for (let interval = 0; interval < 60; interval += minStep) {
+                time = new Date(startTime.getTime());
+                time.setHours(currentHour + hour, interval);
+                time.setDate(currentDate);
+                rows.push({
+                    time,
+                    events: []
+                });
+            }
+        }
+        return rows;
+    }
+
+    private static compareEventByStartOffset(eventA: IDisplayEvent, eventB: IDisplayEvent) {
+        return eventA.startOffset - eventB.startOffset;
+    }
+
+    private static calculateWidth(orderedEvents: IDisplayEvent[], size: number, hourParts: number) {
+        const totalSize = size * hourParts,
+            cells: { calculated: boolean; events: IDisplayEvent[]; }[] = new Array(totalSize);
+
+        // sort by position in descending order, the right most columns should be calculated first
+        orderedEvents.sort((eventA, eventB) => {
+            return eventB.position - eventA.position;
+        });
+        for (let i = 0; i < totalSize; i += 1) {
+            cells[i] = {
+                calculated: false,
+                events: []
+            };
+        }
+        const len = orderedEvents.length;
+        for (let i = 0; i < len; i += 1) {
+            const event = orderedEvents[i];
+            let index = event.startIndex * hourParts + event.startOffset;
+            while (index < event.endIndex * hourParts - event.endOffset) {
+                cells[index].events.push(event);
+                index += 1;
+            }
+        }
+
+        let i = 0;
+        while (i < len) {
+            let event = orderedEvents[i];
+            if (!event.overlapNumber) {
+                const overlapNumber = event.position + 1;
+                event.overlapNumber = overlapNumber;
+                const eventQueue = [event];
+                while (event = eventQueue.shift()) {
+                    let index = event.startIndex * hourParts + event.startOffset;
+                    while (index < event.endIndex * hourParts - event.endOffset) {
+                        if (!cells[index].calculated) {
+                            cells[index].calculated = true;
+                            if (cells[index].events) {
+                                const eventCountInCell = cells[index].events.length;
+                                for (let j = 0; j < eventCountInCell; j += 1) {
+                                    const currentEventInCell = cells[index].events[j];
+                                    if (!currentEventInCell.overlapNumber) {
+                                        currentEventInCell.overlapNumber = overlapNumber;
+                                        eventQueue.push(currentEventInCell);
+                                    }
+                                }
+                            }
+                        }
+                        index += 1;
+                    }
+                }
+            }
+            i += 1;
+        }
     }
 
     ngOnInit() {
-        if(!this.sliderOptions) {
+        if (!this.sliderOptions) {
             this.sliderOptions = {};
         }
         this.sliderOptions.loop = true;
@@ -429,8 +552,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         if (this.dateFormatter && this.dateFormatter.formatDayViewTitle) {
             this.formatTitle = this.dateFormatter.formatDayViewTitle;
         } else {
-            let datePipe = new DatePipe(this.locale);
-            this.formatTitle = function (date:Date) {
+            const datePipe = new DatePipe(this.locale);
+            this.formatTitle = function(date: Date) {
                 return datePipe.transform(date, this.formatDayTitle);
             };
         }
@@ -438,8 +561,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         if (this.dateFormatter && this.dateFormatter.formatDayViewHourColumn) {
             this.formatHourColumnLabel = this.dateFormatter.formatDayViewHourColumn;
         } else {
-            let datePipe = new DatePipe(this.locale);
-            this.formatHourColumnLabel = function (date:Date) {
+            const datePipe = new DatePipe(this.locale);
+            this.formatHourColumnLabel = function(date: Date) {
                 return datePipe.transform(date, this.formatHourColumn);
             };
         }
@@ -466,41 +589,43 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         });
 
         this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
-            if(direction == 1) {
+            if (direction === 1) {
                 this.slider.slideNext();
-            } else if(direction == -1) {
+            } else if (direction === -1) {
                 this.slider.slidePrev();
             }
         });
     }
 
     ngAfterViewInit() {
-        let title = this.getTitle();
+        const title = this.getTitle();
         this.onTitleChanged.emit(title);
 
         if (this.scrollToHour > 0) {
-            let hourColumns = this.elm.nativeElement.querySelector('.dayview-normal-event-container').querySelectorAll('.calendar-hour-column');
-            let me = this;
-            setTimeout(function () {
+            const hourColumns = this.elm.nativeElement.querySelector('.dayview-normal-event-container').querySelectorAll('.calendar-hour-column');
+            const me = this;
+            setTimeout(() => {
                 me.initScrollPosition = hourColumns[me.scrollToHour - me.startHour].offsetTop;
             }, 50);
         }
     }
 
-    ngOnChanges(changes:SimpleChanges) {
-        if (!this.inited) return;
+    ngOnChanges(changes: SimpleChanges) {
+        if (!this.inited) {
+            return;
+        }
 
-        let eventSourceChange = changes['eventSource'];
+        const eventSourceChange = changes.eventSource;
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
 
-        let lockSwipeToPrev = changes['lockSwipeToPrev'];
+        const lockSwipeToPrev = changes.lockSwipeToPrev;
         if (lockSwipeToPrev) {
             this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
         }
 
-        let lockSwipes = changes['lockSwipes'];
+        const lockSwipes = changes.lockSwipes;
         if (lockSwipes) {
             this.slider.lockSwipes(lockSwipes.currentValue);
         }
@@ -517,7 +642,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             this.eventSourceChangedSubscription = null;
         }
 
-        if(this.slideChangedSubscription) {
+        if (this.slideChangedSubscription) {
             this.slideChangedSubscription.unsubscribe();
             this.slideChangedSubscription = null;
         }
@@ -529,8 +654,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             return;
         }
 
-        let direction = 0,
-            currentViewIndex = this.currentViewIndex;
+        let direction = 0;
+        const currentViewIndex = this.currentViewIndex;
 
         this.slider.getActiveIndex().then((currentSlideIndex) => {
             currentSlideIndex = (currentSlideIndex + 2) % 3;
@@ -550,130 +675,112 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         });
     }
 
-    move(direction:number) {
-        if (direction === 0) return;
+    move(direction: number) {
+        if (direction === 0) {
+            return;
+        }
 
         this.direction = direction;
-        let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
+        const adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
         this.calendarService.setCurrentDate(adjacentDate);
         this.refreshView();
         this.direction = 0;
     }
 
-    static createDateObjects(startTime:Date, startHour: number, endHour: number, timeInterval: number):IDayViewRow[] {
-        let rows:IDayViewRow[] = [],
-            time:Date,
-            currentHour = startTime.getHours(),
-            currentDate = startTime.getDate(),
-            hourStep,
-            minStep;
-
-        if(timeInterval < 1) {
-            hourStep = Math.floor(1 / timeInterval);
-            minStep = 60;
-        } else {
-            hourStep = 1;
-            minStep = Math.floor(60  / timeInterval);
-        }
-
-        for (let hour = startHour; hour < endHour; hour += hourStep) {
-            for(let interval = 0; interval < 60; interval += minStep ) {
-                time = new Date(startTime.getTime());
-                time.setHours(currentHour + hour, interval);
-                time.setDate(currentDate);
-                rows.push({
-                    time: time,
-                    events: []
-                });
-            }
-        }
-        return rows;
-    }
-
-    private getHourColumnLabels():string[] {
-        let hourColumnLabels:string[] = [];
+    private getHourColumnLabels(): string[] {
+        const hourColumnLabels: string[] = [];
         for (let hour = 0, length = this.views[0].rows.length; hour < length; hour += 1) {
-            hourColumnLabels.push(this.formatHourColumnLabel(this.views[0].rows[hour].time));
+            // handle edge case for DST
+            if (hour === 0 && this.views[0].rows[hour].time.getHours() !== this.startHour) {
+                const time = new Date(this.views[0].rows[hour].time);
+                time.setDate(time.getDate() + 1);
+                time.setHours(this.startHour);
+                hourColumnLabels.push(this.formatHourColumnLabel(time));
+            } else {
+                hourColumnLabels.push(this.formatHourColumnLabel(this.views[0].rows[hour].time));
+            }
         }
         return hourColumnLabels;
     }
 
-    getViewData(startTime:Date):IDayView {
+    getViewData(startTime: Date): IDayView {
         return {
             rows: DayViewComponent.createDateObjects(startTime, this.startHour, this.endHour, this.hourSegments),
             allDayEvents: []
         };
     }
 
-    getRange(currentDate:Date):IRange {
-        let year = currentDate.getFullYear(),
+    getRange(currentDate: Date): IRange {
+        const year = currentDate.getFullYear(),
             month = currentDate.getMonth(),
             date = currentDate.getDate(),
-            startTime = new Date(year, month, date),
-            endTime = new Date(year, month, date + 1);
+            startTime = new Date(year, month, date, 12, 0, 0),
+            endTime = new Date(year, month, date + 1, 12, 0, 0);
 
         return {
-            startTime: startTime,
-            endTime: endTime
+            startTime,
+            endTime
         };
     }
 
     onDataLoaded() {
-        let eventSource = this.eventSource,
+        const eventSource = this.eventSource,
             len = eventSource ? eventSource.length : 0,
             startTime = this.range.startTime,
             endTime = this.range.endTime,
-            utcStartTime = new Date(Date.UTC(startTime.getFullYear(), startTime.getMonth(), startTime.getDate())),
-            utcEndTime = new Date(Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate())),
+            utcStartTime = Date.UTC(startTime.getFullYear(), startTime.getMonth(), startTime.getDate()),
+            utcEndTime = Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate()),
             currentViewIndex = this.currentViewIndex,
             rows = this.views[currentViewIndex].rows,
-            allDayEvents:IDisplayAllDayEvent[] = this.views[currentViewIndex].allDayEvents = [],
+            allDayEvents: IDisplayAllDayEvent[] = this.views[currentViewIndex].allDayEvents = [],
             oneHour = 3600000,
             eps = 0.016,
-            normalEventInRange = false,
             rangeStartRowIndex = this.startHour * this.hourSegments,
             rangeEndRowIndex = this.endHour * this.hourSegments;
+        let normalEventInRange = false;
 
         for (let hour = 0; hour < this.hourRange; hour += 1) {
             rows[hour].events = [];
         }
 
         for (let i = 0; i < len; i += 1) {
-            let event = eventSource[i];
-            let eventStartTime = new Date(event.startTime.getTime());
-            let eventEndTime = new Date(event.endTime.getTime());
+            const event = eventSource[i];
+            const eventStartTime = event.startTime;
+            const eventEndTime = event.endTime;
+            let eventUTCStartTime: number,
+                eventUTCEndTime: number;
 
             if (event.allDay) {
-                if (eventEndTime <= utcStartTime || eventStartTime >= utcEndTime) {
-                    continue;
-                } else {
-                    allDayEvents.push({
-                        event: event
-                    });
-                }
+                eventUTCStartTime = eventStartTime.getTime();
+                eventUTCEndTime = eventEndTime.getTime();
             } else {
-                if (eventEndTime <= startTime || eventStartTime >= endTime) {
-                    continue;
-                } else {
-                    normalEventInRange = true;
-                }
+                eventUTCStartTime = Date.UTC(eventStartTime.getFullYear(), eventStartTime.getMonth(), eventStartTime.getDate());
+                eventUTCEndTime = Date.UTC(eventEndTime.getFullYear(), eventEndTime.getMonth(), eventEndTime.getDate() + 1);
+            }
 
-                let timeDiff: number;
+            if (eventUTCEndTime <= utcStartTime || eventUTCStartTime >= utcEndTime || eventStartTime >= eventEndTime) {
+                continue;
+            }
+
+            if (event.allDay) {
+                allDayEvents.push({
+                    event
+                });
+            } else {
+                normalEventInRange = true;
+
                 let timeDifferenceStart: number;
-                if (eventStartTime <= startTime) {
+                if (eventUTCStartTime < utcStartTime) {
                     timeDifferenceStart = 0;
                 } else {
-                    timeDiff = eventStartTime.getTime() - startTime.getTime() - (eventStartTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                    timeDifferenceStart = timeDiff / oneHour * this.hourSegments;
+                    timeDifferenceStart = (eventStartTime.getHours() + eventStartTime.getMinutes() / 60) * this.hourSegments;
                 }
 
                 let timeDifferenceEnd: number;
-                if (eventEndTime >= endTime) {
-                    timeDiff = endTime.getTime() - startTime.getTime() - (endTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                    timeDifferenceEnd = timeDiff / oneHour * this.hourSegments;
+                if (eventUTCEndTime > utcEndTime) {
+                    timeDifferenceEnd = (utcEndTime - utcStartTime) / oneHour * this.hourSegments;
                 } else {
-                    timeDiff = eventEndTime.getTime() - startTime.getTime() - (eventEndTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
-                    timeDifferenceEnd = timeDiff / oneHour * this.hourSegments;
+                    timeDifferenceEnd = (eventEndTime.getHours() + eventEndTime.getMinutes() / 60) * this.hourSegments;
                 }
 
                 let startIndex = Math.floor(timeDifferenceStart);
@@ -704,12 +811,12 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                 endIndex -= rangeStartRowIndex;
 
                 if (startIndex < endIndex) {
-                    let displayEvent = {
-                        event: event,
-                        startIndex: startIndex,
-                        endIndex: endIndex,
-                        startOffset: startOffset,
-                        endOffset: endOffset
+                    const displayEvent = {
+                        event,
+                        startIndex,
+                        endIndex,
+                        startOffset,
+                        endOffset
                     };
 
                     let eventSet = rows[startIndex].events;
@@ -725,7 +832,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         }
 
         if (normalEventInRange) {
-            let orderedEvents:IDisplayEvent[] = [];
+            let orderedEvents: IDisplayEvent[] = [];
             for (let hour = 0; hour < this.hourRange; hour += 1) {
                 if (rows[hour].events) {
                     rows[hour].events.sort(DayViewComponent.compareEventByStartOffset);
@@ -742,7 +849,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     refreshView() {
         this.range = this.getRange(this.calendarService.currentDate);
         if (this.inited) {
-            let title = this.getTitle();
+            const title = this.getTitle();
             this.onTitleChanged.emit(title);
         }
 
@@ -750,39 +857,35 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         this.calendarService.rangeChanged(this);
     }
 
-    getTitle():string {
-        let startingDate = new Date(this.range.startTime.getTime());
-        startingDate.setHours(12, 0,0,0);
+    getTitle(): string {
+        const startingDate = new Date(this.range.startTime.getTime());
+        startingDate.setHours(12, 0, 0, 0);
         return this.formatTitle(startingDate);
     }
 
-    private static compareEventByStartOffset(eventA:IDisplayEvent, eventB:IDisplayEvent) {
-        return eventA.startOffset - eventB.startOffset;
-    }
-
-    select(selectedTime:Date, events:IDisplayEvent[]) {
+    select(selectedTime: Date, events: IDisplayEvent[]) {
         let disabled = false;
         if (this.markDisabled) {
             disabled = this.markDisabled(selectedTime);
         }
 
         this.onTimeSelected.emit({
-            selectedTime: selectedTime,
+            selectedTime,
             events: events.map(e => e.event),
-            disabled: disabled
+            disabled
         });
     }
 
-    placeEvents(orderedEvents:IDisplayEvent[]) {
+    placeEvents(orderedEvents: IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
         DayViewComponent.calculateWidth(orderedEvents, this.hourRange, this.hourParts);
     }
 
-    placeAllDayEvents(orderedEvents:IDisplayEvent[]) {
+    placeAllDayEvents(orderedEvents: IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
     }
 
-    overlap(event1:IDisplayEvent, event2:IDisplayEvent):boolean {
+    overlap(event1: IDisplayEvent, event2: IDisplayEvent): boolean {
         let earlyEvent = event1,
             lateEvent = event2;
         if (event1.startIndex > event2.startIndex || (event1.startIndex === event2.startIndex && event1.startOffset > event2.startOffset)) {
@@ -797,11 +900,12 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         }
     }
 
-    calculatePosition(events:IDisplayEvent[]) {
-        let len = events.length,
-            maxColumn = 0,
-            col:number,
-            isForbidden:boolean[] = new Array(len);
+    calculatePosition(events: IDisplayEvent[]) {
+        const len = events.length,
+            isForbidden: boolean[] = new Array(len);
+        let maxColumn = 0,
+            col: number;
+
 
         for (let i = 0; i < len; i += 1) {
             for (col = 0; col < maxColumn; col += 1) {
@@ -831,66 +935,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         }
     }
 
-    private static calculateWidth(orderedEvents:IDisplayEvent[], size:number, hourParts: number) {
-        let totalSize = size * hourParts,
-            cells:{ calculated: boolean; events: IDisplayEvent[]; }[] = new Array(totalSize);
-
-        // sort by position in descending order, the right most columns should be calculated first
-        orderedEvents.sort((eventA, eventB) => {
-            return eventB.position - eventA.position;
-        });
-        for (let i = 0; i < totalSize; i += 1) {
-            cells[i] = {
-                calculated: false,
-                events: []
-            };
-        }
-        let len = orderedEvents.length;
-        for (let i = 0; i < len; i += 1) {
-            let event = orderedEvents[i];
-            let index = event.startIndex * hourParts + event.startOffset;
-            while (index < event.endIndex * hourParts - event.endOffset) {
-                cells[index].events.push(event);
-                index += 1;
-            }
-        }
-
-        let i = 0;
-        while (i < len) {
-            let event = orderedEvents[i];
-            if (!event.overlapNumber) {
-                let overlapNumber = event.position + 1;
-                event.overlapNumber = overlapNumber;
-                let eventQueue = [event];
-                while ((event = eventQueue.shift())) {
-                    let index = event.startIndex * hourParts + event.startOffset;
-                    while (index < event.endIndex * hourParts - event.endOffset) {
-                        if (!cells[index].calculated) {
-                            cells[index].calculated = true;
-                            if (cells[index].events) {
-                                let eventCountInCell = cells[index].events.length;
-                                for (let j = 0; j < eventCountInCell; j += 1) {
-                                    let currentEventInCell = cells[index].events[j];
-                                    if (!currentEventInCell.overlapNumber) {
-                                        currentEventInCell.overlapNumber = overlapNumber;
-                                        eventQueue.push(currentEventInCell);
-                                    }
-                                }
-                            }
-                        }
-                        index += 1;
-                    }
-                }
-            }
-            i += 1;
-        }
-    }
-
-    eventSelected(event:IEvent) {
+    eventSelected(event: IEvent) {
         this.onEventSelected.emit(event);
     }
 
-    setScrollPosition(scrollPosition:number) {
+    setScrollPosition(scrollPosition: number) {
         this.initScrollPosition = scrollPosition;
     }
 }

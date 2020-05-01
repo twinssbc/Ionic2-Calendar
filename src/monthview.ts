@@ -1,11 +1,23 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ViewChild, TemplateRef } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { DatePipe } from '@angular/common';
-import { IonSlides } from '@ionic/angular';
+import {
+    Component,
+    OnInit,
+    OnChanges,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    ViewChild,
+    TemplateRef,
+    OnDestroy,
+    AfterViewInit
+} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {DatePipe} from '@angular/common';
+import {IonSlides} from '@ionic/angular';
 
-import { ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode, IDateFormatter } from './calendar';
-import { CalendarService } from './calendar.service';
-import { IMonthViewDisplayEventTemplateContext } from "./calendar";
+import {ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode, IDateFormatter} from './calendar';
+import {CalendarService} from './calendar.service';
+import {IMonthViewDisplayEventTemplateContext} from './calendar';
 
 @Component({
     selector: 'monthview',
@@ -26,7 +38,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                             <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[0].dates[row*7+col])"
                                 [ngClass]="getHighlightClass(views[0].dates[row*7+col])">
                                 <ng-template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
-                                [ngTemplateOutletContext]="{view: views[0], row: row, col: col}">
+                                             [ngTemplateOutletContext]="{view: views[0], row: row, col: col}">
                                 </ng-template>
                             </td>
                         </tr>
@@ -44,7 +56,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
                             <td *ngFor="let col of [0,1,2,3,4,5,6]">
                                 <ng-template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
-                                [ngTemplateOutletContext]="{view: views[0], row: row, col: col}">
+                                             [ngTemplateOutletContext]="{view: views[0], row: row, col: col}">
                                 </ng-template>
                             </td>
                         <tr>
@@ -65,7 +77,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                             <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[1].dates[row*7+col])"
                                 [ngClass]="getHighlightClass(views[1].dates[row*7+col])">
                                 <ng-template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
-                                [ngTemplateOutletContext]="{view: views[1], row: row, col: col}">
+                                             [ngTemplateOutletContext]="{view: views[1], row: row, col: col}">
                                 </ng-template>
                             </td>
                         </tr>
@@ -83,7 +95,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
                             <td *ngFor="let col of [0,1,2,3,4,5,6]">
                                 <ng-template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
-                                [ngTemplateOutletContext]="{view: views[1], row: row, col: col}">
+                                             [ngTemplateOutletContext]="{view: views[1], row: row, col: col}">
                                 </ng-template>
                             </td>
                         <tr>
@@ -104,7 +116,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                             <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[2].dates[row*7+col])"
                                 [ngClass]="getHighlightClass(views[2].dates[row*7+col])">
                                 <ng-template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
-                                [ngTemplateOutletContext]="{view: views[2], row: row, col: col}">
+                                             [ngTemplateOutletContext]="{view: views[2], row: row, col: col}">
                                 </ng-template>
                             </td>
                         </tr>
@@ -122,7 +134,7 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                         <tr *ngFor="let row of [0,1,2,3,4,5]">
                             <td *ngFor="let col of [0,1,2,3,4,5,6]">
                                 <ng-template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
-                                [ngTemplateOutletContext]="{view: views[2], row: row, col: col}">
+                                             [ngTemplateOutletContext]="{view: views[2], row: row, col: col}">
                                 </ng-template>
                             </td>
                         <tr>
@@ -131,74 +143,74 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
                 </ion-slide>
             </ion-slides>
             <ng-template [ngTemplateOutlet]="monthviewEventDetailTemplate"
-            [ngTemplateOutletContext]="{showEventDetail:showEventDetail, selectedDate: selectedDate, noEventsLabel: noEventsLabel}">
+                         [ngTemplateOutletContext]="{showEventDetail:showEventDetail, selectedDate: selectedDate, noEventsLabel: noEventsLabel}">
             </ng-template>
         </div>
     `,
     styles: [`
         .text-muted {
-          color: #999;
+            color: #999;
         }
 
         .table-fixed {
-          table-layout: fixed;
+            table-layout: fixed;
         }
 
         .table {
-          width: 100%;
-          max-width: 100%;
-          background-color: transparent;
+            width: 100%;
+            max-width: 100%;
+            background-color: transparent;
         }
 
         .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td,
         .table > tbody > tr > td, .table > tfoot > tr > td {
-          padding: 8px;
-          line-height: 20px;
-          vertical-align: top;
+            padding: 8px;
+            line-height: 20px;
+            vertical-align: top;
         }
 
         .table > thead > tr > th {
-          vertical-align: bottom;
-          border-bottom: 2px solid #ddd;
+            vertical-align: bottom;
+            border-bottom: 2px solid #ddd;
         }
 
         .table > thead:first-child > tr:first-child > th, .table > thead:first-child > tr:first-child > td {
-          border-top: 0
+            border-top: 0
         }
 
         .table > tbody + tbody {
-          border-top: 2px solid #ddd;
+            border-top: 2px solid #ddd;
         }
 
         .table-bordered {
-          border: 1px solid #ddd;
+            border: 1px solid #ddd;
         }
 
         .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th,
         .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
-          border: 1px solid #ddd;
+            border: 1px solid #ddd;
         }
 
         .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
-          border-bottom-width: 2px;
+            border-bottom-width: 2px;
         }
 
         .table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
-          background-color: #f9f9f9
+            background-color: #f9f9f9
         }
 
         .monthview-primary-with-event {
-          background-color: #3a87ad;
-          color: white;
+            background-color: #3a87ad;
+            color: white;
         }
 
         .monthview-current {
-          background-color: #f0f0f0;
+            background-color: #f0f0f0;
         }
 
         .monthview-selected {
-          background-color: #009900;
-          color: white;
+            background-color: #009900;
+            color: white;
         }
 
         .monthview-datetable td.monthview-disabled {
@@ -207,75 +219,89 @@ import { IMonthViewDisplayEventTemplateContext } from "./calendar";
         }
 
         .monthview-datetable th {
-          text-align: center;
+            text-align: center;
         }
 
         .monthview-datetable td {
-          cursor: pointer;
-          text-align: center;
+            cursor: pointer;
+            text-align: center;
         }
 
         .monthview-secondary-with-event {
-          background-color: #d9edf7;
+            background-color: #d9edf7;
         }
 
         ::-webkit-scrollbar,
         *::-webkit-scrollbar {
-          display: none;
+            display: none;
         }
     `]
 })
-export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('monthSlider', {static: true}) slider:IonSlides;
+export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy, OnChanges, AfterViewInit {
 
-    @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
-    @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
-    @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    constructor(private calendarService: CalendarService) {
+    }
+    ;
 
-    @Input() formatDay:string;
-    @Input() formatDayHeader:string;
-    @Input() formatMonthTitle:string;
-    @Input() eventSource:IEvent[];
-    @Input() startingDayMonth:number;
-    @Input() showEventDetail:boolean;
-    @Input() noEventsLabel:string;
-    @Input() autoSelect:boolean = true;
-    @Input() markDisabled:(date:Date) => boolean;
-    @Input() locale:string;
-    @Input() dateFormatter:IDateFormatter;
-    @Input() dir:string = "";
-    @Input() lockSwipeToPrev:boolean;
-    @Input() lockSwipes:boolean;
-    @Input() sliderOptions:any;
+    @ViewChild('monthSlider', {static: true}) slider: IonSlides;
+
+    @Input() monthviewDisplayEventTemplate: TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewInactiveDisplayEventTemplate: TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewEventDetailTemplate: TemplateRef<IMonthViewDisplayEventTemplateContext>;
+
+    @Input() formatDay: string;
+    @Input() formatDayHeader: string;
+    @Input() formatMonthTitle: string;
+    @Input() eventSource: IEvent[];
+    @Input() startingDayMonth: number;
+    @Input() showEventDetail: boolean;
+    @Input() noEventsLabel: string;
+    @Input() autoSelect = true;
+    @Input() markDisabled: (date: Date) => boolean;
+    @Input() locale: string;
+    @Input() dateFormatter: IDateFormatter;
+    @Input() dir = '';
+    @Input() lockSwipeToPrev: boolean;
+    @Input() lockSwipes: boolean;
+    @Input() sliderOptions: any;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>(true);
     @Output() onTitleChanged = new EventEmitter<string>(true);
 
-    public views:IMonthView[] = [];
+    public views: IMonthView[] = [];
     public currentViewIndex = 0;
-    public selectedDate:IMonthViewRow;
-    public range:IRange;
-    public mode:CalendarMode = 'month';
+    public selectedDate: IMonthViewRow;
+    public range: IRange;
+    public mode: CalendarMode = 'month';
     public direction = 0;
 
     private moveOnSelected = false;
     private inited = false;
     private callbackOnInit = true;
-    private currentDateChangedFromParentSubscription:Subscription;
-    private eventSourceChangedSubscription:Subscription;
-    private slideChangedSubscription:Subscription;
 
-    private formatDayLabel:(date:Date) => string;
-    private formatDayHeaderLabel:(date:Date) => string;
-    private formatTitle:(date:Date) => string;
+    private currentDateChangedFromParentSubscription: Subscription;
+    private eventSourceChangedSubscription: Subscription;
+    private slideChangedSubscription: Subscription;
 
-    constructor(private calendarService:CalendarService) {
+    private formatDayLabel: (date: Date) => string;
+    private formatDayHeaderLabel: (date: Date) => string;
+    private formatTitle: (date: Date) => string;
+
+    static getDates(startDate: Date, n: number): Date[] {
+        const dates = new Array(n),
+            current = new Date(startDate.getTime());
+        let i = 0;
+        while (i < n) {
+            dates[i++] = new Date(current.getTime());
+            current.setDate(current.getDate() + 1);
+        }
+        return dates;
     }
 
     ngOnInit() {
-        if(!this.sliderOptions) {
+        if (!this.sliderOptions) {
             this.sliderOptions = {};
         }
         this.sliderOptions.loop = true;
@@ -283,8 +309,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewDay) {
             this.formatDayLabel = this.dateFormatter.formatMonthViewDay;
         } else {
-            let dayLabelDatePipe = new DatePipe('en-US');
-            this.formatDayLabel = function (date:Date) {
+            const dayLabelDatePipe = new DatePipe('en-US');
+            this.formatDayLabel = function(date: Date) {
                 return dayLabelDatePipe.transform(date, this.formatDay);
             };
         }
@@ -292,8 +318,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewDayHeader) {
             this.formatDayHeaderLabel = this.dateFormatter.formatMonthViewDayHeader;
         } else {
-            let datePipe = new DatePipe(this.locale);
-            this.formatDayHeaderLabel = function (date:Date) {
+            const datePipe = new DatePipe(this.locale);
+            this.formatDayHeaderLabel = function(date: Date) {
                 return datePipe.transform(date, this.formatDayHeader);
             };
         }
@@ -301,8 +327,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         if (this.dateFormatter && this.dateFormatter.formatMonthViewTitle) {
             this.formatTitle = this.dateFormatter.formatMonthViewTitle;
         } else {
-            let datePipe = new DatePipe(this.locale);
-            this.formatTitle = function (date:Date) {
+            const datePipe = new DatePipe(this.locale);
+            this.formatTitle = function(date: Date) {
                 return datePipe.transform(date, this.formatMonthTitle);
             };
         }
@@ -327,11 +353,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         });
 
         this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
-           if(direction == 1) {
-               this.slider.slideNext();
-           } else if(direction == -1) {
-               this.slider.slidePrev();
-           }
+            if (direction === 1) {
+                this.slider.slideNext();
+            } else if (direction === -1) {
+                this.slider.slidePrev();
+            }
         });
     }
 
@@ -346,33 +372,35 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             this.eventSourceChangedSubscription = null;
         }
 
-        if(this.slideChangedSubscription) {
+        if (this.slideChangedSubscription) {
             this.slideChangedSubscription.unsubscribe();
             this.slideChangedSubscription = null;
         }
     }
 
-    ngOnChanges(changes:SimpleChanges) {
-        if (!this.inited) return;
+    ngOnChanges(changes: SimpleChanges) {
+        if (!this.inited) {
+            return;
+        }
 
-        let eventSourceChange = changes['eventSource'];
+        const eventSourceChange = changes.eventSource;
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
 
-        let lockSwipeToPrev = changes['lockSwipeToPrev'];
+        const lockSwipeToPrev = changes.lockSwipeToPrev;
         if (lockSwipeToPrev) {
             this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
         }
 
-        let lockSwipes = changes['lockSwipes'];
+        const lockSwipes = changes.lockSwipes;
         if (lockSwipes) {
             this.slider.lockSwipes(lockSwipes.currentValue);
         }
     }
 
     ngAfterViewInit() {
-        let title = this.getTitle();
+        const title = this.getTitle();
         this.onTitleChanged.emit(title);
     }
 
@@ -382,8 +410,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             return;
         }
 
-        let direction = 0,
-            currentViewIndex = this.currentViewIndex;
+        let direction = 0;
+        const currentViewIndex = this.currentViewIndex;
 
         this.slider.getActiveIndex().then((currentSlideIndex) => {
             currentSlideIndex = (currentSlideIndex + 2) % 3;
@@ -403,12 +431,14 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         });
     }
 
-    move(direction:number) {
-        if (direction === 0) return;
+    move(direction: number) {
+        if (direction === 0) {
+            return;
+        }
 
         this.direction = direction;
         if (!this.moveOnSelected) {
-            let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
+            const adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
             this.calendarService.setCurrentDate(adjacentDate);
         }
         this.refreshView();
@@ -416,57 +446,45 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.moveOnSelected = false;
     }
 
-    createDateObject(date:Date):IMonthViewRow {
-        var disabled = false;
+    createDateObject(date: Date): IMonthViewRow {
+        let disabled = false;
         if (this.markDisabled) {
             disabled = this.markDisabled(date);
         }
 
         return {
-            date: date,
+            date,
             events: [],
             label: this.formatDayLabel(date),
             secondary: false,
-            disabled: disabled
+            disabled
         };
     }
 
-    static getDates(startDate:Date, n:number):Date[] {
-        let dates = new Array(n),
-            current = new Date(startDate.getTime()),
-            i = 0;
-        current.setHours(12); // Prevent repeated dates because of timezone bug
-        while (i < n) {
-            dates[i++] = new Date(current.getTime());
-            current.setDate(current.getDate() + 1);
-        }
-        return dates;
-    }
-
-    getViewData(startTime:Date):IMonthView {
-        let startDate = startTime,
+    getViewData(startTime: Date): IMonthView {
+        const startDate = startTime,
             date = startDate.getDate(),
             month = (startDate.getMonth() + (date !== 1 ? 1 : 0)) % 12;
 
-        let dates = MonthViewComponent.getDates(startDate, 42);
-        let days:IMonthViewRow[] = [];
+        const dates = MonthViewComponent.getDates(startDate, 42);
+        const days: IMonthViewRow[] = [];
         for (let i = 0; i < 42; i++) {
-            let dateObject = this.createDateObject(dates[i]);
+            const dateObject = this.createDateObject(dates[i]);
             dateObject.secondary = dates[i].getMonth() !== month;
             days[i] = dateObject;
         }
 
-        let dayHeaders:string[] = [];
+        const dayHeaders: string[] = [];
         for (let i = 0; i < 7; i++) {
             dayHeaders.push(this.formatDayHeaderLabel(days[i].date));
         }
         return {
             dates: days,
-            dayHeaders: dayHeaders
+            dayHeaders
         };
     }
 
-    getHighlightClass(date:IMonthViewRow):string {
+    getHighlightClass(date: IMonthViewRow): string {
         let className = '';
 
         if (date.hasEvent) {
@@ -507,10 +525,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         return className;
     }
 
-    getRange(currentDate:Date):IRange {
-        let year = currentDate.getFullYear(),
+    getRange(currentDate: Date): IRange {
+        const year = currentDate.getFullYear(),
             month = currentDate.getMonth(),
-            firstDayOfMonth = new Date(year, month, 1),
+            firstDayOfMonth = new Date(year, month, 1, 12, 0, 0), // set hour to 12 to avoid DST problem
+
             difference = this.startingDayMonth - firstDayOfMonth.getDay(),
             numDisplayedFromPreviousMonth = (difference > 0) ? 7 - difference : -difference,
             startDate = new Date(firstDayOfMonth.getTime());
@@ -519,7 +538,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             startDate.setDate(-numDisplayedFromPreviousMonth + 1);
         }
 
-        let endDate = new Date(startDate.getTime());
+        const endDate = new Date(startDate.getTime());
         endDate.setDate(endDate.getDate() + 42);
 
         return {
@@ -529,13 +548,13 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
     }
 
     onDataLoaded() {
-        let range = this.range,
+        const range = this.range,
             eventSource = this.eventSource,
             len = eventSource ? eventSource.length : 0,
             startTime = range.startTime,
             endTime = range.endTime,
-            utcStartTime = new Date(Date.UTC(startTime.getFullYear(), startTime.getMonth(), startTime.getDate())),
-            utcEndTime = new Date(Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate())),
+            utcStartTime = Date.UTC(startTime.getFullYear(), startTime.getMonth(), startTime.getDate()),
+            utcEndTime = Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate()),
             currentViewIndex = this.currentViewIndex,
             dates = this.views[currentViewIndex].dates,
             oneDay = 86400000,
@@ -549,57 +568,42 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
 
         for (let i = 0; i < len; i += 1) {
-            let event = eventSource[i],
-                eventStartTime = new Date(event.startTime.getTime()),
-                eventEndTime = new Date(event.endTime.getTime()),
-                st:Date,
-                et:Date;
+            const event = eventSource[i],
+                eventStartTime = event.startTime,
+                eventEndTime = event.endTime;
 
+            let eventUTCStartTime: number,
+                eventUTCEndTime: number;
             if (event.allDay) {
-                if (eventEndTime <= utcStartTime || eventStartTime >= utcEndTime) {
-                    continue;
-                } else {
-                    st = utcStartTime;
-                    et = utcEndTime;
-                }
+                eventUTCStartTime = eventStartTime.getTime();
+                eventUTCEndTime = eventEndTime.getTime();
             } else {
-                if (eventEndTime <= startTime || eventStartTime >= endTime) {
-                    continue;
-                } else {
-                    st = startTime;
-                    et = endTime;
-                }
+                eventUTCStartTime = Date.UTC(eventStartTime.getFullYear(), eventStartTime.getMonth(), eventStartTime.getDate());
+                eventUTCEndTime = Date.UTC(eventEndTime.getFullYear(), eventEndTime.getMonth(), eventEndTime.getDate() + 1);
             }
 
-            let timeDiff:number;
-            let timeDifferenceStart:number;
-            if (eventStartTime <= st) {
+            if (eventUTCEndTime <= utcStartTime || eventUTCStartTime >= utcEndTime) {
+                continue;
+            }
+
+            let timeDifferenceStart: number,
+                timeDifferenceEnd: number;
+
+            if (eventUTCStartTime < utcStartTime) {
                 timeDifferenceStart = 0;
             } else {
-                timeDiff = eventStartTime.getTime() - st.getTime();
-                if (!event.allDay) {
-                    timeDiff = timeDiff - (eventStartTime.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
-                }
-                timeDifferenceStart = timeDiff / oneDay;
+                timeDifferenceStart = (eventUTCStartTime - utcStartTime) / oneDay;
             }
 
-            let timeDifferenceEnd:number;
-            if (eventEndTime >= et) {
-                timeDiff = et.getTime() - st.getTime();
-                if (!event.allDay) {
-                    timeDiff = timeDiff - (et.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
-                }
-                timeDifferenceEnd = timeDiff / oneDay;
+            if (eventUTCEndTime > utcEndTime) {
+                timeDifferenceEnd = (utcEndTime - utcStartTime) / oneDay;
             } else {
-                timeDiff = eventEndTime.getTime() - st.getTime();
-                if (!event.allDay) {
-                    timeDiff = timeDiff - (eventEndTime.getTimezoneOffset() - st.getTimezoneOffset()) * 60000;
-                }
-                timeDifferenceEnd = timeDiff / oneDay;
+                timeDifferenceEnd = (eventUTCEndTime - utcStartTime) / oneDay;
             }
 
             let index = Math.floor(timeDifferenceStart);
-            while (index < timeDifferenceEnd - eps) {
+            const endIndex = Math.ceil(timeDifferenceEnd - eps);
+            while (index < endIndex) {
                 dates[index].hasEvent = true;
                 let eventSet = dates[index].events;
                 if (eventSet) {
@@ -637,13 +641,13 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
                 });
             }
         }
-    };
+    }
 
     refreshView() {
         this.range = this.getRange(this.calendarService.currentDate);
 
         if (this.inited) {
-            let title = this.getTitle();
+            const title = this.getTitle();
             this.onTitleChanged.emit(title);
         }
         this.calendarService.populateAdjacentViews(this);
@@ -651,8 +655,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         this.calendarService.rangeChanged(this);
     }
 
-    getTitle():string {
-        let currentViewStartDate = this.range.startTime,
+    getTitle(): string {
+        const currentViewStartDate = this.range.startTime,
             date = currentViewStartDate.getDate(),
             month = (currentViewStartDate.getMonth() + (date !== 1 ? 1 : 0)) % 12,
             year = currentViewStartDate.getFullYear() + (date !== 1 && month === 0 ? 1 : 0),
@@ -660,7 +664,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         return this.formatTitle(headerDate);
     }
 
-    private compareEvent(event1:IEvent, event2:IEvent):number {
+    private compareEvent(event1: IEvent, event2: IEvent): number {
         if (event1.allDay) {
             return 1;
         } else if (event2.allDay) {
@@ -670,20 +674,22 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
     }
 
-    select(viewDate:IMonthViewRow) {
-        if (!this.views) return;
+    select(viewDate: IMonthViewRow) {
+        if (!this.views) {
+            return;
+        }
 
-        let selectedDate = viewDate.date,
+        const selectedDate = viewDate.date,
             events = viewDate.events;
 
         if (!viewDate.disabled) {
-            let dates = this.views[this.currentViewIndex].dates,
+            const dates = this.views[this.currentViewIndex].dates,
                 currentCalendarDate = this.calendarService.currentDate,
                 currentMonth = currentCalendarDate.getMonth(),
                 currentYear = currentCalendarDate.getFullYear(),
                 selectedMonth = selectedDate.getMonth(),
-                selectedYear = selectedDate.getFullYear(),
-                direction = 0;
+                selectedYear = selectedDate.getFullYear();
+            let direction = 0;
 
             if (currentYear === selectedYear) {
                 if (currentMonth !== selectedMonth) {
@@ -695,9 +701,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
 
             this.calendarService.setCurrentDate(selectedDate);
             if (direction === 0) {
-                let currentViewStartDate = this.range.startTime,
+                const currentViewStartDate = this.range.startTime,
                     oneDay = 86400000,
-                    selectedDayDifference = Math.floor((selectedDate.getTime() - currentViewStartDate.getTime() - (selectedDate.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay);
+                    selectedDayDifference = Math.round((Date.UTC(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate()) - Date.UTC(currentViewStartDate.getFullYear(), currentViewStartDate.getMonth(), currentViewStartDate.getDate())) / oneDay);
 
                 for (let r = 0; r < 42; r += 1) {
                     dates[r].selected = false;
@@ -713,10 +719,10 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
             }
         }
 
-        this.onTimeSelected.emit({selectedTime: selectedDate, events: events, disabled: viewDate.disabled});
+        this.onTimeSelected.emit({selectedTime: selectedDate, events, disabled: viewDate.disabled});
     }
 
-    slideView(direction:number) {
+    slideView(direction: number) {
         if (direction === 1) {
             this.slider.slideNext();
         } else if (direction === -1) {
@@ -724,12 +730,12 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
     }
 
-    updateCurrentView(currentViewStartDate:Date, view:IMonthView) {
-        let currentCalendarDate = this.calendarService.currentDate,
+    updateCurrentView(currentViewStartDate: Date, view: IMonthView) {
+        const currentCalendarDate = this.calendarService.currentDate,
             today = new Date(),
             oneDay = 86400000,
-            selectedDayDifference = Math.floor((currentCalendarDate.getTime() - currentViewStartDate.getTime() - (currentCalendarDate.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay),
-            currentDayDifference = Math.floor((today.getTime() - currentViewStartDate.getTime() - (today.getTimezoneOffset() - currentViewStartDate.getTimezoneOffset()) * 60000) / oneDay);
+            selectedDayDifference = Math.round((Date.UTC(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), currentCalendarDate.getDate()) - Date.UTC(currentViewStartDate.getFullYear(), currentViewStartDate.getMonth(), currentViewStartDate.getDate())) / oneDay),
+            currentDayDifference = Math.round((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(currentViewStartDate.getFullYear(), currentViewStartDate.getMonth(), currentViewStartDate.getDate())) / oneDay);
 
         for (let r = 0; r < 42; r += 1) {
             view.dates[r].selected = false;
@@ -753,7 +759,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnChanges
         }
     }
 
-    eventSelected(event:IEvent) {
+    eventSelected(event: IEvent) {
         this.onEventSelected.emit(event);
     }
 }
