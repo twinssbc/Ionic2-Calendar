@@ -795,6 +795,10 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
 
         this.slider.getActiveIndex().then(currentSlideIndex => {
             currentSlideIndex = (currentSlideIndex + 2) % 3;
+            if(isNaN(currentSlideIndex)) {
+                currentSlideIndex = currentViewIndex;
+            }
+
             if (currentSlideIndex - currentViewIndex === 1) {
                 direction = 1;
             } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
