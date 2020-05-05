@@ -19,7 +19,7 @@ version 0.2.9+ depends on Ionic (>=2.3.0).
 version 0.3.x depends on Ionic (>=3.1.1).  
 version 0.4.x depends on Ionic (>=3.9.2).  
 version 0.5.x depends on Ionic (>=4.0.0-rc.1), also supports Ionic 5.0.0.  
-Version 0.6.x depends on Ionic (>=5.0.0) and Angular (>=9.1.0).
+Version 0.6.x depends on Ionic (>=5.1.0) and Angular (>=9.1.0).
 
 
 # Usage
