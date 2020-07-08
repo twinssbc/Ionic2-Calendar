@@ -734,6 +734,10 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
         }
     }
 
+    updateSize() {
+        this.slider.update();
+    }
+
     updateCurrentView(currentViewStartDate: Date, view: IMonthView) {
         const currentCalendarDate = this.calendarService.currentDate,
             today = new Date(),
