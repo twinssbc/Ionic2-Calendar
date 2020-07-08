@@ -10,18 +10,21 @@ export class CalendarService {
     currentDateChangedFromChildren$: Observable<Date>;
     eventSourceChanged$: Observable<void>;
     slideChanged$: Observable<number>;
+    slideUpdated$: Observable<void>;
 
     private _currentDate: Date;
     private currentDateChangedFromParent = new Subject<Date>();
     private currentDateChangedFromChildren = new Subject<Date>();
     private eventSourceChanged = new Subject<void>();
     private slideChanged = new Subject<number>();
+    private slideUpdated = new Subject<void>();
 
     constructor() {
         this.currentDateChangedFromParent$ = this.currentDateChangedFromParent.asObservable();
         this.currentDateChangedFromChildren$ = this.currentDateChangedFromChildren.asObservable();
         this.eventSourceChanged$ = this.eventSourceChanged.asObservable();
         this.slideChanged$ = this.slideChanged.asObservable();
+        this.slideUpdated$ = this.slideUpdated.asObservable();
     }
 
     setCurrentDate(val: Date, fromParent: boolean = false) {
@@ -151,5 +154,9 @@ export class CalendarService {
 
     slide(direction: number) {
         this.slideChanged.next(direction);
+    }
+
+    update() {
+        this.slideUpdated.next();
     }
 }

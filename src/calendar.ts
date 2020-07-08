@@ -488,4 +488,8 @@ export class CalendarComponent implements OnInit {
     slidePrev() {
         this.calendarService.slide(-1);
     }
+
+    update() {
+        this.calendarService.update();
+    }
 }
