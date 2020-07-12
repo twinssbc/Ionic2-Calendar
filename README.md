@@ -689,7 +689,7 @@ Indicates the event is allDay event or regular event
 When this method is called, the calendar will be forced to reload the events in the eventSource array. This is only necessary when you directly modify the element in the eventSource array.
 
 ``` typescript
-import { CalendarComponent } from "ionic2-calendar/calendar";
+import { CalendarComponent } from "ionic2-calendar";
 
 @Component({
     selector: 'page-home',
@@ -715,7 +715,7 @@ export class HomePage {
 Slide the calendar to the next date range.
 
 ``` typescript
-import { CalendarComponent } from "ionic2-calendar/calendar";
+import { CalendarComponent } from "ionic2-calendar";
 
 @Component({
     selector: 'page-home',
@@ -734,7 +734,7 @@ export class HomePage {
 Slide the calendar to the previous date range.
 
 ``` typescript
-import { CalendarComponent } from "ionic2-calendar/calendar";
+import { CalendarComponent } from "ionic2-calendar";
 
 @Component({
     selector: 'page-home',

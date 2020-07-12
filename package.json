@@ -1,6 +1,6 @@
 {
     "name": "ionic2-calendar",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
@@ -15,7 +15,9 @@
         "url": "git+https://github.com/twinssbc/Ionic2-Calendar.git"
     },
     "scripts": {
-        "build": "rm -rf dist && node_modules/.bin/ngc -p tsconfig.json",
+        "build": "rm -rf dist && npm run build.ng",
+        "build.ng": "ng-packagr -p package.json",
+        "build.es2015": "node_modules/.bin/ngc -p tsconfig.json",
         "copy_static_files": "cp -r README.md LICENSE tsconfig.json dist/ & cp package-publish.json dist/package.json",
         "dev": "tsc --watch",
         "postinstall": "ngcc"
@@ -41,7 +43,13 @@
         "@angular/platform-browser-dynamic": "9.1.0",
         "@ionic/angular": "5.1.0",
         "@angular/router": "9.1.0",
+        "ng-packagr": "9.1.0",
         "rxjs": "^6.5.4",
         "zone.js": "^0.10.2"
+    },
+    "ngPackage": {
+        "lib": {
+            "entryFile": "src/index.ts"
+        }
     }
 }
