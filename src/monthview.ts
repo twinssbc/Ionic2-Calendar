@@ -284,6 +284,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
     private currentDateChangedFromParentSubscription: Subscription;
     private eventSourceChangedSubscription: Subscription;
     private slideChangedSubscription: Subscription;
+    private slideUpdatedSubscription: Subscription;
 
     private formatDayLabel: (date: Date) => string;
     private formatDayHeaderLabel: (date: Date) => string;
@@ -359,6 +360,10 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
                 this.slider.slidePrev();
             }
         });
+
+        this.slideUpdatedSubscription = this.calendarService.slideUpdated$.subscribe(() => {
+            this.slider.update();
+        });
     }
 
     ngOnDestroy() {
@@ -375,6 +380,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
         if (this.slideChangedSubscription) {
             this.slideChangedSubscription.unsubscribe();
             this.slideChangedSubscription = null;
+        }
+
+        if (this.slideUpdatedSubscription) {
+            this.slideUpdatedSubscription.unsubscribe();
+            this.slideUpdatedSubscription = null;
         }
     }
 
