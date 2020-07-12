@@ -749,6 +749,25 @@ export class HomePage {
 }
 ```
 
+* update  (version >= 0.6.5)  
+Update the underlying slides.
+
+``` typescript
+import { CalendarComponent } from "ionic2-calendar";
+
+@Component({
+    selector: 'page-home',
+    templateUrl: 'home.html'
+})
+export class HomePage {
+    @ViewChild(CalendarComponent, null) myCalendar:CalendarComponent;
+    …
+    slidePrev: function() {
+        this.myCalendar.update();
+    }
+}
+```
+
 # Localization    
 You could use *locale* option to achieve the localization.  
 If locale option is not specified, the calendar will use the LOCALE_ID set at the module level.  

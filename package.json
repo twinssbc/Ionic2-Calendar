@@ -1,6 +1,6 @@
 {
     "name": "ionic2-calendar",
-    "version": "0.6.5",
+    "version": "0.6.6",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
@@ -18,7 +18,6 @@
         "build": "rm -rf dist && npm run build.ng",
         "build.ng": "ng-packagr -p package.json",
         "build.es2015": "node_modules/.bin/ngc -p tsconfig.json",
-        "copy_static_files": "cp -r README.md LICENSE tsconfig.json dist/ & cp package-publish.json dist/package.json",
         "dev": "tsc --watch",
         "postinstall": "ngcc"
     },
