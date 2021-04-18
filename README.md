@@ -6,7 +6,7 @@ Ionic calendar directive
 [![GitHub License](https://img.shields.io/npm/l/ionic2-calendar.svg)](https://raw.githubusercontent.com/twinssbc/Ionic2-Calendar/master/LICENSE)
 
 # Demo
-https://stackblitz.com/edit/ionic-qfrkfz  
+https://stackblitz.com/edit/ionic-585lgv  
 https://twinssbc.github.io/Ionic2-Calendar/demo/
 
 # Dependency
@@ -107,7 +107,7 @@ Add the directive in the html page
         (onEventSelected)="onEventSelected($event)"
         (onTitleChanged)="onViewTitleChanged($event)"
         (onTimeSelected)="onTimeSelected($event)"
-        step="30">
+        [step]="calendar.step">
         
     </calendar>
 ```
@@ -139,6 +139,20 @@ Default value: (version 0.1-0.3) 'j', (version 0.4+) 'ha'
 * calendarMode    
 The initial mode of the calendar.    
 Default value: 'month'
+
+``` html
+        <calendar ... [calendarMode]="calendar.mode"></calendar>
+```
+
+```typescript
+    import { CalendarMode } from 'ionic2-calendar/calendar';
+
+    calendar = {
+        mode: 'week' as CalendarMode
+    };
+```
+
+
 * showEventDetail    
 If set to true, when selecting the date in the month view, the events happened on that day will be shown below.    
 Default value: true
@@ -167,7 +181,15 @@ Default value: 'local'
 It is used to display the event using more accurate time interval in weekview and dayview. For example, if set to 30, then the event will only occupy half of the row height (If timeInterval option uses default value).   The unit is minute. It can be set to 15 or 30.    
 Default value: 60
 ``` html
-        <calendar ... [step]="30"></calendar>
+        <calendar ... [step]="calendar.step"></calendar>
+```
+
+```typescript
+    import { Step } from 'ionic2-calendar/calendar';
+
+    calendar = {
+        step: 30 as Step
+    };
 ```
 
 * timeInterval (version >= 0.3)  

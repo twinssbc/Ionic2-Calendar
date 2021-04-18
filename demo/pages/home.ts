@@ -1,5 +1,6 @@
 import { NavController } from 'ionic-angular/index';
 import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { CalendarMode, Step } from 'ionic2-calendar/calendar';
 
 @Component({
     templateUrl: "pages/home.html"
@@ -10,7 +11,8 @@ export class HomePage {
 
     isToday:boolean;
     calendar = {
-        mode: 'month',
+        mode: 'month' as CalendarMode,
+        step: 30 as Step,
         currentDate: new Date(),
         dateFormatter: {
             formatMonthViewDay: function(date:Date) {
