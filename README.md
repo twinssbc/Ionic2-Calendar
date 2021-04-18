@@ -6,7 +6,7 @@ Ionic calendar directive
 [![GitHub License](https://img.shields.io/npm/l/ionic2-calendar.svg)](https://raw.githubusercontent.com/twinssbc/Ionic2-Calendar/master/LICENSE)
 
 # Demo
-https://stackblitz.com/edit/ionic-585lgv?file=pages%2Fhome%2Fhome.html  
+https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html   
 
 # Dependency
 version 0.2-0.4 has below dependency:      
