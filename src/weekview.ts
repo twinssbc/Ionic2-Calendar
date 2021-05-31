@@ -756,6 +756,14 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
             return;
         }
 
+        if ((changes.startHour || changes.endHour) && (!changes.startHour.isFirstChange() || !changes.endHour.isFirstChange())) {
+            this.views = undefined;
+            this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
+            this.direction = 0;
+            this.refreshView();
+            this.hourColumnLabels = this.getHourColumnLabels();
+        }
+
         const eventSourceChange = changes.eventSource;
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
