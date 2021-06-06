@@ -542,6 +542,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
+    @Output() onDayHeaderSelected = new EventEmitter<ITimeSelected>();
     @Output() onTitleChanged = new EventEmitter<string>(true);
 
     public views: IWeekView[] = [];
@@ -1273,7 +1274,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
             disabled = this.markDisabled(selectedDate);
         }
 
-        this.onTimeSelected.emit({selectedTime: selectedDate, events: viewDate.events.map(e => e.event), disabled});
+        this.onDayHeaderSelected.emit({selectedTime: selectedDate, events: viewDate.events.map(e => e.event), disabled});
     }
 
     setScrollPosition(scrollPosition: number) {

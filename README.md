@@ -371,14 +371,25 @@ The callback function triggered when an event is clicked
     };
 ```
 * onTimeSelected    
-The callback function triggered when a date is selected in the monthview.    
-The ev parameter contains two fields, selectedTime and events, if there's no event at the selected time, the events field will be either undefined or empty array
+The callback function triggered when a time slot is selected.    
+The ev parameter contains three fields, selectedTime, events and disabled, if there's no event at the selected time, the events field will be either undefined or empty array
 ``` html
     <calendar ... (onTimeSelected)="onTimeSelected($event)"></calendar>
 ```
 ``` typescript
-    onTimeSelected = (ev: { selectedTime: Date, events: any[] }) => {
-        console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0));
+    onTimeSelected = (ev: { selectedTime: Date, events: any[], disabled: boolean }) => {
+        console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
+    };
+```
+* onDayHeaderSelected    
+The callback function triggered when a day header is selected in week view.    
+The ev parameter contains three fields, selectedTime, events and disabled, if there's no event at the selected time, the events field will be either undefined or empty array
+``` html
+    <calendar ... (onDayHeaderSelected)="onDayHeaderSelected($event)"></calendar>
+```
+``` typescript
+    onTimeSelected = (ev: { selectedTime: Date, events: any[], disabled: boolean }) => {
+        console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
     };
 ```
 * onTitleChanged    
@@ -395,6 +406,7 @@ The callback function triggered when the view title is changed
 There are two ways to customize the look and feel. If you just want to simply change the color or size of certain element, you could override the styles of the predefined css classes. **CSS Customization** section lists some important css classes. If you need to change the layout of certain element, you could refer to the **Template Customization** part.
 
 ## CSS Customization  
+The customized styles should be added in global.scss. Just adding in each components css file may not work due to the View Encapsulation.
 
 * monthview-primary-with-event  
 The date that is in current month and having events

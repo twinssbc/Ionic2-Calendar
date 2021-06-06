@@ -275,6 +275,7 @@ export enum Step {
                 [sliderOptions]="sliderOptions"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
+                (onDayHeaderSelected)="daySelected($event)"
                 (onTimeSelected)="timeSelected($event)"
                 (onTitleChanged)="titleChanged($event)">
             </weekview>
@@ -418,6 +419,7 @@ export class CalendarComponent implements OnInit {
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
+    @Output() onDayHeaderSelected = new EventEmitter<ITimeSelected>();
     @Output() onTitleChanged = new EventEmitter<string>();
 
     private _currentDate:Date;
@@ -471,6 +473,10 @@ export class CalendarComponent implements OnInit {
 
     timeSelected(timeSelected:ITimeSelected) {
         this.onTimeSelected.emit(timeSelected);
+    }
+
+    daySelected(daySelected:ITimeSelected) {
+        this.onDayHeaderSelected.emit(daySelected);
     }
 
     titleChanged(title:string) {
