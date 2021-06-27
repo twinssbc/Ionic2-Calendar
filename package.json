@@ -1,6 +1,6 @@
 {
     "name": "ionic2-calendar",
-    "version": "0.6.8",
+    "version": "0.6.9",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
@@ -29,7 +29,8 @@
         "@angular/router": ">=9.1.0",
         "rxjs": ">=6.5.4",
         "zone.js": ">=0.10.2",
-        "@ionic/angular": ">=5.1.0"
+        "@ionic/angular": ">=5.1.0",
+        "tslib": "^2.0.0"
     },
     "devDependencies": {
         "typescript": "3.8.3",
@@ -44,7 +45,8 @@
         "@angular/router": "9.1.0",
         "ng-packagr": "9.1.0",
         "rxjs": "^6.5.4",
-        "zone.js": "^0.10.2"
+        "zone.js": "^0.10.2",
+        "tslib": "^2.0.0"
     },
     "ngPackage": {
         "lib": {
