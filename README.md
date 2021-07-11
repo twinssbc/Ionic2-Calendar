@@ -388,7 +388,7 @@ The ev parameter contains three fields, selectedTime, events and disabled, if th
     <calendar ... (onDayHeaderSelected)="onDayHeaderSelected($event)"></calendar>
 ```
 ``` typescript
-    onTimeSelected = (ev: { selectedTime: Date, events: any[], disabled: boolean }) => {
+    onDayHeaderSelected = (ev: { selectedTime: Date, events: any[], disabled: boolean }) => {
         console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
     };
 ```
