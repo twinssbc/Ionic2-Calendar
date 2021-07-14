@@ -667,6 +667,11 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
         this.calendarService.populateAdjacentViews(this);
         this.updateCurrentView(this.range.startTime, this.views[this.currentViewIndex]);
         this.calendarService.rangeChanged(this);
+
+        this.slider.getSwiper().then(swiper => {
+            swiper.loopDestroy();
+            swiper.loopCreate();
+        });
     }
 
     getTitle(): string {
