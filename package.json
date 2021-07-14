@@ -43,7 +43,7 @@
         "@angular/platform-browser-dynamic": "9.1.0",
         "@ionic/angular": "5.1.0",
         "@angular/router": "9.1.0",
-        "ng-packagr": "9.1.0",
+        "ng-packagr": "10.1.1",
         "rxjs": "^6.5.4",
         "zone.js": "^0.10.2",
         "tslib": "^2.0.0"
