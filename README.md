@@ -9,31 +9,42 @@ Ionic calendar directive
 https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html   
 
 # Dependency
+Version 1.0.x depends on Ionic (>=6.1.9), Angular (>=15.1.2) and Swiper (>=8.4.6)
+Version 0.6.x depends on Ionic (>=5.1.0) and Angular (>=9.1.0).
+version 0.5.x depends on Ionic (>=4.0.0-rc.1), also supports Ionic 5.0.0.  
+version 0.4.x depends on Ionic (>=3.9.2).  
+version 0.3.x depends on Ionic (>=3.1.1).  
+version 0.2.9+ depends on Ionic (>=2.3.0).  
+version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
+version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
+
 version 0.2-0.4 has below dependency:      
 intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333    
 
-version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
-version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
-version 0.2.9+ depends on Ionic (>=2.3.0).  
-version 0.3.x depends on Ionic (>=3.1.1).  
-version 0.4.x depends on Ionic (>=3.9.2).  
-version 0.5.x depends on Ionic (>=4.0.0-rc.1), also supports Ionic 5.0.0.  
-Version 0.6.x depends on Ionic (>=5.1.0) and Angular (>=9.1.0).
-
-
 # Usage
 
-Install: `npm install ionic2-calendar --save`
+## 1. Install Calendar Dependency  
+`npm install ionic2-calendar --save`
 
-Import the ionic2-calendar module:
+### version 1.0.x onwards
+<font color=red>**NOTE: Starting from Version 1.0.x, the underlying implementaion is based on Swiper instead of IonSlides, so also needs to install Swiper dependency**</font>  
+- Install swiper dependency  
+`npm install swiper --save`
 
-version 0.1.x - 0.4.x
+- Import swiper css in **global.scss**  
+```
+@import 'swiper/scss';
+@import '@ionic/angular/css/ionic-swiper';
+```
+
+## 2. Import the Calendar module
+
+- version 0.5.x onwards
 ``` typescript
 import { NgModule } from '@angular/core';
-import { IonicApp, IonicModule } from 'ionic-angular';
+import { IonicApp, IonicModule } from '@ionic/angular';
 import { MyApp } from './app/app.component';
 import { NgCalendarModule  } from 'ionic2-calendar';
-
 
 @NgModule({
     declarations: [
@@ -51,13 +62,12 @@ import { NgCalendarModule  } from 'ionic2-calendar';
 export class AppModule {}
 ```
 
-version 0.5.x
+- version 0.1.x - 0.4.x
 ``` typescript
 import { NgModule } from '@angular/core';
-import { IonicApp, IonicModule } from '@ionic/angular';
+import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app/app.component';
 import { NgCalendarModule  } from 'ionic2-calendar';
-
 
 @NgModule({
     declarations: [
@@ -95,7 +105,7 @@ import { NgCalendarModule  } from 'ionic2-calendar';
 export class MyPageModule {}
 ```
 
-Add the directive in the html page
+## 3. Add the directive in the html page
 
 ``` html
     <calendar [eventSource]="eventSource"
@@ -143,6 +153,16 @@ Default value: 'month'
         <calendar ... [calendarMode]="calendar.mode"></calendar>
 ```
 
+Version 1.0.x onwards
+```typescript
+    import { CalendarMode } from 'ionic2-calendar';
+
+    calendar = {
+        mode: 'week' as CalendarMode
+    };
+```
+
+Version 0.x
 ```typescript
     import { CalendarMode } from 'ionic2-calendar/calendar';
 
@@ -151,18 +171,17 @@ Default value: 'month'
     };
 ```
 
-
 * showEventDetail    
 If set to true, when selecting the date in the month view, the events happened on that day will be shown below.    
 Default value: true
 * startingDayMonth    
 Control month view starting from which day.    
-Default value: 0
+Default value: 0 (Sunday)
 * startingDayWeek    
 Control week view starting from which day.    
-Default value: 0
+Default value: 0 (Sunday)
 * allDayLabel    
-The text displayed in the allDay column header.    
+The text displayed in the allDay column header of week and day view.    
 Default value: 'all day'
 * noEventsLabel    
 The text displayed when there’s no event on the selected date in month view.    
@@ -170,7 +189,7 @@ Default value: 'No Events'
 * eventSource    
 The data source of the calendar, when the eventSource is set, the view will be updated accordingly.    
 Default value: null    
-The format of the eventSource is described in the EventSource section
+The format of the eventSource is described in the [EventSource](#eventsource) section
 * queryMode    
 If queryMode is set to 'local', when the range or mode is changed, the calendar will use the already bound eventSource to update the view    
 If queryMode is set to 'remote', when the range or mode is changed, the calendar will trigger a callback function rangeChanged.    
@@ -180,7 +199,7 @@ Default value: 'local'
 It is used to display the event using more accurate time interval in weekview and dayview. For example, if set to 30, then the event will only occupy half of the row height (If timeInterval option uses default value).   The unit is minute. It can be set to 15 or 30.    
 Default value: 60
 ``` html
-        <calendar ... [step]="calendar.step"></calendar>
+    <calendar ... [step]="calendar.step"></calendar>
 ```
 
 ```typescript
@@ -196,7 +215,7 @@ It is used to display the rows using more accurate time interval in weekview and
 The unit is minute. It should be the factor or multiple of 60, which means 60%timeInterval=0 or timeInterval%60=0.  
 Default value: 60
 ``` html
-        <calendar ... [timeInterval]="30"></calendar>
+    <calendar ... [timeInterval]="30"></calendar>
 ```
 
 * autoSelect  
@@ -204,6 +223,7 @@ If set to true, the current calendar date will be auto selected when calendar is
 Default value: true
 * locale  
 The locale used to display text in the calendar.  
+Check [Localization](#localization) section for more details.  
 Default value: undefined (which means the local language)
 ``` html
     <calendar ... [locale]="calendar.locale"></calendar>
@@ -295,12 +315,52 @@ Default value: false
     }
 ```
 
+* lockSwipeToNext (version 1.0.x onwards)
+If set to true, swiping to next view is disabled.  
+Default value: false
+``` html
+    <calendar ... [lockSwipeToNext]="lockSwipeToNext"></calendar>
+```
+``` typescript
+    onCurrentDateChanged(event:Date) {
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        event.setHours(0, 0, 0, 0);
+
+        if (this.calendar.mode === 'month') {
+            if (event.getFullYear() > today.getFullYear() || (event.getFullYear() === today.getFullYear() && event.getMonth() >= today.getMonth())) {
+                this.lockSwipeToNext = true;
+            } else {
+                this.lockSwipeToNext = false;
+            }
+        }
+    }
+```
+
+
 * lockSwipes  
 If set to true, swiping is disabled.  
 Default value: false  
-*Note:* Since swiping is disabled, you could set currentDate to move the calendar to previous/next view. Do not set lockSwipeToPrev in the constructor phase. It will cause the view not updating when changing the currentDate. You could either set it in some callback function after initialization phase or use setTimeout to trigger some delay.  
+
+**Version 1.x**  
+*Note:* Since swiping is disabled, you could set currentDate or call slideToPrev/slideToNext [method](#instance-methods) to move the calendar to previous/next view. You need to first set the lockSwipes to false, move the slide, then set it back.  
 ``` html
-    <calendar ... [lockSwipeToPrev]="lockSwipeToPrev"></calendar>
+    <calendar ... [lockSwipes]="lockSwipes"></calendar>
+```
+``` typescript
+    moveSlide() {
+        this.calendar.lockSwipes = false;
+        setTimeout(function() {
+            this.myCalendar.slideNext();
+            this.calendar.lockSwipes = true;
+        },100);
+    }
+```
+
+**Version 0.x**  
+*Note:* Since swiping is disabled, you could set currentDate or call slideToPrev/slideToNext [method](#instance-methods) to move the calendar to previous/next view. Do not set lockSwipeToPrev in the constructor phase. It will cause the view not updating when changing the currentDate. You could either set it in some callback function after initialization phase or use setTimeout to trigger some delay.  
+``` html
+    <calendar ... [lockSwipes]="lockSwipes"></calendar>
 ```
 ``` typescript
     ngAfterViewInit() {
@@ -326,7 +386,7 @@ Default value: 24
 ```
 
 * sliderOptions  
-Options to pass to the underlying swiper instance. See http://idangero.us/swiper/api/ for valid options.  
+Options to pass to the underlying swiper instance. See https://swiperjs.com/swiper-api#parameters for valid options.  
 ``` html
     <calendar ... sliderOptions="sliderOptions"></calendar>
 ```
@@ -337,6 +397,7 @@ Options to pass to the underlying swiper instance. See http://idangero.us/swiper
     };
 ```
 
+# Callback
 * onCurrentDateChanged    
 The callback function triggered when the date that is currently viewed changes.
 ``` html
@@ -348,7 +409,7 @@ The callback function triggered when the date that is currently viewed changes.
     };
 ```
 * onRangeChanged    
-The callback function triggered when the range or mode is changed if the queryMode is set to 'remote'    
+The callback function triggered when the range or mode is changed if the **queryMode** is set to '**remote**'    
 The ev parameter contains two fields, startTime and endTime.
 ``` html
     <calendar ... (onRangeChanged)="onRangeChanged($event)"></calendar>
@@ -389,7 +450,7 @@ The ev parameter contains three fields, selectedTime, events and disabled, if th
 ```
 ``` typescript
     onDayHeaderSelected = (ev: { selectedTime: Date, events: any[], disabled: boolean }) => {
-        console.log('Selected time: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
+        console.log('Selected day: ' + ev.selectedTime + ', hasEvents: ' + (ev.events !== undefined && ev.events.length !== 0) + ', disabled: ' + ev.disabled);
     };
 ```
 * onTitleChanged    
@@ -426,7 +487,7 @@ The disabled date
 * weekview-with-event  
 The date having all day events, applied to the day header in week view
 
-* week-view-current  
+* weekview-current  
 The current date, applied to the day header in week view
 
 * weekview-selected  
@@ -450,73 +511,73 @@ Note: For any css class appear in the customized template, you need to specify t
 Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the active monthview
 ``` html
-    <ng-template #template let-view="view" let-row="row" let-col="col">
+    <ng-template #monthviewDisplayEventTemplate let-view="view" let-row="row" let-col="col">
         {{view.dates[row*7+col].label}}
     </ng-template>
 
-    <calendar ... [monthviewDisplayEventTemplate]="template"></calendar>
+    <calendar ... [monthviewDisplayEventTemplate]="monthviewDisplayEventTemplate"></calendar>
 ```
 * monthviewInactiveDisplayEventTemplate    
 Type: TemplateRef\<IMonthViewDisplayEventTemplateContext\>    
 The template provides customized view for event displayed in the inactive monthview
 ``` html
-    <ng-template #template let-view="view" let-row="row" let-col="col">
+    <ng-template #monthviewInactiveDisplayEventTemplate let-view="view" let-row="row" let-col="col">
         {{view.dates[row*7+col].label}}
     </ng-template>
 
-    <calendar ... [monthviewInactiveDisplayEventTemplate]="template"></calendar>
+    <calendar ... [monthviewInactiveDisplayEventTemplate]="monthviewInactiveDisplayEventTemplate"></calendar>
 ```
 * monthviewEventDetailTemplate    
 Type: TemplateRef\<IMonthViewEventDetailTemplateContext\>    
 The template provides customized view for event detail section in the monthview
 ``` html
-    <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
+    <ng-template #monthviewEventDetailTemplate let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
     ... 
     </ng-template>
 
-    <calendar ... [monthviewEventDetailTemplate]="template"></calendar>
+    <calendar ... [monthviewEventDetailTemplate]="monthviewEventDetailTemplate"></calendar>
 ```
 * weekviewHeaderTemplate (version >= 0.4.5)  
 Type: TemplateRef\<IDisplayWeekViewHeader\>     
 The template provides customized view for day header in the weekview 
 ``` html 
-    <ng-template #template let-viewDate="viewDate"> 
+    <ng-template #weekviewHeaderTemplate let-viewDate="viewDate"> 
         <div class="custom-day-header"> {{ viewDate.dayHeader }} </div> 
     </ng-template> 
  
-    <calendar ... [weekviewHeaderTemplate]="template"></calendar>
+    <calendar ... [weekviewHeaderTemplate]="weekviewHeaderTemplate"></calendar>
 ```
 * weekviewAllDayEventTemplate    
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the weekview
 ``` html
-    <ng-template #template let-displayEvent="displayEvent">
+    <ng-template #weekviewAllDayEventTemplate let-displayEvent="displayEvent">
         <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
     </ng-template>
 
-    <calendar ... [weekviewAllDayEventTemplate]="template"></calendar>
+    <calendar ... [weekviewAllDayEventTemplate]="weekviewAllDayEventTemplate"></calendar>
 ```
 * weekviewNormalEventTemplate    
 Type: TemplateRef\<IDisplayEvent\>    
 The template provides customized view for normal event in the weekview
 
 ``` html
-    <ng-template #template let-displayEvent="displayEvent">
+    <ng-template #weekviewNormalEventTemplate let-displayEvent="displayEvent">
         <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
     </ng-template>
 
-    <calendar ... [weekviewNormalEventTemplate]="template"></calendar>
+    <calendar ... [weekviewNormalEventTemplate]="weekviewNormalEventTemplate"></calendar>
 ```
 
 * dayviewAllDayEventTemplate  
 Type: TemplateRef\<IDisplayAllDayEvent\>    
 The template provides customized view for all day event in the dayview
 ``` html
-    <ng-template #template let-displayEvent="displayEvent">
+    <ng-template #dayviewAllDayEventTemplate let-displayEvent="displayEvent">
         <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
     </ng-template>
 
-    <calendar ... [dayviewAllDayEventTemplate]="template"></calendar>
+    <calendar ... [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate"></calendar>
 ```
 
 * dayviewNormalEventTemplate  
@@ -524,11 +585,11 @@ Type: TemplateRef\<IDisplayEvent\>
 The template provides customized view for normal event in the dayview
 
 ``` html
-    <ng-template #template let-displayEvent="displayEvent">
+    <ng-template #dayviewNormalEventTemplate let-displayEvent="displayEvent">
         <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
     </ng-template>
 
-    <calendar ... [dayviewNormalEventTemplate]="template"></calendar>
+    <calendar ... [dayviewNormalEventTemplate]="dayviewNormalEventTemplate"></calendar>
 ```
 
 * weekviewAllDayEventSectionTemplate (version >= 0.3)  
@@ -536,7 +597,7 @@ Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>
 The template provides customized view for all day event section (table part) in the weekview
 
 ``` html
-        <ng-template #template let-day="day" let-eventTemplate="eventTemplate">
+        <ng-template #weekviewAllDayEventSectionTemplate let-day="day" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
                  [ngStyle]="{height: 25*day.events.length+'px'}">
                 <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
@@ -549,7 +610,7 @@ The template provides customized view for all day event section (table part) in 
             </div>
         </ng-template>
 
-        <calendar ... [weekviewAllDayEventSectionTemplate]="template"></calendar>
+        <calendar ... [weekviewAllDayEventSectionTemplate]="weekviewAllDayEventSectionTemplate"></calendar>
 ```
 
 * weekviewNormalEventSectionTemplate (version >= 0.3)  
@@ -557,7 +618,7 @@ Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>
 The template provides customized view for normal event section (table part) in the weekview
 
 ``` html
-        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+        <ng-template #weekviewNormalEventSectionTemplate let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                      (click)="onEventSelected(displayEvent.event)"
@@ -569,7 +630,7 @@ The template provides customized view for normal event section (table part) in t
             </div>
         </ng-template>
 
-        <calendar ... [weekviewNormalEventSectionTemplate]="template"></calendar>
+        <calendar ... [weekviewNormalEventSectionTemplate]="weekviewNormalEventSectionTemplate"></calendar>
 ```
 
 * dayviewAllDayEventSectionTemplate (version >= 0.3)  
@@ -577,7 +638,7 @@ Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>
 The template provides customized view for all day event section (table part) in the dayview
 
 ``` html
-        <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
+        <ng-template #dayviewAllDayEventSectionTemplate let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
             <div *ngFor="let displayEvent of allDayEvents; let eventIndex=index"
                  class="calendar-event" tappable
                  (click)="onEventSelected(displayEvent.event)"
@@ -588,7 +649,7 @@ The template provides customized view for all day event section (table part) in 
             </div>
         </ng-template>
 
-        <calendar ... [dayviewAllDayEventSectionTemplate]="template"></calendar>
+        <calendar ... [dayviewAllDayEventSectionTemplate]="dayviewAllDayEventSectionTemplate"></calendar>
 ```
 
 * dayviewNormalEventSectionTemplate (version >= 0.3)  
@@ -596,7 +657,7 @@ Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>
 The template provides customized view for normal event section (table part) in the dayview
 
 ``` html
-        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+        <ng-template #dayviewNormalEventSectionTemplate let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                      (click)="onEventSelected(displayEvent.event)"
@@ -608,7 +669,7 @@ The template provides customized view for normal event section (table part) in t
             </div>
         </ng-template>
 
-        <calendar ... [dayviewNormalEventSectionTemplate]="template"></calendar>
+        <calendar ... [dayviewNormalEventSectionTemplate]="dayviewNormalEventSectionTemplate"></calendar>
 ```
 
 * weekviewInactiveAllDayEventSectionTemplate (version >= 0.5)  
@@ -616,7 +677,7 @@ Type: TemplateRef\<IWeekViewAllDayEventSectionTemplateContext\>
 The template provides customized view for all day event section (table part) in the inactive weekview
 
 ``` html
-        <ng-template #template let-day="day" let-eventTemplate="eventTemplate">
+        <ng-template #weekviewInactiveAllDayEventSectionTemplate let-day="day" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': day.events}" *ngIf="day.events"
                  [ngStyle]="{height: 25*day.events.length+'px'}">
                 <div *ngFor="let displayEvent of day.events" class="calendar-event" tappable
@@ -629,7 +690,7 @@ The template provides customized view for all day event section (table part) in 
             </div>
         </ng-template>
 
-        <calendar ... [weekviewInactiveAllDayEventSectionTemplate]="template"></calendar>
+        <calendar ... [weekviewInactiveAllDayEventSectionTemplate]="weekviewInactiveAllDayEventSectionTemplate"></calendar>
 ```
 
 * weekviewInactiveNormalEventSectionTemplate (version >= 0.5)  
@@ -637,7 +698,7 @@ Type: TemplateRef\<IWeekViewNormalEventSectionTemplateContext\>
 The template provides customized view for normal event section (table part) in the inactive weekview
 
 ``` html
-        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+        <ng-template #weekviewInactiveNormalEventSectionTemplate let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                      (click)="onEventSelected(displayEvent.event)"
@@ -649,7 +710,7 @@ The template provides customized view for normal event section (table part) in t
             </div>
         </ng-template>
 
-        <calendar ... [weekviewInactiveNormalEventSectionTemplate]="template"></calendar>
+        <calendar ... [weekviewInactiveNormalEventSectionTemplate]="weekviewInactiveNormalEventSectionTemplate"></calendar>
 ```
 
 * dayviewInactiveAllDayEventSectionTemplate (version >= 0.5)  
@@ -657,7 +718,7 @@ Type: TemplateRef\<IDayViewAllDayEventSectionTemplateContext\>
 The template provides customized view for all day event section (table part) in the inactive dayview
 
 ``` html
-        <ng-template #template let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
+        <ng-template #dayviewInactiveAllDayEventSectionTemplate let-allDayEvents="allDayEvents" let-eventTemplate="eventTemplate">
             <div *ngFor="let displayEvent of allDayEvents; let eventIndex=index"
                  class="calendar-event" tappable
                  (click)="onEventSelected(displayEvent.event)"
@@ -668,7 +729,7 @@ The template provides customized view for all day event section (table part) in 
             </div>
         </ng-template>
 
-        <calendar ... [dayviewInactiveAllDayEventSectionTemplate]="template"></calendar>
+        <calendar ... [dayviewInactiveAllDayEventSectionTemplate]="dayviewInactiveAllDayEventSectionTemplate"></calendar>
 ```
 
 * dayviewInactiveNormalEventSectionTemplate (version >= 0.5)  
@@ -676,7 +737,7 @@ Type: TemplateRef\<IDayViewNormalEventSectionTemplateContext\>
 The template provides customized view for normal event section (table part) in the inactive dayview
 
 ``` html
-        <ng-template #template let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
+        <ng-template #dayviewInactiveNormalEventSectionTemplate let-tm="tm" let-hourParts="hourParts" let-eventTemplate="eventTemplate">
             <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
                 <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
                      (click)="onEventSelected(displayEvent.event)"
@@ -688,9 +749,8 @@ The template provides customized view for normal event section (table part) in t
             </div>
         </ng-template>
 
-        <calendar ... [dayviewInactiveNormalEventSectionTemplate]="template"></calendar>
+        <calendar ... [dayviewInactiveNormalEventSectionTemplate]="dayviewInactiveNormalEventSectionTemplate"></calendar>
 ```
-
 
 
 # EventSource
@@ -715,7 +775,7 @@ For example, if an allDay event ending to 2014-05-10, then endTime is
 * allDay    
 Indicates the event is allDay event or regular event
 
-**Note** The calendar only watches for the eventSource reference for performance consideration. That means only you manually reassign the eventSource value, the calendar gets notified, and this is usually fit to the scenario when the range is changed, you load a new data set from the backend. In case you want to manually insert/remove/update the element in the eventSource array, you can call instance method ‘loadEvents’ event to notify the calendar manually.
+**Note** The calendar only watches for the eventSource reference for performance consideration. That means only you manually reassign the eventSource value, the calendar gets notified, and this is usually fit to the scenario when the range is changed, you load a new data set from the backend. In case you want to manually insert/remove/update the element in the eventSource array, you can call [instance method](#instance-methods) ‘loadEvents’ event to notify the calendar manually.
 
 # Instance Methods
 * loadEvents  
@@ -844,7 +904,7 @@ calendar = {
 };
 ```
 
-# Known issue    
+# Known issue (No longer exists in version 1.0.x)   
 This component updates the ion-slide dynamically so that only 3 looped slides are needed.    
 The ion-slide in Ionic2 uses Swiper. It seems in the Swiper implementation, the next slide after the end of looped slide is a separate cached slide, instead of the first slide.    
 I can't find out a way to force refresh that cached slide, so you will notice that when sliding from the third month to the forth month, the preview month is not the forth month, but the first month.    

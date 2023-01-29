@@ -40,7 +40,7 @@ import {CalendarService} from './calendar.service';
 @Component({
     selector: 'weekview',
     template: `
-        <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev && !lockSwipes" [allowSlideNext]="!lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()"
+        <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev" [allowSlideNext]="!lockSwipeToNext" [allowTouchMove]="!lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()"
                     class="slides-container">
             <ng-template swiperSlide class="slide-container">
                 <table class="table table-bordered table-fixed weekview-header">
@@ -775,8 +775,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
 
         const lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
-            this.slider.swiperRef.allowSlideNext = !lockSwipes.currentValue;
-            this.slider.swiperRef.allowSlidePrev = !lockSwipes.currentValue;
+            this.slider.swiperRef.allowTouchMove = !lockSwipes.currentValue;
         }
     }
 

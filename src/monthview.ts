@@ -23,7 +23,7 @@ import {CalendarService} from './calendar.service';
     selector: 'monthview',
     template: `
         <div>
-            <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev && !lockSwipes" [allowSlideNext]="!lockSwipeToNext && !lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()">
+            <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev" [allowSlideNext]="!lockSwipeToNext" [allowTouchMove]="!lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()">
                 <ng-template swiperSlide>
                     <table *ngIf="0===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
@@ -401,8 +401,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
 
         const lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
-            this.slider.swiperRef.allowSlideNext = !lockSwipes.currentValue;
-            this.slider.swiperRef.allowSlidePrev = !lockSwipes.currentValue;
+            this.slider.swiperRef.allowTouchMove = !lockSwipes.currentValue;
         }
     }
 

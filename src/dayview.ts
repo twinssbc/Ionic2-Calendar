@@ -38,7 +38,7 @@ import {CalendarService} from './calendar.service';
 @Component({
     selector: 'dayview',
     template: `
-        <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev && !lockSwipes" [allowSlideNext]="!lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()" class="slides-container">
+        <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev" [allowSlideNext]="!lockSwipeToNext" [allowTouchMove]="!lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()" class="slides-container">
             <ng-template swiperSlide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
@@ -641,8 +641,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         const lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
-            this.slider.swiperRef.allowSlideNext = !lockSwipes.currentValue;
-            this.slider.swiperRef.allowSlidePrev = !lockSwipes.currentValue;
+            this.slider.swiperRef.allowTouchMove = !lockSwipes.currentValue;
         }
     }
 
