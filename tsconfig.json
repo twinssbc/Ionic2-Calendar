@@ -1,34 +1,40 @@
 {
     "compilerOptions": {
-        "allowSyntheticDefaultImports": true,
-        "allowUnreachableCode": false,
+        "paths": {
+            "Ionic2-Calendar": [
+              "dist"
+            ]
+          },
+        "baseUrl": "./",
+        "declarationMap": false,
         "declaration": true,
-        "declarationDir": "dist",
-        "experimentalDecorators": true,
-        "forceConsistentCasingInFileNames": true,
-        "lib": ["dom", "es2017"],
-        "module": "es2015",
-        "moduleResolution": "node",
-        "noImplicitAny": true,
-        "noImplicitReturns": true,
-        "outDir": "dist",
-        "pretty": true,
-        "removeComments": false,
-        "importHelpers": true,
-        "rootDir": "src",
-        "strictPropertyInitialization": false,
-        "target": "es2015",
-        "typeRoots": ["node_modules/@types"]
+        "inlineSources": true,
+        "types": [],
+          "outDir": "dist",
+          "forceConsistentCasingInFileNames": true,
+          "strict": true,
+          "noImplicitOverride": true,
+          "noPropertyAccessFromIndexSignature": true,
+          "noImplicitReturns": true,
+          "noFallthroughCasesInSwitch": true,
+          "sourceMap": true,
+          "downlevelIteration": true,
+          "experimentalDecorators": true,
+          "moduleResolution": "node",
+          "importHelpers": true,
+          "target": "ES2022",
+          "module": "ES2022",
+          "useDefineForClassFields": false,
+          "lib": [
+            "ES2022",
+            "dom"
+          ]          
     },
     "angularCompilerOptions": {
-        "fullTemplateTypeCheck": true,
+        "compilationMode": "partial",
+        "enableI18nLegacyMessageIdFormat": false,
         "strictInjectionParameters": true,
-        "enableIvy": true
-    },
-    "files": [
-        "src/index.ts"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+        "strictInputAccessModifiers": true,
+        "strictTemplates": true    
+    }
 }

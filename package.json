@@ -1,6 +1,6 @@
 {
     "name": "ionic2-calendar",
-    "version": "0.6.9",
+    "version": "1.0.0",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
@@ -15,42 +15,23 @@
         "url": "git+https://github.com/twinssbc/Ionic2-Calendar.git"
     },
     "scripts": {
-        "build": "rm -rf dist && npm run build.ng",
-        "build.ng": "ng-packagr -p package.json",
-        "build.es2015": "node_modules/.bin/ngc -p tsconfig.json",
-        "dev": "tsc --watch",
-        "postinstall": "ngcc"
+        "build": "rm -rf dist && ng build"
     },
     "main": "./index.js",
-    "dependencies": {},
+    "dependencies": {
+        "tslib": "^2.3.0"
+    },
     "peerDependencies": {
-        "@angular/core": ">=9.1.0",
-        "@angular/forms": ">=9.1.0",
-        "@angular/router": ">=9.1.0",
-        "rxjs": ">=6.5.4",
-        "zone.js": ">=0.10.2",
-        "@ionic/angular": ">=5.1.0",
-        "tslib": "^2.0.0"
+        "@angular/common": "^15.1.0",
+        "@angular/core": "^15.1.0",
+        "@ionic/angular": "^6.1.9",
+        "swiper": "^8.4.6"
     },
     "devDependencies": {
-        "typescript": "3.8.3",
-        "@angular/common": "9.1.0",
-        "@angular/compiler": "9.1.0",
-        "@angular/compiler-cli": "9.1.0",
-        "@angular/core": "9.1.0",
-        "@angular/forms": "9.1.0",
-        "@angular/platform-browser": "9.1.0",
-        "@angular/platform-browser-dynamic": "9.1.0",
-        "@ionic/angular": "5.1.0",
-        "@angular/router": "9.1.0",
-        "ng-packagr": "9.1.0",
-        "rxjs": "^6.5.4",
-        "zone.js": "^0.10.2",
-        "tslib": "^2.0.0"
-    },
-    "ngPackage": {
-        "lib": {
-            "entryFile": "src/index.ts"
-        }
+        "@angular-devkit/build-angular": "^15.1.2",
+        "@angular/cli": "~15.1.2",
+        "@angular/compiler-cli": "^15.1.0",
+        "ng-packagr": "^15.1.0",
+        "typescript": "~4.9.4"
     }
 }

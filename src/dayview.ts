@@ -1,5 +1,4 @@
 import {DatePipe} from '@angular/common';
-import {IonSlides} from '@ionic/angular';
 import {
     Component,
     OnInit,
@@ -13,9 +12,12 @@ import {
     ViewEncapsulation,
     TemplateRef,
     ElementRef,
-    AfterViewInit, OnDestroy
+    AfterViewInit, 
+    OnDestroy,
+    NgZone
 } from '@angular/core';
 import {Subscription} from 'rxjs';
+import { SwiperComponent } from 'swiper/angular';
 
 import {
     ICalendarComponent,
@@ -26,16 +28,18 @@ import {
     ITimeSelected,
     IRange,
     CalendarMode,
-    IDateFormatter
-} from './calendar';
+    IDateFormatter,
+    IDisplayAllDayEvent,
+    IDayViewAllDayEventSectionTemplateContext,
+    IDayViewNormalEventSectionTemplateContext
+} from './calendar.interface';
 import {CalendarService} from './calendar.service';
-import {IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext} from './calendar';
 
 @Component({
     selector: 'dayview',
     template: `
-        <ion-slides #daySlider [options]="sliderOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()" class="slides-container">
-            <ion-slide class="slide-container">
+        <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev && !lockSwipes" [allowSlideNext]="!lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()" class="slides-container">
+            <ng-template swiperSlide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
                     <div class="dayview-allday-content-wrapper scroll-content">
@@ -94,8 +98,8 @@ import {IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayView
                         </tbody>
                     </table>
                 </init-position-scroll>
-            </ion-slide>
-            <ion-slide class="slide-container">
+            </ng-template>
+            <ng-template swiperSlide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
                     <div class="dayview-allday-content-wrapper scroll-content">
@@ -154,8 +158,8 @@ import {IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayView
                         </tbody>
                     </table>
                 </init-position-scroll>
-            </ion-slide>
-            <ion-slide class="slide-container">
+            </ng-template>
+            <ng-template swiperSlide class="slide-container">
                 <div class="dayview-allday-table">
                     <div class="dayview-allday-label">{{allDayLabel}}</div>
                     <div class="dayview-allday-content-wrapper scroll-content">
@@ -214,8 +218,8 @@ import {IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayView
                         </tbody>
                     </table>
                 </init-position-scroll>
-            </ion-slide>
-        </ion-slides>
+            </ng-template>
+        </swiper>
     `,
     styles: [`
         .table-fixed {
@@ -288,7 +292,7 @@ import {IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayView
         }
 
         .slide-container {
-            display: block;
+            display: block !important;
         }
 
         .calendar-cell {
@@ -399,36 +403,37 @@ import {IDisplayAllDayEvent, IDayViewAllDayEventSectionTemplateContext, IDayView
 })
 export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, OnDestroy, AfterViewInit {
 
-    constructor(private calendarService: CalendarService, private elm: ElementRef) {
+    constructor(private calendarService: CalendarService, private elm: ElementRef, private zone: NgZone) {
     }
 
-    @ViewChild('daySlider', {static: true}) slider: IonSlides;
     @HostBinding('class.dayview') class = true;
+    @ViewChild('swiper', { static: false }) slider!: SwiperComponent;
 
-    @Input() dayviewAllDayEventTemplate: TemplateRef<IDisplayAllDayEvent>;
-    @Input() dayviewNormalEventTemplate: TemplateRef<IDisplayEvent>;
-    @Input() dayviewAllDayEventSectionTemplate: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input() dayviewNormalEventSectionTemplate: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
-    @Input() dayviewInactiveAllDayEventSectionTemplate: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input() dayviewInactiveNormalEventSectionTemplate: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() dayviewAllDayEventTemplate!: TemplateRef<IDisplayAllDayEvent>;
+    @Input() dayviewNormalEventTemplate!: TemplateRef<IDisplayEvent>;
+    @Input() dayviewAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() dayviewInactiveAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewInactiveNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
 
-    @Input() formatHourColumn: string;
-    @Input() formatDayTitle: string;
-    @Input() allDayLabel: string;
-    @Input() hourParts: number;
-    @Input() eventSource: IEvent[];
-    @Input() markDisabled: (date: Date) => boolean;
-    @Input() locale: string;
-    @Input() dateFormatter: IDateFormatter;
+    @Input() formatHourColumn?: string;
+    @Input() formatDayTitle?: string;
+    @Input() allDayLabel?: string;
+    @Input() hourParts!: number;
+    @Input() eventSource!: IEvent[];
+    @Input() markDisabled?: (date: Date) => boolean;
+    @Input() locale!: string;
+    @Input() dateFormatter?: IDateFormatter;
     @Input() dir = '';
     @Input() scrollToHour = 0;
-    @Input() preserveScrollPosition: boolean;
-    @Input() lockSwipeToPrev: boolean;
-    @Input() lockSwipes: boolean;
-    @Input() startHour: number;
-    @Input() endHour: number;
+    @Input() preserveScrollPosition?: boolean;
+    @Input() lockSwipeToPrev?: boolean;
+    @Input() lockSwipeToNext?: boolean;
+    @Input() lockSwipes?: boolean;
+    @Input() startHour!: number;
+    @Input() endHour!: number;
     @Input() sliderOptions: any;
-    @Input() hourSegments: number;
+    @Input() hourSegments!: number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -439,20 +444,20 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     public currentViewIndex = 0;
     public direction = 0;
     public mode: CalendarMode = 'day';
-    public range: IRange;
+    public range!: IRange;
 
     private inited = false;
     private callbackOnInit = true;
-    private currentDateChangedFromParentSubscription: Subscription;
-    private eventSourceChangedSubscription: Subscription;
-    private slideChangedSubscription: Subscription;
-    private slideUpdatedSubscription: Subscription;
+    private currentDateChangedFromParentSubscription?: Subscription;
+    private eventSourceChangedSubscription?: Subscription;
+    private slideChangedSubscription?: Subscription;
+    private slideUpdatedSubscription?: Subscription;
 
-    public hourColumnLabels: string[];
-    public initScrollPosition: number;
-    private formatTitle: (date: Date) => string;
-    private formatHourColumnLabel: (date: Date) => string;
-    private hourRange: number;
+    public hourColumnLabels!: string[];
+    public initScrollPosition!: number;
+    private formatTitle!: (date: Date) => string;
+    private formatHourColumnLabel!: (date: Date) => string;
+    private hourRange!: number;
 
     static createDateObjects(startTime: Date, startHour: number, endHour: number, timeInterval: number): IDayViewRow[] {
         const rows: IDayViewRow[] = [],
@@ -514,7 +519,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         let i = 0;
         while (i < len) {
-            let event = orderedEvents[i];
+            let event:IDisplayEvent|undefined = orderedEvents[i];
             if (!event.overlapNumber) {
                 const overlapNumber = event.position + 1;
                 event.overlapNumber = overlapNumber;
@@ -555,7 +560,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatTitle = function(date: Date) {
-                return datePipe.transform(date, this.formatDayTitle);
+                return datePipe.transform(date, this.formatDayTitle)||'';
             };
         }
 
@@ -564,16 +569,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatHourColumnLabel = function(date: Date) {
-                return datePipe.transform(date, this.formatHourColumn);
+                return datePipe.transform(date, this.formatHourColumn)||'';
             };
-        }
-
-        if (this.lockSwipeToPrev) {
-            this.slider.lockSwipeToPrev(true);
-        }
-
-        if (this.lockSwipes) {
-            this.slider.lockSwipes(true);
         }
 
         this.refreshView();
@@ -591,14 +588,14 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
             if (direction === 1) {
-                this.slider.slideNext();
+                this.slider.swiperRef.slideNext();
             } else if (direction === -1) {
-                this.slider.slidePrev();
+                this.slider.swiperRef.slidePrev();
             }
         });
 
         this.slideUpdatedSubscription = this.calendarService.slideUpdated$.subscribe(() => {
-            this.slider.update();
+            this.slider.swiperRef.update();
         });
     }
 
@@ -619,62 +616,69 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         if (!this.inited) {
             return;
         }
-        if ((changes.startHour || changes.endHour) && (!changes.startHour.isFirstChange() || !changes.endHour.isFirstChange())) {
-            this.views = undefined;
+        if ((changes['startHour'] || changes['endHour']) && (!changes['startHour'].isFirstChange() || !changes['endHour'].isFirstChange())) {
+            this.views = [];
             this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
             this.direction = 0;
             this.refreshView();
             this.hourColumnLabels = this.getHourColumnLabels();
         }
 
-        const eventSourceChange = changes.eventSource;
+        const eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
 
-        const lockSwipeToPrev = changes.lockSwipeToPrev;
+        const lockSwipeToPrev = changes['lockSwipeToPrev'];
         if (lockSwipeToPrev) {
-            this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
+            this.slider.swiperRef.allowSlidePrev = !lockSwipeToPrev.currentValue;
         }
 
-        const lockSwipes = changes.lockSwipes;
+        const lockSwipeToNext = changes['lockSwipeToNext'];
+        if (lockSwipeToPrev) {
+            this.slider.swiperRef.allowSlideNext = !lockSwipeToNext.currentValue;
+        }
+
+        const lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
-            this.slider.lockSwipes(lockSwipes.currentValue);
+            this.slider.swiperRef.allowSlideNext = !lockSwipes.currentValue;
+            this.slider.swiperRef.allowSlidePrev = !lockSwipes.currentValue;
         }
     }
 
     ngOnDestroy() {
         if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
-            this.currentDateChangedFromParentSubscription = null;
+            this.currentDateChangedFromParentSubscription = undefined;
         }
 
         if (this.eventSourceChangedSubscription) {
             this.eventSourceChangedSubscription.unsubscribe();
-            this.eventSourceChangedSubscription = null;
+            this.eventSourceChangedSubscription = undefined;
         }
 
         if (this.slideChangedSubscription) {
             this.slideChangedSubscription.unsubscribe();
-            this.slideChangedSubscription = null;
+            this.slideChangedSubscription = undefined;
         }
 
         if (this.slideUpdatedSubscription) {
             this.slideUpdatedSubscription.unsubscribe();
-            this.slideUpdatedSubscription = null;
+            this.slideUpdatedSubscription = undefined;
         }
     }
 
     onSlideChanged() {
-        if (this.callbackOnInit) {
-            this.callbackOnInit = false;
-            return;
-        }
+        this.zone.run(() => {
+            if (this.callbackOnInit) {
+                this.callbackOnInit = false;
+                return;
+            }
 
-        let direction = 0;
-        const currentViewIndex = this.currentViewIndex;
+            let direction = 0;
+            const currentViewIndex = this.currentViewIndex;
 
-        this.slider.getActiveIndex().then((currentSlideIndex) => {
+            let currentSlideIndex = this.slider.swiperRef.activeIndex;
             currentSlideIndex = (currentSlideIndex + 2) % 3;
             if(isNaN(currentSlideIndex)) {
                 currentSlideIndex = currentViewIndex;
@@ -684,12 +688,12 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                 direction = 1;
             } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
                 direction = 1;
-                this.slider.slideTo(1, 0, false);
+                this.slider.swiperRef.slideTo(1, 0, false);
             } else if (currentViewIndex - currentSlideIndex === 1) {
                 direction = -1;
             } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
                 direction = -1;
-                this.slider.slideTo(3, 0, false);
+                this.slider.swiperRef.slideTo(3, 0, false);
             }
             this.currentViewIndex = currentSlideIndex;
             this.move(direction);
@@ -832,12 +836,13 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                 endIndex -= rangeStartRowIndex;
 
                 if (startIndex < endIndex) {
-                    const displayEvent = {
+                    const displayEvent:IDisplayEvent = {
                         event,
                         startIndex,
                         endIndex,
                         startOffset,
-                        endOffset
+                        endOffset,
+                        position:0
                     };
 
                     let eventSet = rows[startIndex].events;

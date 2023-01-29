@@ -1,156 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, Inject, LOCALE_ID } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, Inject, LOCALE_ID, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
-
 import { CalendarService } from './calendar.service';
+import SwiperCore from 'swiper';
+import { IonicSlides } from '@ionic/angular';
+import { IEvent, CalendarMode, QueryMode, Step, IMonthViewDisplayEventTemplateContext, IMonthViewEventDetailTemplateContext, IDisplayWeekViewHeader, IDisplayAllDayEvent, IDisplayEvent, IWeekViewAllDayEventSectionTemplateContext, IDayViewAllDayEventSectionTemplateContext, IWeekViewNormalEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext, IDateFormatter, IRange, ITimeSelected } from './calendar.interface';
 
-export interface IEvent {
-    allDay: boolean;
-    endTime: Date;
-    startTime: Date;
-    title: string;
-}
+SwiperCore.use([IonicSlides]);
 
-export interface IRange {
-    startTime: Date;
-    endTime: Date;
-}
-
-export interface IView {
-}
-
-export interface IDayView extends IView {
-    allDayEvents: IDisplayAllDayEvent[];
-    rows: IDayViewRow[];
-}
-
-export interface IDayViewRow {
-    events: IDisplayEvent[];
-    time: Date;
-}
-
-export interface IMonthView extends IView {
-    dates: IMonthViewRow[];
-    dayHeaders: string[];
-}
-
-export interface IMonthViewRow {
-    current?: boolean;
-    date: Date;
-    events: IEvent[];
-    hasEvent?: boolean;
-    label: string;
-    secondary: boolean;
-    selected?: boolean;
-    disabled: boolean;
-}
-
-export interface IWeekView extends IView {
-    dates: IWeekViewDateRow[];
-    rows: IWeekViewRow[][];
-}
-
-export interface IWeekViewDateRow {
-    current?: boolean;
-    date: Date;
-    events: IDisplayEvent[];
-    hasEvent?: boolean;
-    selected?: boolean;
-    dayHeader: string;
-}
-
-export interface IWeekViewRow {
-    events: IDisplayEvent[];
-    time: Date;
-}
-
-export interface IDisplayEvent {
-    endIndex: number;
-    endOffset?: number;
-    event: IEvent;
-    startIndex: number;
-    startOffset?: number;
-    overlapNumber?: number;
-    position?: number;
-}
-
-export interface IDisplayWeekViewHeader {
-    viewDate: IWeekViewDateRow;
-}
-
-export interface IDisplayAllDayEvent {
-    event: IEvent;
-}
-
-export interface ICalendarComponent {
-    currentViewIndex: number;
-    direction: number;
-    eventSource: IEvent[];
-    getRange: { (date:Date): IRange; };
-    getViewData: { (date:Date): IView };
-    mode: CalendarMode;
-    range: IRange;
-    views: IView[];
-    onDataLoaded: { (): void };
-    onRangeChanged: EventEmitter<IRange>;
-}
-
-export interface ITimeSelected {
-    events: IEvent[];
-    selectedTime: Date;
-    disabled: boolean;
-}
-
-export interface IMonthViewDisplayEventTemplateContext {
-    view: IView;
-    row: number;
-    col: number;
-}
-
-export interface IMonthViewEventDetailTemplateContext {
-    selectedDate: ITimeSelected;
-    noEventsLabel: string;
-}
-
-export interface IWeekViewAllDayEventSectionTemplateContext {
-    day: IWeekViewDateRow,
-    eventTemplate: TemplateRef<IDisplayAllDayEvent>
-}
-
-export interface IWeekViewNormalEventSectionTemplateContext {
-    tm: IWeekViewRow,
-    eventTemplate: TemplateRef<IDisplayEvent>
-}
-
-export interface IDayViewAllDayEventSectionTemplateContext {
-    alldayEvents: IDisplayAllDayEvent[],
-    eventTemplate: TemplateRef<IDisplayAllDayEvent>
-}
-
-export interface IDayViewNormalEventSectionTemplateContext {
-    tm: IDayViewRow,
-    eventTemplate: TemplateRef<IDisplayEvent>
-}
-
-export interface IDateFormatter {
-    formatMonthViewDay?: { (date:Date): string; };
-    formatMonthViewDayHeader?: { (date:Date): string; };
-    formatMonthViewTitle?: { (date:Date): string; };
-    formatWeekViewDayHeader?: { (date:Date): string; };
-    formatWeekViewTitle?: { (date:Date): string; };
-    formatWeekViewHourColumn?: { (date:Date): string; };
-    formatDayViewTitle?: { (date:Date): string; };
-    formatDayViewHourColumn?: { (date:Date): string; };
-}
-
-export type CalendarMode = 'day' | 'month' | 'week';
-
-export type QueryMode = 'local' | 'remote';
-
-export enum Step {
-    QuarterHour = 15,
-    HalfHour = 30,
-    Hour = 60
-}
 
 @Component({
     selector: 'calendar',
@@ -238,6 +94,7 @@ export enum Step {
                 [dateFormatter]="dateFormatter"
                 [dir]="dir"
                 [lockSwipeToPrev]="lockSwipeToPrev"
+                [lockSwipeToNext]="lockSwipeToNext"
                 [lockSwipes]="lockSwipes"
                 [sliderOptions]="sliderOptions"
                 (onRangeChanged)="rangeChanged($event)"
@@ -269,6 +126,7 @@ export enum Step {
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
                 [lockSwipeToPrev]="lockSwipeToPrev"
+                [lockSwipeToNext]="lockSwipeToNext"
                 [lockSwipes]="lockSwipes"
                 [startHour]="startHour"
                 [endHour]="endHour"
@@ -299,6 +157,7 @@ export enum Step {
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
                 [lockSwipeToPrev]="lockSwipeToPrev"
+                [lockSwipeToNext]="lockSwipeToNext"
                 [lockSwipes]="lockSwipes"
                 [startHour]="startHour"
                 [endHour]="endHour"
@@ -387,28 +246,29 @@ export class CalendarComponent implements OnInit {
     @Input() step:Step = Step.Hour;
     @Input() timeInterval:number = 60;
     @Input() autoSelect:boolean = true;
-    @Input() markDisabled:(date:Date) => boolean;
-    @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
-    @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
-    @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewEventDetailTemplateContext>;
-    @Input() weekviewHeaderTemplate:TemplateRef<IDisplayWeekViewHeader>;
-    @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
-    @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
-    @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
-    @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
-    @Input() weekviewAllDayEventSectionTemplate:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
-    @Input() weekviewNormalEventSectionTemplate:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
-    @Input() dayviewAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input() dayviewNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
-    @Input() weekviewInactiveAllDayEventSectionTemplate:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
-    @Input() weekviewInactiveNormalEventSectionTemplate:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
-    @Input() dayviewInactiveAllDayEventSectionTemplate:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input() dayviewInactiveNormalEventSectionTemplate:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
-    @Input() dateFormatter:IDateFormatter;
+    @Input() markDisabled?:(date:Date) => boolean;
+    @Input() monthviewDisplayEventTemplate?:TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewInactiveDisplayEventTemplate?:TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewEventDetailTemplate?:TemplateRef<IMonthViewEventDetailTemplateContext>;
+    @Input() weekviewHeaderTemplate?:TemplateRef<IDisplayWeekViewHeader>;
+    @Input() weekviewAllDayEventTemplate?:TemplateRef<IDisplayAllDayEvent>;
+    @Input() weekviewNormalEventTemplate?:TemplateRef<IDisplayEvent>;
+    @Input() dayviewAllDayEventTemplate?:TemplateRef<IDisplayAllDayEvent>;
+    @Input() dayviewNormalEventTemplate?:TemplateRef<IDisplayEvent>;
+    @Input() weekviewAllDayEventSectionTemplate?:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
+    @Input() weekviewNormalEventSectionTemplate?:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
+    @Input() dayviewAllDayEventSectionTemplate?:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewNormalEventSectionTemplate?:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() weekviewInactiveAllDayEventSectionTemplate?:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
+    @Input() weekviewInactiveNormalEventSectionTemplate?:TemplateRef<IWeekViewNormalEventSectionTemplateContext>;
+    @Input() dayviewInactiveAllDayEventSectionTemplate?:TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewInactiveNormalEventSectionTemplate?:TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() dateFormatter?:IDateFormatter;
     @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean = false;
     @Input() lockSwipeToPrev:boolean = false;
+    @Input() lockSwipeToNext:boolean = false;
     @Input() lockSwipes:boolean = false;
     @Input() locale:string = "";
     @Input() startHour:number = 0;
@@ -420,14 +280,14 @@ export class CalendarComponent implements OnInit {
     @Output() onEventSelected = new EventEmitter<IEvent>();
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
     @Output() onDayHeaderSelected = new EventEmitter<ITimeSelected>();
-    @Output() onTitleChanged = new EventEmitter<string>();
+    @Output() onTitleChanged = new EventEmitter<string>(true);
 
-    private _currentDate:Date;
+    private _currentDate:Date =  new Date();
     public hourParts = 1;
     public hourSegments = 1;
-    private currentDateChangedFromChildrenSubscription:Subscription;
+    private currentDateChangedFromChildrenSubscription?:Subscription;
 
-    constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private appLocale:string) {
+    constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private appLocale:string, private ngZone: NgZone) {
         this.locale = appLocale;
     }
 
@@ -459,7 +319,7 @@ export class CalendarComponent implements OnInit {
     ngOnDestroy() {
         if (this.currentDateChangedFromChildrenSubscription) {
             this.currentDateChangedFromChildrenSubscription.unsubscribe();
-            this.currentDateChangedFromChildrenSubscription = null;
+            this.currentDateChangedFromChildrenSubscription = undefined;
         }
     }
 

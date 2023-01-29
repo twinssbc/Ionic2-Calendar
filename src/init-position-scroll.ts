@@ -8,7 +8,8 @@ import {
     OnChanges,
     AfterViewInit,
     OnDestroy,
-    ViewEncapsulation
+    ViewEncapsulation,
+    NgZone
 } from '@angular/core';
 
 @Component({
@@ -27,26 +28,26 @@ import {
     encapsulation: ViewEncapsulation.None
 })
 export class initPositionScrollComponent implements OnChanges, AfterViewInit, OnDestroy {
-    @Input() initPosition:number;
-    @Input() emitEvent:boolean;
+    @Input() initPosition!:number;
+    @Input() emitEvent?:boolean;
     @Output() onScroll = new EventEmitter<number>();
 
     private element:ElementRef;
-    private scrollContent:HTMLElement;
-    private handler:()=>void;
+    private scrollContent!:HTMLElement;
+    private handler!:()=>void;
     private listenerAttached:boolean = false;
 
-    constructor(el:ElementRef) {
+    constructor(el:ElementRef, private ngZone: NgZone) {
         this.element = el;
     }
 
     ngOnChanges(changes:SimpleChanges) {
         let initPosition = changes['initPosition'];
-        if (initPosition && initPosition.currentValue !== undefined && this.scrollContent) {
+        if (initPosition && initPosition.currentValue !== undefined && this.scrollContent && initPosition.currentValue != this.scrollContent.scrollTop) {
             const me =this;
-            setTimeout(function() {
+            this.ngZone.run(() => {
                 me.scrollContent.scrollTop = initPosition.currentValue;
-            }, 0);
+            });
         }
     }
 
@@ -58,8 +59,11 @@ export class initPositionScrollComponent implements OnChanges, AfterViewInit, On
 
         if (this.emitEvent && !this.listenerAttached) {
             let onScroll = this.onScroll;
+            let me = this;
             this.handler = function () {
-                onScroll.emit(scrollContent.scrollTop);
+                if(me.initPosition != scrollContent.scrollTop) {
+                    onScroll.emit(scrollContent.scrollTop);
+                }
             };
             this.listenerAttached = true;
             scrollContent.addEventListener('scroll', this.handler);
@@ -69,6 +73,7 @@ export class initPositionScrollComponent implements OnChanges, AfterViewInit, On
     ngOnDestroy() {
         if (this.listenerAttached) {
             this.scrollContent.removeEventListener('scroll', this.handler);
+            this.listenerAttached = false;
         }
     }
 }

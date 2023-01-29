@@ -1,18 +1,18 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 
-import {ICalendarComponent, IView, CalendarMode, QueryMode} from './calendar';
+import {ICalendarComponent, IView, CalendarMode, QueryMode} from './calendar.interface';
 
 @Injectable()
 export class CalendarService {
-    queryMode: QueryMode;
+    queryMode!: QueryMode;
     currentDateChangedFromParent$: Observable<Date>;
     currentDateChangedFromChildren$: Observable<Date>;
     eventSourceChanged$: Observable<void>;
     slideChanged$: Observable<number>;
     slideUpdated$: Observable<void>;
 
-    private _currentDate: Date;
+    private _currentDate: Date = new Date();
     private currentDateChangedFromParent = new Subject<Date>();
     private currentDateChangedFromChildren = new Subject<Date>();
     private eventSourceChanged = new Subject<void>();

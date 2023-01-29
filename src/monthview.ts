@@ -6,25 +6,25 @@ import {
     Output,
     EventEmitter,
     SimpleChanges,
-    ViewChild,
     TemplateRef,
     OnDestroy,
-    AfterViewInit
+    AfterViewInit,
+    ViewChild,
+    NgZone
 } from '@angular/core';
 import {Subscription} from 'rxjs';
 import {DatePipe} from '@angular/common';
-import {IonSlides} from '@ionic/angular';
+import {SwiperComponent} from 'swiper/angular';
 
-import {ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode, IDateFormatter} from './calendar';
+import {ICalendarComponent, IEvent, IMonthView, IMonthViewRow, ITimeSelected, IRange, CalendarMode, IDateFormatter, IMonthViewDisplayEventTemplateContext} from './calendar.interface';
 import {CalendarService} from './calendar.service';
-import {IMonthViewDisplayEventTemplateContext} from './calendar';
 
 @Component({
     selector: 'monthview',
     template: `
         <div>
-            <ion-slides #monthSlider [options]="sliderOptions" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
-                <ion-slide>
+            <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev && !lockSwipes" [allowSlideNext]="!lockSwipeToNext && !lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()">
+                <ng-template swiperSlide>
                     <table *ngIf="0===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
                         <tr>
@@ -62,8 +62,8 @@ import {IMonthViewDisplayEventTemplateContext} from './calendar';
                         <tr>
                         </tbody>
                     </table>
-                </ion-slide>
-                <ion-slide>
+                </ng-template>
+                <ng-template swiperSlide>
                     <table *ngIf="1===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
                         <tr>
@@ -101,8 +101,8 @@ import {IMonthViewDisplayEventTemplateContext} from './calendar';
                         <tr>
                         </tbody>
                     </table>
-                </ion-slide>
-                <ion-slide>
+                </ng-template>
+                <ng-template swiperSlide>
                     <table *ngIf="2===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
                         <thead>
                         <tr>
@@ -140,8 +140,8 @@ import {IMonthViewDisplayEventTemplateContext} from './calendar';
                         <tr>
                         </tbody>
                     </table>
-                </ion-slide>
-            </ion-slides>
+                </ng-template>
+            </swiper>
             <ng-template [ngTemplateOutlet]="monthviewEventDetailTemplate"
                          [ngTemplateOutletContext]="{showEventDetail:showEventDetail, selectedDate: selectedDate, noEventsLabel: noEventsLabel}">
             </ng-template>
@@ -239,41 +239,40 @@ import {IMonthViewDisplayEventTemplateContext} from './calendar';
 })
 export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy, OnChanges, AfterViewInit {
 
-    constructor(private calendarService: CalendarService) {
-    }
-    ;
+    constructor(private calendarService: CalendarService, private zone:NgZone) {
+    }  
+    @ViewChild('swiper', { static: false }) slider!: SwiperComponent;
 
-    @ViewChild('monthSlider', {static: true}) slider: IonSlides;
+    @Input() monthviewDisplayEventTemplate!: TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewInactiveDisplayEventTemplate!: TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewEventDetailTemplate!: TemplateRef<IMonthViewDisplayEventTemplateContext>;
 
-    @Input() monthviewDisplayEventTemplate: TemplateRef<IMonthViewDisplayEventTemplateContext>;
-    @Input() monthviewInactiveDisplayEventTemplate: TemplateRef<IMonthViewDisplayEventTemplateContext>;
-    @Input() monthviewEventDetailTemplate: TemplateRef<IMonthViewDisplayEventTemplateContext>;
-
-    @Input() formatDay: string;
-    @Input() formatDayHeader: string;
-    @Input() formatMonthTitle: string;
-    @Input() eventSource: IEvent[];
-    @Input() startingDayMonth: number;
-    @Input() showEventDetail: boolean;
-    @Input() noEventsLabel: string;
+    @Input() formatDay?: string;
+    @Input() formatDayHeader?: string;
+    @Input() formatMonthTitle?: string;
+    @Input() eventSource!: IEvent[];
+    @Input() startingDayMonth!: number;
+    @Input() showEventDetail?: boolean;
+    @Input() noEventsLabel?: string;
     @Input() autoSelect = true;
-    @Input() markDisabled: (date: Date) => boolean;
-    @Input() locale: string;
-    @Input() dateFormatter: IDateFormatter;
+    @Input() markDisabled?: (date: Date) => boolean;
+    @Input() locale!: string;
+    @Input() dateFormatter?: IDateFormatter;
     @Input() dir = '';
-    @Input() lockSwipeToPrev: boolean;
-    @Input() lockSwipes: boolean;
+    @Input() lockSwipeToPrev?: boolean;
+    @Input() lockSwipeToNext?: boolean;
+    @Input() lockSwipes?: boolean;
     @Input() sliderOptions: any;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
-    @Output() onTimeSelected = new EventEmitter<ITimeSelected>(true);
-    @Output() onTitleChanged = new EventEmitter<string>(true);
+    @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
+    @Output() onTitleChanged = new EventEmitter<string>();
 
     public views: IMonthView[] = [];
     public currentViewIndex = 0;
-    public selectedDate: IMonthViewRow;
-    public range: IRange;
+    public selectedDate?: IMonthViewRow;
+    public range!: IRange;
     public mode: CalendarMode = 'month';
     public direction = 0;
 
@@ -281,14 +280,14 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
     private inited = false;
     private callbackOnInit = true;
 
-    private currentDateChangedFromParentSubscription: Subscription;
-    private eventSourceChangedSubscription: Subscription;
-    private slideChangedSubscription: Subscription;
-    private slideUpdatedSubscription: Subscription;
+    private currentDateChangedFromParentSubscription?: Subscription;
+    private eventSourceChangedSubscription?: Subscription;
+    private slideChangedSubscription?: Subscription;
+    private slideUpdatedSubscription?: Subscription;
 
-    private formatDayLabel: (date: Date) => string;
-    private formatDayHeaderLabel: (date: Date) => string;
-    private formatTitle: (date: Date) => string;
+    private formatDayLabel!: (date: Date) => string;
+    private formatDayHeaderLabel!: (date: Date) => string;
+    private formatTitle!: (date: Date) => string;
 
     static getDates(startDate: Date, n: number): Date[] {
         const dates = new Array(n),
@@ -312,7 +311,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
         } else {
             const dayLabelDatePipe = new DatePipe('en-US');
             this.formatDayLabel = function(date: Date) {
-                return dayLabelDatePipe.transform(date, this.formatDay);
+                return dayLabelDatePipe.transform(date, this.formatDay)||'';
             };
         }
 
@@ -321,7 +320,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatDayHeaderLabel = function(date: Date) {
-                return datePipe.transform(date, this.formatDayHeader);
+                return datePipe.transform(date, this.formatDayHeader)||'';
             };
         }
 
@@ -330,16 +329,8 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatTitle = function(date: Date) {
-                return datePipe.transform(date, this.formatMonthTitle);
+                return datePipe.transform(date, this.formatMonthTitle)||'';
             };
-        }
-
-        if (this.lockSwipeToPrev) {
-            this.slider.lockSwipeToPrev(true);
-        }
-
-        if (this.lockSwipes) {
-            this.slider.lockSwipes(true);
         }
 
         this.refreshView();
@@ -355,36 +346,36 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
 
         this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
             if (direction === 1) {
-                this.slider.slideNext();
+                this.slider.swiperRef.slideNext();
             } else if (direction === -1) {
-                this.slider.slidePrev();
+                this.slider.swiperRef.slidePrev();
             }
         });
 
         this.slideUpdatedSubscription = this.calendarService.slideUpdated$.subscribe(() => {
-            this.slider.update();
+            this.slider.swiperRef.update();
         });
     }
 
     ngOnDestroy() {
         if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
-            this.currentDateChangedFromParentSubscription = null;
+            this.currentDateChangedFromParentSubscription = undefined;
         }
 
         if (this.eventSourceChangedSubscription) {
             this.eventSourceChangedSubscription.unsubscribe();
-            this.eventSourceChangedSubscription = null;
+            this.eventSourceChangedSubscription = undefined;
         }
 
         if (this.slideChangedSubscription) {
             this.slideChangedSubscription.unsubscribe();
-            this.slideChangedSubscription = null;
+            this.slideChangedSubscription = undefined;
         }
 
         if (this.slideUpdatedSubscription) {
             this.slideUpdatedSubscription.unsubscribe();
-            this.slideUpdatedSubscription = null;
+            this.slideUpdatedSubscription = undefined;
         }
     }
 
@@ -393,19 +384,25 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
             return;
         }
 
-        const eventSourceChange = changes.eventSource;
+        const eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
 
-        const lockSwipeToPrev = changes.lockSwipeToPrev;
+        const lockSwipeToPrev = changes['lockSwipeToPrev'];
         if (lockSwipeToPrev) {
-            this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
+            this.slider.swiperRef.allowSlidePrev = !lockSwipeToPrev.currentValue;
         }
 
-        const lockSwipes = changes.lockSwipes;
+        const lockSwipeToNext = changes['lockSwipeToNext'];
+        if (lockSwipeToNext) {
+            this.slider.swiperRef.allowSlideNext = !lockSwipeToNext.currentValue;
+        }
+
+        const lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
-            this.slider.lockSwipes(lockSwipes.currentValue);
+            this.slider.swiperRef.allowSlideNext = !lockSwipes.currentValue;
+            this.slider.swiperRef.allowSlidePrev = !lockSwipes.currentValue;
         }
     }
 
@@ -414,16 +411,21 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
         this.onTitleChanged.emit(title);
     }
 
+    setSwiperInstance(swiper: any) {
+        this.slider = swiper;
+    }
+
     onSlideChanged() {
-        if (this.callbackOnInit) {
-            this.callbackOnInit = false;
-            return;
-        }
+        this.zone.run(() => {
+            if (this.callbackOnInit) {
+                this.callbackOnInit = false;
+                return;
+            }
 
-        let direction = 0;
-        const currentViewIndex = this.currentViewIndex;
+            let direction = 0;
+            const currentViewIndex = this.currentViewIndex;
 
-        this.slider.getActiveIndex().then((currentSlideIndex) => {
+            let currentSlideIndex = this.slider.swiperRef.activeIndex;
             currentSlideIndex = (currentSlideIndex + 2) % 3;
             if(isNaN(currentSlideIndex)) {
                 currentSlideIndex = currentViewIndex;
@@ -433,15 +435,15 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
                 direction = 1;
             } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
                 direction = 1;
-                this.slider.slideTo(1, 0, false);
+                this.slider.swiperRef.slideTo(1, 0, false);
             } else if (currentViewIndex - currentSlideIndex === 1) {
                 direction = -1;
             } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
                 direction = -1;
-                this.slider.slideTo(3, 0, false);
+                this.slider.swiperRef.slideTo(3, 0, false);
             }
             this.currentViewIndex = currentSlideIndex;
-            this.move(direction);
+            this.move(direction);   
         });
     }
 
@@ -647,7 +649,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
                 }
             }
 
-            if (findSelected) {
+            if (findSelected && this.selectedDate) {
                 this.onTimeSelected.emit({
                     selectedTime: this.selectedDate.date,
                     events: this.selectedDate.events,
@@ -738,9 +740,9 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
 
     slideView(direction: number) {
         if (direction === 1) {
-            this.slider.slideNext();
+            this.slider.swiperRef.slideNext();
         } else if (direction === -1) {
-            this.slider.slidePrev();
+            this.slider.swiperRef.slidePrev();
         }
     }
 
@@ -759,13 +761,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
             view.dates[selectedDayDifference].selected = true;
             this.selectedDate = view.dates[selectedDayDifference];
         } else {
-            this.selectedDate = {
-                date: null,
-                events: [],
-                label: null,
-                secondary: null,
-                disabled: false
-            };
+            this.selectedDate = undefined;
         }
 
         if (currentDayDifference >= 0 && currentDayDifference < 42) {
