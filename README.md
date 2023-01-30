@@ -27,6 +27,8 @@ intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
 `npm install ionic2-calendar --save`
 
 ### version 1.0.x onwards
+version 1.0.x is also published as Ionic6-Calendar package name. So could also run  
+`npm install ionic6-calendar --save`  
 <font color=red>**NOTE: Starting from Version 1.0.x, the underlying implementaion is based on Swiper instead of IonSlides, so also needs to install Swiper dependency**</font>  
 - Install swiper dependency  
 `npm install swiper --save`
@@ -38,6 +40,7 @@ intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
 ```
 
 ## 2. Import the Calendar module
+If using version 1.0.x, could use both ionic2-calendar or ionic6-calendar.
 
 - version 0.5.x onwards
 ``` typescript
