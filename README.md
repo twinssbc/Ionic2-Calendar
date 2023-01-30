@@ -7,7 +7,7 @@ Ionic calendar directive
 
 # Demo
 Version 1.0    
-https://angular-edcvxq.stackblitz.io    
+https://stackblitz.com/edit/ionic-calendar-demo-1-0?file=src%2Fapp%2Fexample.component.html    
 Version 0.x    
 https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html   
 
