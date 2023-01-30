@@ -1,6 +1,6 @@
 {
     "name": "ionic2-calendar",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
@@ -17,7 +17,6 @@
     "scripts": {
         "build": "rm -rf dist && ng build"
     },
-    "main": "./index.js",
     "dependencies": {
         "tslib": "^2.3.0"
     },

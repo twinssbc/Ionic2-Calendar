@@ -6,7 +6,12 @@ Ionic calendar directive
 [![GitHub License](https://img.shields.io/npm/l/ionic2-calendar.svg)](https://raw.githubusercontent.com/twinssbc/Ionic2-Calendar/master/LICENSE)
 
 # Demo
+Version 1.0    
+https://angular-edcvxq.stackblitz.io    
+Version 0.x    
 https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html   
+
+
 
 # Dependency
 Version 1.0.x depends on Ionic (>=6.1.9), Angular (>=15.1.2) and Swiper (>=8.4.6).   
