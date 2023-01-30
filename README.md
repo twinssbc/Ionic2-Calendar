@@ -9,13 +9,13 @@ Ionic calendar directive
 https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html   
 
 # Dependency
-Version 1.0.x depends on Ionic (>=6.1.9), Angular (>=15.1.2) and Swiper (>=8.4.6)
-Version 0.6.x depends on Ionic (>=5.1.0) and Angular (>=9.1.0).
-version 0.5.x depends on Ionic (>=4.0.0-rc.1), also supports Ionic 5.0.0.  
+Version 1.0.x depends on Ionic (>=6.1.9), Angular (>=15.1.2) and Swiper (>=8.4.6).   
+Version 0.6.x depends on Ionic (>=5.1.0) and Angular (>=9.1.0).    
+version 0.5.x depends on Ionic (>=4.0.0-rc.1), also supports Ionic 5.0.0.    
 version 0.4.x depends on Ionic (>=3.9.2).  
 version 0.3.x depends on Ionic (>=3.1.1).  
 version 0.2.9+ depends on Ionic (>=2.3.0).  
-version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.
+version 0.2.x depends on Ionic 2.0.0-rc.5 (rc.5 has breaking change on the slide API) and  2.0.0 final version onwards.    
 version 0.1.x depends on Ionic 2.0.0-rc.1 ~ Ionic 2.0.0-rc.4    
 
 version 0.2-0.4 has below dependency:      
