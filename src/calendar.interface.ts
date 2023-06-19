@@ -98,9 +98,12 @@ export interface ITimeSelected {
 }
 
 export interface IMonthViewDisplayEventTemplateContext {
-    view: IView;
-    row: number;
-    col: number;
+    view?: IView;
+    row?: number;
+    col?: number;
+    showEventDetail?: boolean;
+    selectedDate?: IMonthViewRow;
+    noEventsLabel?: string;
 }
 
 export interface IMonthViewEventDetailTemplateContext {
@@ -110,22 +113,24 @@ export interface IMonthViewEventDetailTemplateContext {
 
 export interface IWeekViewAllDayEventSectionTemplateContext {
     day: IWeekViewDateRow,
-    eventTemplate: TemplateRef<IDisplayAllDayEvent>
+    eventTemplate?: TemplateRef<IDisplayAllDayEvent>,
 }
 
 export interface IWeekViewNormalEventSectionTemplateContext {
     tm: IWeekViewRow,
-    eventTemplate: TemplateRef<IDisplayEvent>
+    eventTemplate?: TemplateRef<IDisplayEvent>,
+    hourParts?: number
 }
 
 export interface IDayViewAllDayEventSectionTemplateContext {
-    alldayEvents: IDisplayAllDayEvent[],
-    eventTemplate: TemplateRef<IDisplayAllDayEvent>
+    allDayEvents: IDisplayAllDayEvent[],
+    eventTemplate?: TemplateRef<IDisplayAllDayEvent>
 }
 
 export interface IDayViewNormalEventSectionTemplateContext {
     tm: IDayViewRow,
-    eventTemplate: TemplateRef<IDisplayEvent>
+    eventTemplate?: TemplateRef<IDisplayEvent>,
+    hourParts?: number
 }
 
 export interface IDateFormatter {

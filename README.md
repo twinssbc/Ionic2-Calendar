@@ -14,7 +14,8 @@ https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html
 
 
 # Dependency
-Version 1.0.x depends on Ionic (>=6.1.9), Angular (>=15.1.2) and Swiper (>=8.4.6).   
+Version 2.0.x depends on Ionic (>=7.0.0), Angular (>=16.0.0) and Swiper (>=8.4.6, <9.0.0).   
+Version 1.0.x depends on Ionic (>=6.1.9), Angular (>=15.1.2) and Swiper (>=8.4.6, <9.0.0).   
 Version 0.6.x depends on Ionic (>=5.1.0) and Angular (>=9.1.0).    
 version 0.5.x depends on Ionic (>=4.0.0-rc.1), also supports Ionic 5.0.0.    
 version 0.4.x depends on Ionic (>=3.9.2).  
@@ -31,12 +32,16 @@ intl 1.2.5, due to issue https://github.com/angular/angular/issues/3333
 ## 1. Install Calendar Dependency  
 `npm install ionic2-calendar --save`
 
-### version 1.0.x onwards
+### version 1.0.x onwards  
 version 1.0.x is also published as Ionic6-Calendar package name. So could also run  
 `npm install ionic6-calendar --save`  
-<font color=red>**NOTE: Starting from Version 1.0.x, the underlying implementaion is based on Swiper instead of IonSlides, so also needs to install Swiper dependency**</font>  
+version 2.0.x is also published as Ionic7-Calendar package name. So could also run  
+`npm install ionic7-calendar --save`  
+
+<font color=red>**NOTE: Starting from Version 1.0.x, the underlying implementaion is based on Swiper instead of IonSlides, so also needs to install Swiper dependency. 
+So far Swiper 8 is supported, working on Swiper 9 integration.**</font>  
 - Install swiper dependency  
-`npm install swiper --save`
+`npm install swiper@8.4.6 --save`
 
 - Import swiper css in **global.scss**  
 ```
@@ -45,7 +50,7 @@ version 1.0.x is also published as Ionic6-Calendar package name. So could also r
 ```
 
 ## 2. Import the Calendar module
-If using version 1.0.x, could use both ionic2-calendar or ionic6-calendar.
+If using version 1.0.x, could use both ionic2-calendar or ionic6-calendar, ionic7-calendar.
 
 - version 0.5.x onwards
 ``` typescript

@@ -1,9 +1,9 @@
 {
     "name": "ionic2-calendar",
-    "version": "1.0.1",
-    "description": "Ionic2 calendar component",
+    "version": "2.0.0",
+    "description": "Ionic calendar component",
     "keywords": [
-        "Ionic2",
+        "Ionic",
         "calendar"
     ],
     "author": {
@@ -21,16 +21,17 @@
         "tslib": "^2.3.0"
     },
     "peerDependencies": {
-        "@angular/common": "^15.1.0",
-        "@angular/core": "^15.1.0",
-        "@ionic/angular": "^6.1.9",
-        "swiper": "^8.4.6"
+        "@angular/common": "^16.0.0",
+        "@angular/core": "^16.0.0",
+        "@ionic/angular": "^7.0.0",
+        "swiper": "^9.4.1"
     },
     "devDependencies": {
-        "@angular-devkit/build-angular": "^15.1.2",
-        "@angular/cli": "~15.1.2",
-        "@angular/compiler-cli": "^15.1.0",
-        "ng-packagr": "^15.1.0",
-        "typescript": "~4.9.4"
+        "@angular-devkit/build-angular": "^16.0.0",
+        "@angular/cli": "^16.0.0",
+        "@angular/compiler": "^16.0.0",
+        "@angular/compiler-cli": "^16.0.0",
+        "ng-packagr": "^16.1.0",
+        "typescript": "~5.0.2"
     }
 }
