@@ -11,13 +11,13 @@ import {
     ViewEncapsulation,
     TemplateRef,
     ElementRef,
-    ViewChild,
     OnDestroy, 
     AfterViewInit,
     NgZone
 } from '@angular/core';
 import {Subscription} from 'rxjs';
-import { SwiperComponent } from 'swiper/angular';
+import {Swiper} from 'swiper';
+import {SwiperOptions} from 'swiper/types';
 
 import type {
     ICalendarComponent,
@@ -40,275 +40,276 @@ import {CalendarService} from './calendar.service';
 @Component({
     selector: 'weekview',
     template: `
-        <swiper #swiper [config]="sliderOptions" [dir]="dir" [allowSlidePrev]="!lockSwipeToPrev" [allowSlideNext]="!lockSwipeToNext" [allowTouchMove]="!lockSwipes" (slideChangeTransitionEnd)="onSlideChanged()"
-                    class="slides-container">
-            <ng-template swiperSlide class="slide-container">
-                <table class="table table-bordered table-fixed weekview-header">
-                    <thead>
-                    <tr>
-                        <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let date of views[0].dates"
-                            [ngClass]="getHighlightClass(date)"
-                            (click)="daySelected(date)">
-                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
-                                         [ngTemplateOutletContext]="{viewDate:date}">
-                            </ng-template>
-                        </th>
-                    </tr>
-                    </thead>
-                </table>
-                <div *ngIf="0===currentViewIndex">
-                    <div class="weekview-allday-table">
-                        <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <div class="weekview-allday-content-wrapper scroll-content">
-                            <table class="table table-fixed weekview-allday-content-table">
-                                <tbody>
-                                <tr>
-                                    <td *ngFor="let day of views[0].dates" class="calendar-cell">
-                                        <ng-template [ngTemplateOutlet]="weekviewAllDayEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{day:day, eventTemplate:weekviewAllDayEventTemplate}">
-                                        </ng-template>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+        <div class="swiper weekview-swiper">
+            <div class="swiper-wrapper slides-container" [dir]="dir">
+                <div class="swiper-slide slide-container">                    
+                    <table class="table table-bordered table-fixed weekview-header">
+                        <thead>
+                        <tr>
+                            <th class="calendar-hour-column"></th>
+                            <th class="weekview-header text-center" *ngFor="let date of views[0].dates"
+                                [ngClass]="getHighlightClass(date)"
+                                (click)="daySelected(date)">
+                                <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                            [ngTemplateOutletContext]="{viewDate:date}">
+                                </ng-template>
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div *ngIf="0===currentViewIndex">
+                        <div class="weekview-allday-table">
+                            <div class="weekview-allday-label">{{allDayLabel}}</div>
+                            <div class="weekview-allday-content-wrapper scroll-content">
+                                <table class="table table-fixed weekview-allday-content-table">
+                                    <tbody>
+                                    <tr>
+                                        <td *ngFor="let day of views[0].dates" class="calendar-cell">
+                                            <ng-template [ngTemplateOutlet]="weekviewAllDayEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{day:day, eventTemplate:weekviewAllDayEventTemplate}">
+                                            </ng-template>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition"
-                                          [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
-                        <table class="table table-bordered table-fixed weekview-normal-event-table">
-                            <tbody>
-                            <tr *ngFor="let row of views[0].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
-                                </td>
-                                <td *ngFor="let tm of row" class="calendar-cell" tappable
-                                    (click)="select(tm.time, tm.events)">
-                                    <ng-template [ngTemplateOutlet]="weekviewNormalEventSectionTemplate"
-                                                 [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
-                                    </ng-template>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </init-position-scroll>
-                </div>
-                <div *ngIf="0!==currentViewIndex">
-                    <div class="weekview-allday-table">
-                        <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <div class="weekview-allday-content-wrapper scroll-content">
-                            <table class="table table-fixed weekview-allday-content-table">
+                        <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition"
+                                            [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
+                            <table class="table table-bordered table-fixed weekview-normal-event-table">
                                 <tbody>
-                                <tr>
-                                    <td *ngFor="let day of views[0].dates" class="calendar-cell">
-                                        <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{day:day}">
-                                        </ng-template>
+                                <tr *ngFor="let row of views[0].rows; let i = index">
+                                    <td class="calendar-hour-column text-center">
+                                        {{hourColumnLabels[i]}}
                                     </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
-                        <table class="table table-bordered table-fixed weekview-normal-event-table">
-                            <tbody>
-                            <tr *ngFor="let row of views[0].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
-                                </td>
-                                <td *ngFor="let tm of row" class="calendar-cell">
-                                    <ng-template [ngTemplateOutlet]="weekviewInactiveNormalEventSectionTemplate"
-                                                 [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
-                                    </ng-template>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </init-position-scroll>
-                </div>
-            </ng-template>
-            <ng-template swiperSlide class="slide-container">
-                <table class="table table-bordered table-fixed weekview-header">
-                    <thead>
-                    <tr>
-                        <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let date of views[1].dates"
-                            [ngClass]="getHighlightClass(date)"
-                            (click)="daySelected(date)">
-                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
-                                         [ngTemplateOutletContext]="{viewDate:date}">
-                            </ng-template>
-                        </th>
-                    </tr>
-                    </thead>
-                </table>
-                <div *ngIf="1===currentViewIndex">
-                    <div class="weekview-allday-table">
-                        <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <div class="weekview-allday-content-wrapper scroll-content">
-                            <table class="table table-fixed weekview-allday-content-table">
-                                <tbody>
-                                <tr>
-                                    <td *ngFor="let day of views[1].dates" class="calendar-cell">
-                                        <ng-template [ngTemplateOutlet]="weekviewAllDayEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{day:day, eventTemplate:weekviewAllDayEventTemplate}">
-                                        </ng-template>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition"
-                                          [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
-                        <table class="table table-bordered table-fixed weekview-normal-event-table">
-                            <tbody>
-                            <tr *ngFor="let row of views[1].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
-                                </td>
-                                <td *ngFor="let tm of row" class="calendar-cell" tappable
-                                    (click)="select(tm.time, tm.events)">
-                                    <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                    <td *ngFor="let tm of row" class="calendar-cell" tappable
+                                        (click)="select(tm.time, tm.events)">
                                         <ng-template [ngTemplateOutlet]="weekviewNormalEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
-                                        </ng-template>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </init-position-scroll>
-                </div>
-                <div *ngIf="1!==currentViewIndex">
-                    <div class="weekview-allday-table">
-                        <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <div class="weekview-allday-content-wrapper scroll-content">
-                            <table class="table table-fixed weekview-allday-content-table">
-                                <tbody>
-                                <tr>
-                                    <td *ngFor="let day of views[1].dates" class="calendar-cell">
-                                        <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{day:day}">
+                                                    [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
                                         </ng-template>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-                        </div>
+                        </init-position-scroll>
                     </div>
-                    <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
-                        <table class="table table-bordered table-fixed weekview-normal-event-table">
-                            <tbody>
-                            <tr *ngFor="let row of views[1].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
-                                </td>
-                                <td *ngFor="let tm of row" class="calendar-cell">
-                                    <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                    <div *ngIf="0!==currentViewIndex">
+                        <div class="weekview-allday-table">
+                            <div class="weekview-allday-label">{{allDayLabel}}</div>
+                            <div class="weekview-allday-content-wrapper scroll-content">
+                                <table class="table table-fixed weekview-allday-content-table">
+                                    <tbody>
+                                    <tr>
+                                        <td *ngFor="let day of views[0].dates" class="calendar-cell">
+                                            <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{day:day}">
+                                            </ng-template>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
+                            <table class="table table-bordered table-fixed weekview-normal-event-table">
+                                <tbody>
+                                <tr *ngFor="let row of views[0].rows; let i = index">
+                                    <td class="calendar-hour-column text-center">
+                                        {{hourColumnLabels[i]}}
+                                    </td>
+                                    <td *ngFor="let tm of row" class="calendar-cell">
                                         <ng-template [ngTemplateOutlet]="weekviewInactiveNormalEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
-                                        </ng-template>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </init-position-scroll>
-                </div>
-            </ng-template>
-            <ng-template swiperSlide class="slide-container">
-                <table class="table table-bordered table-fixed weekview-header">
-                    <thead>
-                    <tr>
-                        <th class="calendar-hour-column"></th>
-                        <th class="weekview-header text-center" *ngFor="let date of views[2].dates"
-                            [ngClass]="getHighlightClass(date)"
-                            (click)="daySelected(date)">
-                            <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
-                                         [ngTemplateOutletContext]="{viewDate:date}">
-                            </ng-template>
-                        </th>
-                    </tr>
-                    </thead>
-                </table>
-                <div *ngIf="2===currentViewIndex">
-                    <div class="weekview-allday-table">
-                        <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <div class="weekview-allday-content-wrapper scroll-content">
-                            <table class="table table-fixed weekview-allday-content-table">
-                                <tbody>
-                                <tr>
-                                    <td *ngFor="let day of views[2].dates" class="calendar-cell">
-                                        <ng-template [ngTemplateOutlet]="weekviewAllDayEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{day:day, eventTemplate:weekviewAllDayEventTemplate}">
+                                                    [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
                                         </ng-template>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-                        </div>
+                        </init-position-scroll>
                     </div>
-                    <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition"
-                                          [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
-                        <table class="table table-bordered table-fixed weekview-normal-event-table">
-                            <tbody>
-                            <tr *ngFor="let row of views[2].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
-                                </td>
-                                <td *ngFor="let tm of row" class="calendar-cell" tappable
-                                    (click)="select(tm.time, tm.events)">
-                                    <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                        <ng-template [ngTemplateOutlet]="weekviewNormalEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
-                                        </ng-template>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </init-position-scroll>
                 </div>
-                <div *ngIf="2!==currentViewIndex">
-                    <div class="weekview-allday-table">
-                        <div class="weekview-allday-label">{{allDayLabel}}</div>
-                        <div class="weekview-allday-content-wrapper scroll-content">
-                            <table class="table table-fixed weekview-allday-content-table">
+                <div class="swiper-slide slide-container">                    
+                    <table class="table table-bordered table-fixed weekview-header">
+                        <thead>
+                        <tr>
+                            <th class="calendar-hour-column"></th>
+                            <th class="weekview-header text-center" *ngFor="let date of views[1].dates"
+                                [ngClass]="getHighlightClass(date)"
+                                (click)="daySelected(date)">
+                                <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                            [ngTemplateOutletContext]="{viewDate:date}">
+                                </ng-template>
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div *ngIf="1===currentViewIndex">
+                        <div class="weekview-allday-table">
+                            <div class="weekview-allday-label">{{allDayLabel}}</div>
+                            <div class="weekview-allday-content-wrapper scroll-content">
+                                <table class="table table-fixed weekview-allday-content-table">
+                                    <tbody>
+                                    <tr>
+                                        <td *ngFor="let day of views[1].dates" class="calendar-cell">
+                                            <ng-template [ngTemplateOutlet]="weekviewAllDayEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{day:day, eventTemplate:weekviewAllDayEventTemplate}">
+                                            </ng-template>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition"
+                                            [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
+                            <table class="table table-bordered table-fixed weekview-normal-event-table">
                                 <tbody>
-                                <tr>
-                                    <td *ngFor="let day of views[2].dates" class="calendar-cell">
-                                        <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{day:day}">
-                                        </ng-template>
+                                <tr *ngFor="let row of views[1].rows; let i = index">
+                                    <td class="calendar-hour-column text-center">
+                                        {{hourColumnLabels[i]}}
+                                    </td>
+                                    <td *ngFor="let tm of row" class="calendar-cell" tappable
+                                        (click)="select(tm.time, tm.events)">
+                                        <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                            <ng-template [ngTemplateOutlet]="weekviewNormalEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
+                                            </ng-template>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
-                        </div>
+                        </init-position-scroll>
                     </div>
-                    <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
-                        <table class="table table-bordered table-fixed weekview-normal-event-table">
-                            <tbody>
-                            <tr *ngFor="let row of views[2].rows; let i = index">
-                                <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
-                                </td>
-                                <td *ngFor="let tm of row" class="calendar-cell">
-                                    <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                        <ng-template [ngTemplateOutlet]="weekviewInactiveNormalEventSectionTemplate"
-                                                     [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
-                                        </ng-template>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </init-position-scroll>
+                    <div *ngIf="1!==currentViewIndex">
+                        <div class="weekview-allday-table">
+                            <div class="weekview-allday-label">{{allDayLabel}}</div>
+                            <div class="weekview-allday-content-wrapper scroll-content">
+                                <table class="table table-fixed weekview-allday-content-table">
+                                    <tbody>
+                                    <tr>
+                                        <td *ngFor="let day of views[1].dates" class="calendar-cell">
+                                            <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{day:day}">
+                                            </ng-template>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
+                            <table class="table table-bordered table-fixed weekview-normal-event-table">
+                                <tbody>
+                                <tr *ngFor="let row of views[1].rows; let i = index">
+                                    <td class="calendar-hour-column text-center">
+                                        {{hourColumnLabels[i]}}
+                                    </td>
+                                    <td *ngFor="let tm of row" class="calendar-cell">
+                                        <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                            <ng-template [ngTemplateOutlet]="weekviewInactiveNormalEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                            </ng-template>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </init-position-scroll>
+                    </div>
                 </div>
-            </ng-template>
-        </swiper>
+                <div class="swiper-slide slide-container">                    
+                    <table class="table table-bordered table-fixed weekview-header">
+                        <thead>
+                        <tr>
+                            <th class="calendar-hour-column"></th>
+                            <th class="weekview-header text-center" *ngFor="let date of views[2].dates"
+                                [ngClass]="getHighlightClass(date)"
+                                (click)="daySelected(date)">
+                                <ng-template [ngTemplateOutlet]="weekviewHeaderTemplate"
+                                            [ngTemplateOutletContext]="{viewDate:date}">
+                                </ng-template>
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <div *ngIf="2===currentViewIndex">
+                        <div class="weekview-allday-table">
+                            <div class="weekview-allday-label">{{allDayLabel}}</div>
+                            <div class="weekview-allday-content-wrapper scroll-content">
+                                <table class="table table-fixed weekview-allday-content-table">
+                                    <tbody>
+                                    <tr>
+                                        <td *ngFor="let day of views[2].dates" class="calendar-cell">
+                                            <ng-template [ngTemplateOutlet]="weekviewAllDayEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{day:day, eventTemplate:weekviewAllDayEventTemplate}">
+                                            </ng-template>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition"
+                                            [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
+                            <table class="table table-bordered table-fixed weekview-normal-event-table">
+                                <tbody>
+                                <tr *ngFor="let row of views[2].rows; let i = index">
+                                    <td class="calendar-hour-column text-center">
+                                        {{hourColumnLabels[i]}}
+                                    </td>
+                                    <td *ngFor="let tm of row" class="calendar-cell" tappable
+                                        (click)="select(tm.time, tm.events)">
+                                        <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                            <ng-template [ngTemplateOutlet]="weekviewNormalEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:weekviewNormalEventTemplate}">
+                                            </ng-template>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </init-position-scroll>
+                    </div>
+                    <div *ngIf="2!==currentViewIndex">
+                        <div class="weekview-allday-table">
+                            <div class="weekview-allday-label">{{allDayLabel}}</div>
+                            <div class="weekview-allday-content-wrapper scroll-content">
+                                <table class="table table-fixed weekview-allday-content-table">
+                                    <tbody>
+                                    <tr>
+                                        <td *ngFor="let day of views[2].dates" class="calendar-cell">
+                                            <ng-template [ngTemplateOutlet]="weekviewInactiveAllDayEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{day:day}">
+                                            </ng-template>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
+                            <table class="table table-bordered table-fixed weekview-normal-event-table">
+                                <tbody>
+                                <tr *ngFor="let row of views[2].rows; let i = index">
+                                    <td class="calendar-hour-column text-center">
+                                        {{hourColumnLabels[i]}}
+                                    </td>
+                                    <td *ngFor="let tm of row" class="calendar-cell">
+                                        <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
+                                            <ng-template [ngTemplateOutlet]="weekviewInactiveNormalEventSectionTemplate"
+                                                        [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                            </ng-template>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </init-position-scroll>
+                    </div>
+                </div>
+            </div>
+        </div>
     `,
     styles: [`
         .table-fixed {
@@ -381,12 +382,8 @@ import {CalendarService} from './calendar.service';
             height: 37px;
         }
 
-        .slides-container {
+        .weekview-swiper {
             height: 100%;
-        }
-
-        .slide-container {
-            display: block !important;
         }
 
         .weekview-allday-label {
@@ -507,8 +504,9 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
     constructor(private calendarService: CalendarService, private elm: ElementRef, private zone: NgZone) {
     }
 
+    private slider!: Swiper;
+
     @HostBinding('class.weekview') class = true;
-    @ViewChild('swiper', { static: false }) slider!: SwiperComponent;
 
     @Input() weekviewHeaderTemplate!: TemplateRef<IDisplayWeekViewHeader>;
     @Input() weekviewAllDayEventTemplate!: TemplateRef<IDisplayAllDayEvent>;
@@ -537,7 +535,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
     @Input() lockSwipes?: boolean;
     @Input() startHour!: number;
     @Input() endHour!: number;
-    @Input() sliderOptions: any;
+    @Input() sliderOptions?: SwiperOptions;
     @Input() hourSegments!: number;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
@@ -553,7 +551,6 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
     public mode: CalendarMode = 'week';
 
     private inited = false;
-    private callbackOnInit = true;
     private currentDateChangedFromParentSubscription?: Subscription;
     private eventSourceChangedSubscription?: Subscription;
     private slideChangedSubscription?: Subscription;
@@ -678,6 +675,9 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
             this.sliderOptions = {};
         }
         this.sliderOptions.loop = true;
+        this.sliderOptions.allowSlidePrev = !this.lockSwipeToPrev;
+        this.sliderOptions.allowSlideNext = !this.lockSwipeToNext;
+        this.sliderOptions.allowTouchMove = !this.lockSwipes;
 
         this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
         if (this.dateFormatter && this.dateFormatter.formatWeekViewDayHeader) {
@@ -721,18 +721,32 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
 
         this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
             if (direction === 1) {
-                this.slider.swiperRef.slideNext();
+                this.slider.slideNext();
             } else if (direction === -1) {
-                this.slider.swiperRef.slidePrev();
+                this.slider.slidePrev();
             }
         });
 
         this.slideUpdatedSubscription = this.calendarService.slideUpdated$.subscribe(() => {
-            this.slider.swiperRef.update();
+            this.slider.update();
         });
     }
 
     ngAfterViewInit() {
+        this.slider = new Swiper('.weekview-swiper', this.sliderOptions);
+        let me = this;
+        this.slider.on('slideNextTransitionEnd', function() {
+            me.onSlideChanged(1);
+        });
+
+        this.slider.on('slidePrevTransitionEnd', function() {
+            me.onSlideChanged(-1);
+        });
+
+        if(this.dir === 'rtl') {
+            this.slider.changeLanguageDirection('rtl');
+        }
+
         const title = this.getTitle();
         this.onTitleChanged.emit(title);
 
@@ -765,17 +779,17 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
 
         const lockSwipeToPrev = changes['lockSwipeToPrev'];
         if (lockSwipeToPrev) {
-            this.slider.swiperRef.allowSlidePrev = !lockSwipeToPrev.currentValue;
+            this.slider.allowSlidePrev = !lockSwipeToPrev.currentValue;
         }
 
         const lockSwipeToNext = changes['lockSwipeToNext'];
         if (lockSwipeToPrev) {
-            this.slider.swiperRef.allowSlideNext = !lockSwipeToNext.currentValue;
+            this.slider.allowSlideNext = !lockSwipeToNext.currentValue;
         }
 
         const lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
-            this.slider.swiperRef.allowTouchMove = !lockSwipes.currentValue;
+            this.slider.allowTouchMove = !lockSwipes.currentValue;
         }
     }
 
@@ -801,36 +815,9 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
         }
     }
 
-    onSlideChanged() {
-        this.zone.run(() => {
-            if (this.callbackOnInit) {
-                this.callbackOnInit = false;
-                return;
-            }
-
-            const currentViewIndex = this.currentViewIndex;
-            let direction = 0;
-
-            let currentSlideIndex = this.slider.swiperRef.activeIndex;
-            currentSlideIndex = (currentSlideIndex + 2) % 3;
-            if(isNaN(currentSlideIndex)) {
-                currentSlideIndex = currentViewIndex;
-            }
-
-            if (currentSlideIndex - currentViewIndex === 1) {
-                direction = 1;
-            } else if (currentSlideIndex === 0 && currentViewIndex === 2) {
-                direction = 1;
-                this.slider.swiperRef.slideTo(1, 0, false);
-            } else if (currentViewIndex - currentSlideIndex === 1) {
-                direction = -1;
-            } else if (currentSlideIndex === 2 && currentViewIndex === 0) {
-                direction = -1;
-                this.slider.swiperRef.slideTo(3, 0, false);
-            }
-            this.currentViewIndex = currentSlideIndex;
-            this.move(direction);
-        });
+    onSlideChanged(direction: number) {
+        this.currentViewIndex = (this.currentViewIndex + direction + 3) % 3;
+        this.move(direction);
     }
 
     move(direction: number) {

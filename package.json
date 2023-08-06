@@ -1,6 +1,6 @@
 {
     "name": "ionic2-calendar",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "Ionic calendar component",
     "keywords": [
         "Ionic",
@@ -24,7 +24,7 @@
         "@angular/common": "^16.0.0",
         "@angular/core": "^16.0.0",
         "@ionic/angular": "^7.0.0",
-        "swiper": "^9.4.1"
+        "swiper": "^10.1.0"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^16.0.0",
