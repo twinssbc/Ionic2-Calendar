@@ -1,0 +1,124 @@
+<div class="swiper monthview-swiper">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide">
+            <table *ngIf="0===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
+                <thead>
+                    <tr>
+                        <th *ngFor="let dayHeader of views[0].dayHeaders">
+                            <small>{{dayHeader}}</small>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of [0,1,2,3,4,5]">
+                        <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[0].dates[row*7+col])"
+                            [ngClass]="getHighlightClass(views[0].dates[row*7+col])">
+                            <ng-template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
+                                [ngTemplateOutletContext]="{view: views[0], row: row, col: col}">
+                            </ng-template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table *ngIf="0!==currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
+                <thead>
+                    <tr class="text-center">
+                        <th *ngFor="let dayHeader of views[0].dayHeaders">
+                            <small>{{dayHeader}}</small>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of [0,1,2,3,4,5]">
+                        <td *ngFor="let col of [0,1,2,3,4,5,6]">
+                            <ng-template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
+                                [ngTemplateOutletContext]="{view: views[0], row: row, col: col}">
+                            </ng-template>
+                        </td>
+                    <tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="swiper-slide">
+            <table *ngIf="1===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
+                <thead>
+                    <tr>
+                        <th *ngFor="let dayHeader of views[1].dayHeaders">
+                            <small>{{dayHeader}}</small>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of [0,1,2,3,4,5]">
+                        <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[1].dates[row*7+col])"
+                            [ngClass]="getHighlightClass(views[1].dates[row*7+col])">
+                            <ng-template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
+                                [ngTemplateOutletContext]="{view: views[1], row: row, col: col}">
+                            </ng-template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table *ngIf="1!==currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
+                <thead>
+                    <tr class="text-center">
+                        <th *ngFor="let dayHeader of views[1].dayHeaders">
+                            <small>{{dayHeader}}</small>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of [0,1,2,3,4,5]">
+                        <td *ngFor="let col of [0,1,2,3,4,5,6]">
+                            <ng-template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
+                                [ngTemplateOutletContext]="{view: views[1], row: row, col: col}">
+                            </ng-template>
+                        </td>
+                    <tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="swiper-slide">
+            <table *ngIf="2===currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
+                <thead>
+                    <tr>
+                        <th *ngFor="let dayHeader of views[2].dayHeaders">
+                            <small>{{dayHeader}}</small>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of [0,1,2,3,4,5]">
+                        <td *ngFor="let col of [0,1,2,3,4,5,6]" tappable (click)="select(views[2].dates[row*7+col])"
+                            [ngClass]="getHighlightClass(views[2].dates[row*7+col])">
+                            <ng-template [ngTemplateOutlet]="monthviewDisplayEventTemplate"
+                                [ngTemplateOutletContext]="{view: views[2], row: row, col: col}">
+                            </ng-template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table *ngIf="2!==currentViewIndex" class="table table-bordered table-fixed monthview-datetable">
+                <thead>
+                    <tr class="text-center">
+                        <th *ngFor="let dayHeader of views[2].dayHeaders">
+                            <small>{{dayHeader}}</small>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of [0,1,2,3,4,5]">
+                        <td *ngFor="let col of [0,1,2,3,4,5,6]">
+                            <ng-template [ngTemplateOutlet]="monthviewInactiveDisplayEventTemplate"
+                                [ngTemplateOutletContext]="{view: views[2], row: row, col: col}">
+                            </ng-template>
+                        </td>
+                    <tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <ng-template [ngTemplateOutlet]="monthviewEventDetailTemplate"
+        [ngTemplateOutletContext]="{showEventDetail:showEventDetail, selectedDate: selectedDate, noEventsLabel: noEventsLabel}">
+    </ng-template>
+</div>

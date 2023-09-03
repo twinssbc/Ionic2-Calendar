@@ -74,16 +74,16 @@
     z-index: 10000;
 }
 
-.dayview-swiper {
-    height: 100%;
-}
-
 .calendar-cell {
     padding: 0 !important;
     height: 37px;
 }
 
-.dayview-allday-label {
+.weekview-swiper {
+    height: 100%;
+}
+
+.weekview-allday-label {
     float: left;
     height: 100%;
     line-height: 50px;
@@ -92,40 +92,46 @@
     border-left: 1px solid #ddd;
 }
 
-[dir="rtl"] .dayview-allday-label {
-    border-right: 1px solid #ddd;
+[dir="rtl"] .weekview-allday-label {
     float: right;
+    border-right: 1px solid #ddd;
 }
 
-.dayview-allday-content-wrapper {
+.weekview-allday-content-wrapper {
     margin-left: 50px;
     overflow: hidden;
     height: 51px;
 }
 
-[dir="rtl"] .dayview-allday-content-wrapper {
+[dir="rtl"] .weekview-allday-content-wrapper {
     margin-left: 0;
     margin-right: 50px;
 }
 
-.dayview-allday-content-table {
+.weekview-allday-content-table {
     min-height: 50px;
 }
 
-.dayview-allday-content-table td {
+.weekview-allday-content-table td {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
 }
 
-.dayview-allday-table {
+.weekview-header th {
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+.weekview-allday-table {
     height: 50px;
     position: relative;
     border-bottom: 1px solid #ddd;
     font-size: 14px;
 }
 
-.dayview-normal-event-container {
-    margin-top: 50px;
+.weekview-normal-event-container {
+    margin-top: 87px;
     overflow: hidden;
     left: 0;
     right: 0;
@@ -152,13 +158,13 @@
 }
 
 @media (max-width: 750px) {
-    .dayview-allday-label,
+    .weekview-allday-label,
     .calendar-hour-column {
         width: 31px;
         font-size: 12px;
     }
 
-    .dayview-allday-label {
+    .weekview-allday-label {
         padding-top: 4px;
     }
 
@@ -169,15 +175,21 @@
         line-height: 12px;
     }
 
-    .dayview-allday-label {
+    .table > thead > tr > th.weekview-header {
+        padding-left: 0;
+        padding-right: 0;
+        font-size: 12px;
+    }
+
+    .weekview-allday-label {
         line-height: 20px;
     }
 
-    .dayview-allday-content-wrapper {
+    .weekview-allday-content-wrapper {
         margin-left: 31px;
     }
 
-    [dir="rtl"] .dayview-allday-content-wrapper {
+    [dir="rtl"] .weekview-allday-content-wrapper {
         margin-left: 0;
         margin-right: 31px;
     }
