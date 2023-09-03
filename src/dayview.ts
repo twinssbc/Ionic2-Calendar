@@ -81,6 +81,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
     @Output() onTitleChanged = new EventEmitter<string>(true);
 
+    public readonly sliderIndexList = [0, 1, 2];
     public views: IDayView[] = [];
     public currentViewIndex = 0;
     public direction = 0;
