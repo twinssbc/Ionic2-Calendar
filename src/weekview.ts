@@ -88,6 +88,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
     @Output() onDayHeaderSelected = new EventEmitter<ITimeSelected>();
     @Output() onTitleChanged = new EventEmitter<string>();
 
+    public readonly sliderIndexList = [0, 1, 2];
     public views: IWeekView[] = [];
     public currentViewIndex = 0;
     public range!: IRange;
