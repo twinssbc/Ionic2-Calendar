@@ -1,61 +1,73 @@
-import {DatePipe} from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
+    AfterViewInit,
     Component,
-    OnInit,
-    OnChanges,
+    ElementRef,
+    EventEmitter,
     HostBinding,
     Input,
-    Output,
-    EventEmitter,
-    SimpleChanges,
-    ViewEncapsulation,
-    TemplateRef,
-    ElementRef,
-    AfterViewInit, 
+    NgZone,
+    OnChanges,
     OnDestroy,
-    NgZone
+    OnInit,
+    Output,
+    SimpleChanges,
+    TemplateRef,
+    ViewEncapsulation,
 } from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Swiper} from 'swiper';
-import {SwiperOptions} from 'swiper/types';
+import { Subscription } from 'rxjs';
+import { Swiper } from 'swiper';
+import { SwiperOptions } from 'swiper/types';
 
 import {
+    CalendarMode,
+    DefaultCategoryPlacement,
     ICalendarComponent,
+    ICategory,
+    IDateFormatter,
     IDayView,
+    IDayViewAllDayEventSectionTemplateContext,
+    IDayViewCategoryItemTemplateContext,
+    IDayViewNormalEventSectionTemplateContext,
     IDayViewRow,
+    IDisplayAllDayEvent,
     IDisplayEvent,
     IEvent,
-    ITimeSelected,
     IRange,
-    CalendarMode,
-    IDateFormatter,
-    IDisplayAllDayEvent,
-    IDayViewAllDayEventSectionTemplateContext,
-    IDayViewNormalEventSectionTemplateContext
+    ITimeSelected,
 } from './calendar.interface';
-import {CalendarService} from './calendar.service';
+import { CalendarService } from './calendar.service';
 
 @Component({
     selector: 'dayview',
     templateUrl: './dayview.html',
     styleUrls: ['./dayview.css'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
 })
-export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, OnDestroy, AfterViewInit {
-
-    constructor(private calendarService: CalendarService, private elm: ElementRef, private zone: NgZone) {
-    }
+export class DayViewComponent
+    implements ICalendarComponent, OnInit, OnChanges, OnDestroy, AfterViewInit
+{
+    constructor(
+        private calendarService: CalendarService,
+        private elm: ElementRef,
+        private zone: NgZone
+    ) {}
 
     private slider!: Swiper;
 
     @HostBinding('class.dayview') class = true;
 
+    @Input() dayviewCategoryItemTemplate!: TemplateRef<IDayViewCategoryItemTemplateContext>;
     @Input() dayviewAllDayEventTemplate!: TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate!: TemplateRef<IDisplayEvent>;
-    @Input() dayviewAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input() dayviewNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
-    @Input() dayviewInactiveAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input() dayviewInactiveNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input()
+    dayviewAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input()
+    dayviewNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input()
+    dayviewInactiveAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input()
+    dayviewInactiveNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
 
     @Input() formatHourColumn?: string;
     @Input() formatDayTitle?: string;
@@ -75,6 +87,9 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     @Input() endHour!: number;
     @Input() sliderOptions?: SwiperOptions;
     @Input() hourSegments!: number;
+    @Input() dayviewDefaultCategoryName?: string;
+    @Input() dayviewDefaultCategoryPlacement?: DefaultCategoryPlacement;
+    @Input() dayviewShowCategoryView?: boolean;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -101,13 +116,16 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     private formatHourColumnLabel!: (date: Date) => string;
     private hourRange!: number;
 
-    static createDateObjects(startTime: Date, startHour: number, endHour: number, timeInterval: number): IDayViewRow[] {
+    static createDateObjects(
+        startTime: Date,
+        startHour: number,
+        endHour: number,
+        timeInterval: number
+    ): IDayViewRow[] {
         const rows: IDayViewRow[] = [],
             currentHour = 0,
             currentDate = startTime.getDate();
-        let time: Date,
-            hourStep,
-            minStep;
+        let time: Date, hourStep, minStep;
 
         if (timeInterval < 1) {
             hourStep = Math.floor(1 / timeInterval);
@@ -124,20 +142,29 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                 time.setDate(currentDate);
                 rows.push({
                     time,
-                    events: []
+                    events: [],
+                    eventsGroupByCategory: new Map(),
                 });
             }
         }
         return rows;
     }
 
-    private static compareEventByStartOffset(eventA: IDisplayEvent, eventB: IDisplayEvent) {
+    private static compareEventByStartOffset(
+        eventA: IDisplayEvent,
+        eventB: IDisplayEvent
+    ) {
         return eventA.startOffset - eventB.startOffset;
     }
 
-    private static calculateWidth(orderedEvents: IDisplayEvent[], size: number, hourParts: number) {
+    private static calculateWidth(
+        orderedEvents: IDisplayEvent[],
+        size: number,
+        hourParts: number
+    ) {
         const totalSize = size * hourParts,
-            cells: { calculated: boolean; events: IDisplayEvent[]; }[] = new Array(totalSize);
+            cells: { calculated: boolean; events: IDisplayEvent[] }[] =
+                new Array(totalSize);
 
         // sort by position in descending order, the right most columns should be calculated first
         orderedEvents.sort((eventA, eventB) => {
@@ -146,7 +173,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         for (let i = 0; i < totalSize; i += 1) {
             cells[i] = {
                 calculated: false,
-                events: []
+                events: [],
             };
         }
         const len = orderedEvents.length;
@@ -161,22 +188,29 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         let i = 0;
         while (i < len) {
-            let event:IDisplayEvent|undefined = orderedEvents[i];
+            let event: IDisplayEvent | undefined = orderedEvents[i];
             if (!event.overlapNumber) {
                 const overlapNumber = event.position + 1;
                 event.overlapNumber = overlapNumber;
                 const eventQueue = [event];
-                while (event = eventQueue.shift()) {
-                    let index = event.startIndex * hourParts + event.startOffset;
-                    while (index < event.endIndex * hourParts - event.endOffset) {
+                while ((event = eventQueue.shift())) {
+                    let index =
+                        event.startIndex * hourParts + event.startOffset;
+                    while (
+                        index <
+                        event.endIndex * hourParts - event.endOffset
+                    ) {
                         if (!cells[index].calculated) {
                             cells[index].calculated = true;
                             if (cells[index].events) {
-                                const eventCountInCell = cells[index].events.length;
+                                const eventCountInCell =
+                                    cells[index].events.length;
                                 for (let j = 0; j < eventCountInCell; j += 1) {
-                                    const currentEventInCell = cells[index].events[j];
+                                    const currentEventInCell =
+                                        cells[index].events[j];
                                     if (!currentEventInCell.overlapNumber) {
-                                        currentEventInCell.overlapNumber = overlapNumber;
+                                        currentEventInCell.overlapNumber =
+                                            overlapNumber;
                                         eventQueue.push(currentEventInCell);
                                     }
                                 }
@@ -204,17 +238,18 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
             this.formatTitle = this.dateFormatter.formatDayViewTitle;
         } else {
             const datePipe = new DatePipe(this.locale);
-            this.formatTitle = function(date: Date) {
-                return datePipe.transform(date, this.formatDayTitle)||'';
+            this.formatTitle = function (date: Date) {
+                return datePipe.transform(date, this.formatDayTitle) || '';
             };
         }
 
         if (this.dateFormatter && this.dateFormatter.formatDayViewHourColumn) {
-            this.formatHourColumnLabel = this.dateFormatter.formatDayViewHourColumn;
+            this.formatHourColumnLabel =
+                this.dateFormatter.formatDayViewHourColumn;
         } else {
             const datePipe = new DatePipe(this.locale);
-            this.formatHourColumnLabel = function(date: Date) {
-                return datePipe.transform(date, this.formatHourColumn)||'';
+            this.formatHourColumnLabel = function (date: Date) {
+                return datePipe.transform(date, this.formatHourColumn) || '';
             };
         }
 
@@ -223,50 +258,59 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         this.inited = true;
 
-        this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(currentDate => {
-            this.refreshView();
-        });
+        this.currentDateChangedFromParentSubscription =
+            this.calendarService.currentDateChangedFromParent$.subscribe(
+                (currentDate) => {
+                    this.refreshView();
+                }
+            );
 
-        this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
-            this.onDataLoaded();
-        });
+        this.eventSourceChangedSubscription =
+            this.calendarService.eventSourceChanged$.subscribe(() => {
+                this.onDataLoaded();
+            });
 
-        this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
-            if (direction === 1) {
-                this.slider.slideNext();
-            } else if (direction === -1) {
-                this.slider.slidePrev();
-            }
-        });
+        this.slideChangedSubscription =
+            this.calendarService.slideChanged$.subscribe((direction) => {
+                if (direction === 1) {
+                    this.slider.slideNext();
+                } else if (direction === -1) {
+                    this.slider.slidePrev();
+                }
+            });
 
-        this.slideUpdatedSubscription = this.calendarService.slideUpdated$.subscribe(() => {
-            this.slider.update();
-        });
+        this.slideUpdatedSubscription =
+            this.calendarService.slideUpdated$.subscribe(() => {
+                this.slider.update();
+            });
     }
 
     ngAfterViewInit() {
         this.slider = new Swiper('.dayview-swiper', this.sliderOptions);
         let me = this;
-        this.slider.on('slideNextTransitionEnd', function() {
+        this.slider.on('slideNextTransitionEnd', function () {
             me.onSlideChanged(1);
         });
 
-        this.slider.on('slidePrevTransitionEnd', function() {
+        this.slider.on('slidePrevTransitionEnd', function () {
             me.onSlideChanged(-1);
         });
 
-        if(this.dir === 'rtl') {
+        if (this.dir === 'rtl') {
             this.slider.changeLanguageDirection('rtl');
         }
-        
+
         const title = this.getTitle();
         this.onTitleChanged.emit(title);
 
         if (this.scrollToHour > 0) {
-            const hourColumns = this.elm.nativeElement.querySelector('.dayview-normal-event-container').querySelectorAll('.calendar-hour-column');
+            const hourColumns = this.elm.nativeElement
+                .querySelector('.dayview-normal-event-container')
+                .querySelectorAll('.calendar-hour-column');
             const me = this;
             setTimeout(() => {
-                me.initScrollPosition = hourColumns[me.scrollToHour - me.startHour].offsetTop;
+                me.initScrollPosition =
+                    hourColumns[me.scrollToHour - me.startHour].offsetTop;
             }, 50);
         }
     }
@@ -275,9 +319,14 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         if (!this.inited) {
             return;
         }
-        if ((changes['startHour'] || changes['endHour']) && (!changes['startHour'].isFirstChange() || !changes['endHour'].isFirstChange())) {
+        if (
+            (changes['startHour'] || changes['endHour']) &&
+            (!changes['startHour'].isFirstChange() ||
+                !changes['endHour'].isFirstChange())
+        ) {
             this.views = [];
-            this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
+            this.hourRange =
+                (this.endHour - this.startHour) * this.hourSegments;
             this.direction = 0;
             this.refreshView();
             this.hourColumnLabels = this.getHourColumnLabels();
@@ -337,7 +386,10 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         }
 
         this.direction = direction;
-        const adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
+        const adjacentDate = this.calendarService.getAdjacentCalendarDate(
+            this.mode,
+            direction
+        );
         this.calendarService.setCurrentDate(adjacentDate);
         this.refreshView();
         this.direction = 0;
@@ -345,15 +397,24 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
     private getHourColumnLabels(): string[] {
         const hourColumnLabels: string[] = [];
-        for (let hour = 0, length = this.views[0].rows.length; hour < length; hour += 1) {
+        for (
+            let hour = 0, length = this.views[0].rows.length;
+            hour < length;
+            hour += 1
+        ) {
             // handle edge case for DST
-            if (hour === 0 && this.views[0].rows[hour].time.getHours() !== this.startHour) {
+            if (
+                hour === 0 &&
+                this.views[0].rows[hour].time.getHours() !== this.startHour
+            ) {
                 const time = new Date(this.views[0].rows[hour].time);
                 time.setDate(time.getDate() + 1);
                 time.setHours(this.startHour);
                 hourColumnLabels.push(this.formatHourColumnLabel(time));
             } else {
-                hourColumnLabels.push(this.formatHourColumnLabel(this.views[0].rows[hour].time));
+                hourColumnLabels.push(
+                    this.formatHourColumnLabel(this.views[0].rows[hour].time)
+                );
             }
         }
         return hourColumnLabels;
@@ -361,8 +422,15 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
     getViewData(startTime: Date): IDayView {
         return {
-            rows: DayViewComponent.createDateObjects(startTime, this.startHour, this.endHour, this.hourSegments),
-            allDayEvents: []
+            rows: DayViewComponent.createDateObjects(
+                startTime,
+                this.startHour,
+                this.endHour,
+                this.hourSegments
+            ),
+            allDayEvents: [],
+            categories: [],
+            categorizedAllDayEvents: [],
         };
     }
 
@@ -375,7 +443,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         return {
             startTime,
-            endTime
+            endTime,
         };
     }
 
@@ -384,44 +452,76 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
             len = eventSource ? eventSource.length : 0,
             startTime = this.range.startTime,
             endTime = this.range.endTime,
-            utcStartTime = Date.UTC(startTime.getFullYear(), startTime.getMonth(), startTime.getDate()),
-            utcEndTime = Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate()),
+            utcStartTime = Date.UTC(
+                startTime.getFullYear(),
+                startTime.getMonth(),
+                startTime.getDate()
+            ),
+            utcEndTime = Date.UTC(
+                endTime.getFullYear(),
+                endTime.getMonth(),
+                endTime.getDate()
+            ),
             currentViewIndex = this.currentViewIndex,
             rows = this.views[currentViewIndex].rows,
-            allDayEvents: IDisplayAllDayEvent[] = this.views[currentViewIndex].allDayEvents = [],
+            allDayEvents: IDisplayAllDayEvent[] = (this.views[
+                currentViewIndex
+            ].allDayEvents = []),
             oneHour = 3600000,
             eps = 0.016,
             rangeStartRowIndex = this.startHour * this.hourSegments,
             rangeEndRowIndex = this.endHour * this.hourSegments;
+        const allCategories = this.extractAllCategories(eventSource);
+        const displayCategoryMap = new Map<string, ICategory>();
         let normalEventInRange = false;
 
         for (let hour = 0; hour < this.hourRange; hour += 1) {
             rows[hour].events = [];
+            rows[hour].eventsGroupByCategory = undefined;
         }
 
         for (let i = 0; i < len; i += 1) {
             const event = eventSource[i];
             const eventStartTime = event.startTime;
             const eventEndTime = event.endTime;
-            let eventUTCStartTime: number,
-                eventUTCEndTime: number;
+            let eventUTCStartTime: number, eventUTCEndTime: number;
 
             if (event.allDay) {
                 eventUTCStartTime = eventStartTime.getTime();
                 eventUTCEndTime = eventEndTime.getTime();
             } else {
-                eventUTCStartTime = Date.UTC(eventStartTime.getFullYear(), eventStartTime.getMonth(), eventStartTime.getDate());
-                eventUTCEndTime = Date.UTC(eventEndTime.getFullYear(), eventEndTime.getMonth(), eventEndTime.getDate() + 1);
+                eventUTCStartTime = Date.UTC(
+                    eventStartTime.getFullYear(),
+                    eventStartTime.getMonth(),
+                    eventStartTime.getDate()
+                );
+                eventUTCEndTime = Date.UTC(
+                    eventEndTime.getFullYear(),
+                    eventEndTime.getMonth(),
+                    eventEndTime.getDate() + 1
+                );
             }
 
-            if (eventUTCEndTime <= utcStartTime || eventUTCStartTime >= utcEndTime || eventStartTime >= eventEndTime) {
+            if (
+                eventUTCEndTime <= utcStartTime ||
+                eventUTCStartTime >= utcEndTime ||
+                eventStartTime >= eventEndTime
+            ) {
                 continue;
             }
 
+            const categoryId = event.categoryId || this.getDefaultCategoryId();
+            const category = allCategories.find(
+                (c) => c.categoryId === categoryId
+            );
+
             if (event.allDay) {
                 allDayEvents.push({
-                    event
+                    event,
                 });
+                if (category) {
+                    displayCategoryMap.set(categoryId, category);
+                }
             } else {
                 normalEventInRange = true;
 
@@ -429,14 +529,22 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                 if (eventUTCStartTime < utcStartTime) {
                     timeDifferenceStart = 0;
                 } else {
-                    timeDifferenceStart = (eventStartTime.getHours() + eventStartTime.getMinutes() / 60) * this.hourSegments;
+                    timeDifferenceStart =
+                        (eventStartTime.getHours() +
+                            eventStartTime.getMinutes() / 60) *
+                        this.hourSegments;
                 }
 
                 let timeDifferenceEnd: number;
                 if (eventUTCEndTime > utcEndTime) {
-                    timeDifferenceEnd = (utcEndTime - utcStartTime) / oneHour * this.hourSegments;
+                    timeDifferenceEnd =
+                        ((utcEndTime - utcStartTime) / oneHour) *
+                        this.hourSegments;
                 } else {
-                    timeDifferenceEnd = (eventEndTime.getHours() + eventEndTime.getMinutes() / 60) * this.hourSegments;
+                    timeDifferenceEnd =
+                        (eventEndTime.getHours() +
+                            eventEndTime.getMinutes() / 60) *
+                        this.hourSegments;
                 }
 
                 let startIndex = Math.floor(timeDifferenceStart);
@@ -447,12 +555,16 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                     if (startIndex < rangeStartRowIndex) {
                         startOffset = 0;
                     } else {
-                        startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
+                        startOffset = Math.floor(
+                            (timeDifferenceStart - startIndex) * this.hourParts
+                        );
                     }
                     if (endIndex > rangeEndRowIndex) {
                         endOffset = 0;
                     } else {
-                        endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
+                        endOffset = Math.floor(
+                            (endIndex - timeDifferenceEnd) * this.hourParts
+                        );
                     }
                 }
 
@@ -467,13 +579,13 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                 endIndex -= rangeStartRowIndex;
 
                 if (startIndex < endIndex) {
-                    const displayEvent:IDisplayEvent = {
+                    const displayEvent: IDisplayEvent = {
                         event,
                         startIndex,
                         endIndex,
                         startOffset,
                         endOffset,
-                        position:0
+                        position: 0,
                     };
 
                     let eventSet = rows[startIndex].events;
@@ -484,23 +596,121 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                         eventSet.push(displayEvent);
                         rows[startIndex].events = eventSet;
                     }
+
+                    // setup eventsGroupedByCategory
+                    let groupedEvents = rows[startIndex].eventsGroupByCategory;
+                    const categoryId =
+                        displayEvent.event.categoryId ||
+                        this.getDefaultCategoryId();
+                    if (groupedEvents) {
+                        if (Array.isArray(groupedEvents.get(categoryId))) {
+                            groupedEvents.get(categoryId)?.push(displayEvent);
+                        } else {
+                            groupedEvents.set(categoryId, [displayEvent]);
+                        }
+                    } else {
+                        groupedEvents = new Map();
+                        groupedEvents.set(categoryId, [displayEvent]);
+                        rows[startIndex].eventsGroupByCategory = groupedEvents;
+                    }
+
+                    if (category) {
+                        displayCategoryMap.set(categoryId, category);
+                    }
                 }
             }
         }
 
+        // sort and place normal events by calculate display attributes
         if (normalEventInRange) {
-            let orderedEvents: IDisplayEvent[] = [];
-            for (let hour = 0; hour < this.hourRange; hour += 1) {
-                if (rows[hour].events) {
-                    rows[hour].events.sort(DayViewComponent.compareEventByStartOffset);
+            for (const category of allCategories) {
+                let orderedEvents: IDisplayEvent[] = [];
+                const categoryId =
+                    category.categoryId || this.getDefaultCategoryId();
 
-                    orderedEvents = orderedEvents.concat(rows[hour].events);
+                for (let hour = 0; hour < this.hourRange; hour += 1) {
+                    let groupedEvents =
+                        rows[hour].eventsGroupByCategory?.get(categoryId);
+                    if (groupedEvents) {
+                        groupedEvents.sort(
+                            DayViewComponent.compareEventByStartOffset
+                        );
+                        orderedEvents = orderedEvents.concat(groupedEvents);
+                    }
+                }
+
+                if (orderedEvents.length > 0) {
+                    this.placeEvents(orderedEvents);
                 }
             }
-            if (orderedEvents.length > 0) {
-                this.placeEvents(orderedEvents);
+        }
+
+        this.categorizeAllDayEvents(allDayEvents);
+
+        const displayCategories = Array.from(displayCategoryMap.values());
+        this.placeDefaultCategory(displayCategories);
+        this.views[this.currentViewIndex].categories = displayCategories;
+    }
+
+    private extractAllCategories(allEvents: IEvent[]) {
+        const categoryIdCategoryMap = new Map<string, ICategory>();
+        for (const event of allEvents) {
+            const categoryId = event.categoryId || this.getDefaultCategoryId();
+            const categoryName =
+                event.categoryName || this.dayviewDefaultCategoryName || '';
+            if (!categoryIdCategoryMap.has(categoryId)) {
+                categoryIdCategoryMap.set(categoryId, {
+                    categoryId,
+                    categoryName,
+                });
             }
         }
+        return Array.from(categoryIdCategoryMap.values());
+    }
+
+    private placeDefaultCategory(categories: ICategory[]) {
+        const defaultCategory = categories.find(
+            (c) => c.categoryId === this.getDefaultCategoryId()
+        );
+        if (defaultCategory) {
+            categories.splice(categories.indexOf(defaultCategory), 1);
+            if (this.dayviewDefaultCategoryPlacement === 'right') {
+                categories.push(defaultCategory);
+            } else if (this.dayviewDefaultCategoryPlacement === 'left') {
+                categories.unshift(defaultCategory);
+            } else if (this.dayviewDefaultCategoryPlacement === 'collapse') {
+            } else {
+                categories.unshift(defaultCategory);
+            }
+            console.log('placed default category: ', categories);
+        }
+        return categories;
+    }
+
+    categorizeAllDayEvents(allDayEvents: IDisplayAllDayEvent[]) {
+        const categorizedAllDayEvents: IDisplayAllDayEvent[][] = (this.views[
+            this.currentViewIndex
+        ].categorizedAllDayEvents = []);
+        const categoryIdAllDayEventsMap = new Map<string, IEvent[]>();
+
+        for (const event of allDayEvents.map(
+            (displayEvent) => displayEvent.event
+        )) {
+            const categoryId = event.categoryId || this.getDefaultCategoryId();
+            if (categoryIdAllDayEventsMap.get(categoryId)) {
+                categoryIdAllDayEventsMap.get(categoryId)?.push(event);
+            } else {
+                categoryIdAllDayEventsMap.set(categoryId, [event]);
+            }
+        }
+        categoryIdAllDayEventsMap.forEach((events) => {
+            categorizedAllDayEvents.push(events.map((event) => ({ event })));
+        });
+        console.log('categorizedAllDayEvents', categorizedAllDayEvents);
+    }
+
+    getDefaultCategoryId(): string {
+        return this.dayviewDefaultCategoryName || 'uncategorized';
     }
 
     refreshView() {
@@ -520,7 +730,15 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         return this.formatTitle(startingDate);
     }
 
-    select(selectedTime: Date, events: IDisplayEvent[]) {
+    select(row: IDayViewRow, category?: ICategory) {
+        const selectedTime = row.time;
+        let categoryId = undefined;
+        let events = row.events;
+        if (category) {
+            categoryId = category.categoryId || this.getDefaultCategoryId();
+            events = row.eventsGroupByCategory?.get(categoryId!) || [];
+        }
+
         let disabled = false;
         if (this.markDisabled) {
             disabled = this.markDisabled(selectedTime);
@@ -528,14 +746,19 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         this.onTimeSelected.emit({
             selectedTime,
-            events: events.map(e => e.event),
-            disabled
+            category,
+            events: events.map((e) => e.event),
+            disabled,
         });
     }
 
     placeEvents(orderedEvents: IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
-        DayViewComponent.calculateWidth(orderedEvents, this.hourRange, this.hourParts);
+        DayViewComponent.calculateWidth(
+            orderedEvents,
+            this.hourRange,
+            this.hourParts
+        );
     }
 
     placeAllDayEvents(orderedEvents: IDisplayEvent[]) {
@@ -545,7 +768,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     overlap(event1: IDisplayEvent, event2: IDisplayEvent): boolean {
         let earlyEvent = event1,
             lateEvent = event2;
-        if (event1.startIndex > event2.startIndex || (event1.startIndex === event2.startIndex && event1.startOffset > event2.startOffset)) {
+        if (
+            event1.startIndex > event2.startIndex ||
+            (event1.startIndex === event2.startIndex &&
+                event1.startOffset > event2.startOffset)
+        ) {
             earlyEvent = event2;
             lateEvent = event1;
         }
@@ -553,7 +780,10 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         if (earlyEvent.endIndex <= lateEvent.startIndex) {
             return false;
         } else {
-            return !(earlyEvent.endIndex - lateEvent.startIndex === 1 && earlyEvent.endOffset + lateEvent.startOffset >= this.hourParts);
+            return !(
+                earlyEvent.endIndex - lateEvent.startIndex === 1 &&
+                earlyEvent.endOffset + lateEvent.startOffset >= this.hourParts
+            );
         }
     }
 
@@ -562,7 +792,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
             isForbidden: boolean[] = new Array(len);
         let maxColumn = 0,
             col: number;
-
 
         for (let i = 0; i < len; i += 1) {
             for (col = 0; col < maxColumn; col += 1) {

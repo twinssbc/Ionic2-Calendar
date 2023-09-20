@@ -5,6 +5,7 @@
 .table {
   width: 100%;
   max-width: 100%;
+  height: 100%;
   background-color: transparent;
 }
 
@@ -21,7 +22,6 @@
 
 .table > thead > tr > th {
   vertical-align: bottom;
-  border-bottom: 2px solid #ddd;
 }
 
 .table > thead:first-child > tr:first-child > th,
@@ -87,13 +87,36 @@
   display: block !important;
 }
 
+.dayview-category-header {
+  position: relative;
+  font-size: 14px;
+}
+
+.dayview-inactive-category-header{
+  height: 37px;
+}
+
+.dayview-category-header-item {
+  font-weight: normal;
+  height: 37px;
+  border-right: 1px solid #ddd;
+}
+
+.dayview-category-cell-container {
+  display: flex;
+}
+
+.dayview-category-cell-item {
+  margin: auto;
+}
+
 .dayview-allday-label {
   float: left;
   height: 100%;
   line-height: 50px;
   text-align: center;
   width: 50px;
-  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
   border-top: 1px solid #ddd;
 }
 
@@ -113,19 +136,28 @@
   margin-right: 50px;
 }
 
-.dayview-allday-content-table {
-  min-height: 50px;
+.dayview-allday-category-table {
+  border: solid 1px #ddd;
 }
 
-.dayview-allday-content-table td {
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
+.dayview-category-name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dayview-allday-category-cell {
+  border: solid 1px #ddd;
+}
+
+.dayview-allday-content-table {
+  min-height: 50px;
 }
 
 .dayview-allday-table {
   height: 50px;
   position: relative;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd;
   font-size: 14px;
 }
 
@@ -138,6 +170,10 @@
   bottom: 0;
   position: absolute;
   font-size: 14px;
+}
+
+.dayview-categorized-normal-event-container {
+  margin-top: 87px;
 }
 
 .scroll-content {

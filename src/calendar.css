@@ -17,6 +17,10 @@
   text-overflow: ellipsis;
 }
 
+.event-category-detail {
+  margin-left: 10px;
+}
+
 .monthview-eventdetail-timecolumn {
   width: 110px;
   overflow: hidden;

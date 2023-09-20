@@ -10,7 +10,8 @@
                 {{event.endTime|date: 'HH:mm'}}
             </span>
             <span *ngIf="event.allDay" class="monthview-eventdetail-timecolumn">{{allDayLabel}}</span>
-            <span class="event-detail"> | {{event.title}}</span>
+            <span class="event-detail"> | {{event.title}} </span>
+            <span class="event-detail event-category-detail" *ngIf="event.categoryId">[{{event.categoryName}}]</span>
         </ion-item>
         <ion-item *ngIf="selectedDate?.events.length==0">
             <div class="no-events-label">{{noEventsLabel}}</div>
@@ -19,6 +20,9 @@
 </ng-template>
 <ng-template #defaultWeekviewHeaderTemplate let-viewDate="viewDate">
     {{ viewDate.dayHeader }}
+</ng-template>
+<ng-template #defaultCategoryItemTemplate let-category="category">
+    {{ category.categoryName }}
 </ng-template>
 <ng-template #defaultAllDayEventTemplate let-displayEvent="displayEvent">
     <div class="calendar-event-inner">{{displayEvent.event.title}}</div>
@@ -94,6 +98,7 @@
     <dayview *ngSwitchCase="'day'" [formatDayTitle]="formatDayTitle" [formatHourColumn]="formatHourColumn"
         [allDayLabel]="allDayLabel" [hourParts]="hourParts" [hourSegments]="hourSegments" [eventSource]="eventSource"
         [markDisabled]="markDisabled"
+        [dayviewCategoryItemTemplate]="dayviewCategoryItemTemplate||defaultCategoryItemTemplate"
         [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
         [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
         [dayviewAllDayEventSectionTemplate]="dayviewAllDayEventSectionTemplate||defaultDayViewAllDayEventSectionTemplate"
@@ -104,6 +109,9 @@
         [preserveScrollPosition]="preserveScrollPosition" [lockSwipeToPrev]="lockSwipeToPrev"
         [lockSwipeToNext]="lockSwipeToNext" [lockSwipes]="lockSwipes" [startHour]="startHour" [endHour]="endHour"
         [sliderOptions]="sliderOptions" (onRangeChanged)="rangeChanged($event)"
+        [dayviewDefaultCategoryName]="dayviewDefaultCategoryName"
+        [dayviewDefaultCategoryPlacement]="dayviewDefaultCategoryPlacement"
+        [dayviewShowCategoryView]="dayviewShowCategoryView"
         (onEventSelected)="eventSelected($event)" (onTimeSelected)="timeSelected($event)"
         (onTitleChanged)="titleChanged($event)">
     </dayview>

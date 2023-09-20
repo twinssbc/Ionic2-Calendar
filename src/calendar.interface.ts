@@ -1,6 +1,13 @@
 import { EventEmitter, TemplateRef } from '@angular/core';
 
-export interface IEvent {
+export interface ICategory {
+    categoryId?: string;
+    categoryName?: string;
+}
+
+export type DefaultCategoryPlacement = 'left' | 'right' | 'collapse';
+
+export interface IEvent extends ICategory {
     allDay: boolean;
     endTime: Date;
     startTime: Date;
@@ -12,16 +19,21 @@ export interface IRange {
     endTime: Date;
 }
 
-export interface IView {
-}
+export interface IView {}
 
 export interface IDayView extends IView {
     allDayEvents: IDisplayAllDayEvent[];
     rows: IDayViewRow[];
+    categories: ICategory[];
+    categorizedAllDayEvents: IDisplayAllDayEvent[][];
 }
 
+/**
+ * should be renamed to IDayViewCell since row is vertically sliced into pieces of categories
+ */
 export interface IDayViewRow {
     events: IDisplayEvent[];
+    eventsGroupByCategory?: Map<string, IDisplayEvent[]>;
     time: Date;
 }
 
@@ -82,8 +94,8 @@ export interface ICalendarComponent {
     currentViewIndex: number;
     direction: number;
     eventSource: IEvent[];
-    getRange: { (date:Date): IRange; };
-    getViewData: { (date:Date): IView };
+    getRange: { (date: Date): IRange };
+    getViewData: { (date: Date): IView };
     mode: CalendarMode;
     range: IRange;
     views: IView[];
@@ -95,6 +107,7 @@ export interface ITimeSelected {
     events: IEvent[];
     selectedTime: Date;
     disabled: boolean;
+    category?: ICategory;
 }
 
 export interface IMonthViewDisplayEventTemplateContext {
@@ -112,36 +125,41 @@ export interface IMonthViewEventDetailTemplateContext {
 }
 
 export interface IWeekViewAllDayEventSectionTemplateContext {
-    day: IWeekViewDateRow,
-    eventTemplate?: TemplateRef<IDisplayAllDayEvent>,
+    day: IWeekViewDateRow;
+    eventTemplate?: TemplateRef<IDisplayAllDayEvent>;
 }
 
 export interface IWeekViewNormalEventSectionTemplateContext {
-    tm: IWeekViewRow,
-    eventTemplate?: TemplateRef<IDisplayEvent>,
-    hourParts?: number
+    tm: IWeekViewRow;
+    eventTemplate?: TemplateRef<IDisplayEvent>;
+    hourParts?: number;
 }
 
 export interface IDayViewAllDayEventSectionTemplateContext {
-    allDayEvents: IDisplayAllDayEvent[],
-    eventTemplate?: TemplateRef<IDisplayAllDayEvent>
+    allDayEvents: IDisplayAllDayEvent[];
+    eventTemplate?: TemplateRef<IDisplayAllDayEvent>;
 }
 
 export interface IDayViewNormalEventSectionTemplateContext {
-    tm: IDayViewRow,
-    eventTemplate?: TemplateRef<IDisplayEvent>,
-    hourParts?: number
+    tm: IDayViewRow;
+    eventTemplate?: TemplateRef<IDisplayEvent>;
+    hourParts?: number;
+    category?: ICategory;
+}
+
+export interface IDayViewCategoryItemTemplateContext {
+    category: ICategory;
 }
 
 export interface IDateFormatter {
-    formatMonthViewDay?: { (date:Date): string; };
-    formatMonthViewDayHeader?: { (date:Date): string; };
-    formatMonthViewTitle?: { (date:Date): string; };
-    formatWeekViewDayHeader?: { (date:Date): string; };
-    formatWeekViewTitle?: { (date:Date): string; };
-    formatWeekViewHourColumn?: { (date:Date): string; };
-    formatDayViewTitle?: { (date:Date): string; };
-    formatDayViewHourColumn?: { (date:Date): string; };
+    formatMonthViewDay?: { (date: Date): string };
+    formatMonthViewDayHeader?: { (date: Date): string };
+    formatMonthViewTitle?: { (date: Date): string };
+    formatWeekViewDayHeader?: { (date: Date): string };
+    formatWeekViewTitle?: { (date: Date): string };
+    formatWeekViewHourColumn?: { (date: Date): string };
+    formatDayViewTitle?: { (date: Date): string };
+    formatDayViewHourColumn?: { (date: Date): string };
 }
 
 export type CalendarMode = 'day' | 'month' | 'week';
@@ -151,5 +169,5 @@ export type QueryMode = 'local' | 'remote';
 export enum Step {
     QuarterHour = 15,
     HalfHour = 30,
-    Hour = 60
+    Hour = 60,
 }
