@@ -527,6 +527,15 @@ Applied to the all day label in day view
 * calendar-hour-column  
 Applied to the hour column in both weekview and day view
 
+* dayview-category-header (version: 2.2+)  
+Applied to the category section in day view  
+
+* dayview-category-header-item (version: 2.2+)  
+Applied to the category header item in day view  
+
+* dayview-category-cell-item (version: 2.2+)  
+Applied to the category cell item in day view  
+
 
 ## Template Customization  
 
@@ -592,6 +601,16 @@ The template provides customized view for normal event in the weekview
     </ng-template>
 
     <calendar ... [weekviewNormalEventTemplate]="weekviewNormalEventTemplate"></calendar>
+```
+
+* dayviewCategoryItemTemplate (version: 2.2+)  
+The template provides customized view for category item with categoryId and categoryName in the day view  
+``` html
+    <ng-template #defaultCategoryItemTemplate let-category="category">
+        {{ category.categoryName }}
+    </ng-template>
+
+    <calendar ... [dayviewCategoryItemTemplate]="dayviewCategoryItemTemplate"></calendar>
 ```
 
 * dayviewAllDayEventTemplate  
