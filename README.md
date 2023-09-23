@@ -606,7 +606,7 @@ The template provides customized view for normal event in the weekview
 * dayviewCategoryItemTemplate (version: 2.2+)  
 The template provides customized view for category item with categoryId and categoryName in the day view  
 ``` html
-    <ng-template #defaultCategoryItemTemplate let-category="category">
+    <ng-template #dayviewCategoryItemTemplate let-category="category">
         {{ category.categoryName }}
     </ng-template>
 
