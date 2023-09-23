@@ -6,6 +6,8 @@ Ionic calendar directive
 [![GitHub License](https://img.shields.io/npm/l/ionic2-calendar.svg)](https://raw.githubusercontent.com/twinssbc/Ionic2-Calendar/master/LICENSE)
 
 # Demo
+Version 2.0    
+https://stackblitz.com/edit/ionic-calendar-demo-2-2-alpha?file=src%2Fapp%2Fexample.component.html    
 Version 1.0    
 https://stackblitz.com/edit/ionic-calendar-demo-1-0?file=src%2Fapp%2Fexample.component.html    
 Version 0.x    
@@ -135,6 +137,18 @@ export class MyPageModule {}
 
 # Options
 
+* `dayviewShowCategoryView` (version: 2.2+)    
+Determines if show dayview with category    
+Type: `boolean`    
+Default value: `false`    
+* `dayviewDefaultCategoryName` (version: 2.2+)    
+Determines the name of the default category    
+Type: `string`    
+Default value: `'uncategorized'`    
+* `dayviewDefaultCategoryPlacement` (version: 2.2+)    
+Determines whether to display the default category or not or where to place if it shows    
+Type: `'left' | 'right' | 'collapse'`    
+Default value: `'left'`    
 * formatDay    
 The format of the date displayed in the month view.    
 Default value: 'dd'
