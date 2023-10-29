@@ -99,7 +99,7 @@
 .dayview-category-header-item {
   font-weight: normal;
   height: 37px;
-  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
 }
 
 .dayview-category-cell-container {
