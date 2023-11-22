@@ -1,4 +1,4 @@
-import { DatePipe } from "@angular/common";
+import { DatePipe } from '@angular/common';
 import {
     AfterViewInit,
     Component,
@@ -14,10 +14,10 @@ import {
     SimpleChanges,
     TemplateRef,
     ViewEncapsulation,
-} from "@angular/core";
-import { Subscription } from "rxjs";
-import { Swiper } from "swiper";
-import { SwiperOptions } from "swiper/types";
+} from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Swiper } from 'swiper';
+import { SwiperOptions } from 'swiper/types';
 
 import {
     CalendarMode,
@@ -35,13 +35,13 @@ import {
     IEvent,
     IRange,
     ITimeSelected,
-} from "./calendar.interface";
-import { CalendarService } from "./calendar.service";
+} from './calendar.interface';
+import { CalendarService } from './calendar.service';
 
 @Component({
-    selector: "dayview",
-    templateUrl: "./dayview.html",
-    styleUrls: ["./dayview.css"],
+    selector: 'dayview',
+    templateUrl: './dayview.html',
+    styleUrls: ['./dayview.css'],
     encapsulation: ViewEncapsulation.None,
 })
 export class DayViewComponent
@@ -55,10 +55,9 @@ export class DayViewComponent
 
     private slider!: Swiper;
 
-    @HostBinding("class.dayview") class = true;
+    @HostBinding('class.dayview') class = true;
 
-    @Input()
-    dayviewCategoryItemTemplate!: TemplateRef<IDayViewCategoryItemTemplateContext>;
+    @Input() dayviewCategoryItemTemplate!: TemplateRef<IDayViewCategoryItemTemplateContext>;
     @Input() dayviewAllDayEventTemplate!: TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate!: TemplateRef<IDisplayEvent>;
     @Input()
@@ -78,7 +77,7 @@ export class DayViewComponent
     @Input() markDisabled?: (date: Date) => boolean;
     @Input() locale!: string;
     @Input() dateFormatter?: IDateFormatter;
-    @Input() dir = "";
+    @Input() dir = '';
     @Input() scrollToHour = 0;
     @Input() preserveScrollPosition?: boolean;
     @Input() lockSwipeToPrev?: boolean = false;
@@ -101,7 +100,7 @@ export class DayViewComponent
     public views: IDayView[] = [];
     public currentViewIndex = 0;
     public direction = 0;
-    public mode: CalendarMode = "day";
+    public mode: CalendarMode = 'day';
     public range!: IRange;
 
     private inited = false;
@@ -240,7 +239,7 @@ export class DayViewComponent
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatTitle = function (date: Date) {
-                return datePipe.transform(date, this.formatDayTitle) || "";
+                return datePipe.transform(date, this.formatDayTitle) || '';
             };
         }
 
@@ -250,7 +249,7 @@ export class DayViewComponent
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatHourColumnLabel = function (date: Date) {
-                return datePipe.transform(date, this.formatHourColumn) || "";
+                return datePipe.transform(date, this.formatHourColumn) || '';
             };
         }
 
@@ -287,32 +286,32 @@ export class DayViewComponent
     }
 
     ngAfterViewInit() {
-        this.slider = new Swiper(".dayview-swiper", this.sliderOptions);
+        this.slider = new Swiper('.dayview-swiper', this.sliderOptions);
         let me = this;
-        this.slider.on("slideNextTransitionEnd", function () {
+        this.slider.on('slideNextTransitionEnd', function () {
             me.onSlideChanged(1);
         });
 
-        this.slider.on("slidePrevTransitionEnd", function () {
+        this.slider.on('slidePrevTransitionEnd', function () {
             me.onSlideChanged(-1);
         });
 
-        if (this.dir === "rtl") {
-            this.slider.changeLanguageDirection("rtl");
+        if (this.dir === 'rtl') {
+            this.slider.changeLanguageDirection('rtl');
         }
 
         const title = this.getTitle();
         this.onTitleChanged.emit(title);
 
         if (this.scrollToHour > 0) {
+            const hourColumns = this.elm.nativeElement
+                .querySelector('.dayview-normal-event-container')
+                .querySelectorAll('.calendar-hour-column');
+            const me = this;
             setTimeout(() => {
-                const hourColumns = this.elm.nativeElement
-                    .querySelector(".dayview-normal-event-container")
-                    .querySelectorAll(".calendar-hour-column");
-                const me = this;
                 me.initScrollPosition =
                     hourColumns[me.scrollToHour - me.startHour].offsetTop;
-            }, 1000);
+            }, 50);
         }
     }
 
@@ -321,9 +320,9 @@ export class DayViewComponent
             return;
         }
         if (
-            (changes["startHour"] || changes["endHour"]) &&
-            (!changes["startHour"].isFirstChange() ||
-                !changes["endHour"].isFirstChange())
+            (changes['startHour'] || changes['endHour']) &&
+            (!changes['startHour'].isFirstChange() ||
+                !changes['endHour'].isFirstChange())
         ) {
             this.views = [];
             this.hourRange =
@@ -333,22 +332,22 @@ export class DayViewComponent
             this.hourColumnLabels = this.getHourColumnLabels();
         }
 
-        const eventSourceChange = changes["eventSource"];
+        const eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
 
-        const lockSwipeToPrev = changes["lockSwipeToPrev"];
+        const lockSwipeToPrev = changes['lockSwipeToPrev'];
         if (lockSwipeToPrev) {
             this.slider.allowSlidePrev = !lockSwipeToPrev.currentValue;
         }
 
-        const lockSwipeToNext = changes["lockSwipeToNext"];
+        const lockSwipeToNext = changes['lockSwipeToNext'];
         if (lockSwipeToPrev) {
             this.slider.allowSlideNext = !lockSwipeToNext.currentValue;
         }
 
-        const lockSwipes = changes["lockSwipes"];
+        const lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
             this.slider.allowTouchMove = !lockSwipes.currentValue;
         }
@@ -658,7 +657,7 @@ export class DayViewComponent
         for (const event of allEvents) {
             const categoryId = event.categoryId || this.getDefaultCategoryId();
             const categoryName =
-                event.categoryName || this.dayviewDefaultCategoryName || "";
+                event.categoryName || this.dayviewDefaultCategoryName || '';
             if (!categoryIdCategoryMap.has(categoryId)) {
                 categoryIdCategoryMap.set(categoryId, {
                     categoryId,
@@ -675,15 +674,15 @@ export class DayViewComponent
         );
         if (defaultCategory) {
             categories.splice(categories.indexOf(defaultCategory), 1);
-            if (this.dayviewDefaultCategoryPlacement === "right") {
+            if (this.dayviewDefaultCategoryPlacement === 'right') {
                 categories.push(defaultCategory);
-            } else if (this.dayviewDefaultCategoryPlacement === "left") {
+            } else if (this.dayviewDefaultCategoryPlacement === 'left') {
                 categories.unshift(defaultCategory);
-            } else if (this.dayviewDefaultCategoryPlacement === "collapse") {
+            } else if (this.dayviewDefaultCategoryPlacement === 'collapse') {
             } else {
                 categories.unshift(defaultCategory);
             }
-            console.log("placed default category: ", categories);
+            console.log('placed default category: ', categories);
         }
         return categories;
     }
@@ -707,11 +706,11 @@ export class DayViewComponent
         categoryIdAllDayEventsMap.forEach((events) => {
             categorizedAllDayEvents.push(events.map((event) => ({ event })));
         });
-        console.log("categorizedAllDayEvents", categorizedAllDayEvents);
+        console.log('categorizedAllDayEvents', categorizedAllDayEvents);
     }
 
     getDefaultCategoryId(): string {
-        return this.dayviewDefaultCategoryName || "uncategorized";
+        return this.dayviewDefaultCategoryName || 'uncategorized';
     }
 
     refreshView() {
@@ -815,7 +814,7 @@ export class DayViewComponent
             }
         }
 
-        if (this.dir === "rtl") {
+        if (this.dir === 'rtl') {
             for (let i = 0; i < len; i += 1) {
                 events[i].position = maxColumn - 1 - events[i].position;
             }
