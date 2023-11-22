@@ -471,7 +471,7 @@ export class DayViewComponent
             eps = 0.016,
             rangeStartRowIndex = this.startHour * this.hourSegments,
             rangeEndRowIndex = this.endHour * this.hourSegments;
-        const allCategories = this.extractAllCategories(eventSource);
+        const allCategoriesMap = this.extractAllCategories(eventSource);
         const displayCategoryMap = new Map<string, ICategory>();
         let normalEventInRange = false;
 
@@ -511,9 +511,7 @@ export class DayViewComponent
             }
 
             const categoryId = event.categoryId || this.getDefaultCategoryId();
-            const category = allCategories.find(
-                (c) => c.categoryId === categoryId
-            );
+            const category = allCategoriesMap.get(categoryId);
 
             if (event.allDay) {
                 allDayEvents.push({
@@ -598,24 +596,26 @@ export class DayViewComponent
                     }
 
                     // setup eventsGroupedByCategory
-                    let groupedEvents = rows[startIndex].eventsGroupByCategory;
-                    const categoryId =
-                        displayEvent.event.categoryId ||
-                        this.getDefaultCategoryId();
-                    if (groupedEvents) {
-                        if (Array.isArray(groupedEvents.get(categoryId))) {
-                            groupedEvents.get(categoryId)?.push(displayEvent);
+                    if (this.dayviewShowCategoryView) {
+                        let groupedEvents = rows[startIndex].eventsGroupByCategory;
+                        const categoryId =
+                            displayEvent.event.categoryId ||
+                            this.getDefaultCategoryId();
+                        if (groupedEvents) {
+                            if (Array.isArray(groupedEvents.get(categoryId))) {
+                                groupedEvents.get(categoryId)?.push(displayEvent);
+                            } else {
+                                groupedEvents.set(categoryId, [displayEvent]);
+                            }
                         } else {
+                            groupedEvents = new Map();
                             groupedEvents.set(categoryId, [displayEvent]);
+                            rows[startIndex].eventsGroupByCategory = groupedEvents;
                         }
-                    } else {
-                        groupedEvents = new Map();
-                        groupedEvents.set(categoryId, [displayEvent]);
-                        rows[startIndex].eventsGroupByCategory = groupedEvents;
-                    }
-
-                    if (category) {
-                        displayCategoryMap.set(categoryId, category);
+    
+                        if (category) {
+                            displayCategoryMap.set(categoryId, category);
+                        }
                     }
                 }
             }
@@ -623,7 +623,7 @@ export class DayViewComponent
 
         // sort and place normal events by calculate display attributes
         if (normalEventInRange) {
-            for (const category of allCategories) {
+            for (const [,category] of allCategoriesMap) {
                 let orderedEvents: IDisplayEvent[] = [];
                 const categoryId =
                     category.categoryId || this.getDefaultCategoryId();
@@ -652,7 +652,7 @@ export class DayViewComponent
         this.views[this.currentViewIndex].categories = displayCategories;
     }
 
-    private extractAllCategories(allEvents: IEvent[]) {
+    private extractAllCategories(allEvents: IEvent[]): Map<string, ICategory> {
         const categoryIdCategoryMap = new Map<string, ICategory>();
         for (const event of allEvents) {
             const categoryId = event.categoryId || this.getDefaultCategoryId();
@@ -665,7 +665,7 @@ export class DayViewComponent
                 });
             }
         }
-        return Array.from(categoryIdCategoryMap.values());
+        return categoryIdCategoryMap;
     }
 
     private placeDefaultCategory(categories: ICategory[]) {
@@ -682,7 +682,6 @@ export class DayViewComponent
             } else {
                 categories.unshift(defaultCategory);
             }
-            console.log('placed default category: ', categories);
         }
         return categories;
     }
@@ -706,10 +705,9 @@ export class DayViewComponent
         categoryIdAllDayEventsMap.forEach((events) => {
             categorizedAllDayEvents.push(events.map((event) => ({ event })));
         });
-        console.log('categorizedAllDayEvents', categorizedAllDayEvents);
     }
 
-    getDefaultCategoryId(): string {
+    private getDefaultCategoryId(): string {
         return this.dayviewDefaultCategoryName || 'uncategorized';
     }
 
