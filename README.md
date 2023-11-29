@@ -16,6 +16,7 @@ https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html
 
 
 # Dependency
+Version 2.2.x depends on Ionic (>=7.0.0), Angular (>=17.0.0) and Swiper (>=10.1.0).   
 Version 2.1.x depends on Ionic (>=7.0.0), Angular (>=16.0.0) and Swiper (>=10.1.0).   
 Version 2.0.x depends on Ionic (>=7.0.0), Angular (>=16.0.0) and Swiper (>=8.4.6, <9.0.0).   
 Version 1.0.x depends on Ionic (>=6.1.9), Angular (>=15.1.2) and Swiper (>=8.4.6, <9.0.0).   
