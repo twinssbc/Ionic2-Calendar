@@ -1,17 +1,13 @@
 import { EventEmitter, TemplateRef } from '@angular/core';
 
-export interface ICategory {
-    categoryId?: string;
-    categoryName?: string;
-}
-
 export type DefaultCategoryPlacement = 'left' | 'right' | 'collapse';
 
-export interface IEvent extends ICategory {
+export interface IEvent  {
     allDay: boolean;
     endTime: Date;
     startTime: Date;
     title: string;
+    category?: string;
 }
 
 export interface IRange {
@@ -24,7 +20,7 @@ export interface IView {}
 export interface IDayView extends IView {
     allDayEvents: IDisplayAllDayEvent[];
     rows: IDayViewRow[];
-    categories: ICategory[];
+    categories: string[];
     categorizedAllDayEvents: IDisplayAllDayEvent[][];
 }
 
@@ -107,7 +103,7 @@ export interface ITimeSelected {
     events: IEvent[];
     selectedTime: Date;
     disabled: boolean;
-    category?: ICategory;
+    category?: string;
 }
 
 export interface IMonthViewDisplayEventTemplateContext {
@@ -144,11 +140,11 @@ export interface IDayViewNormalEventSectionTemplateContext {
     tm: IDayViewRow;
     eventTemplate?: TemplateRef<IDisplayEvent>;
     hourParts?: number;
-    category?: ICategory;
+    category?: string;
 }
 
 export interface IDayViewCategoryItemTemplateContext {
-    category: ICategory;
+    category: string;
 }
 
 export interface IDateFormatter {

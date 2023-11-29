@@ -142,14 +142,10 @@ export class MyPageModule {}
 Determines if show dayview with category    
 Type: `boolean`    
 Default value: `false`    
-* `dayviewDefaultCategoryName` (version: 2.2+)    
-Determines the name of the default category    
+* `dayviewCategorySource` (version: 2.2+)    
+Determines the source the category names so that events with corresponding category will display accordingly. If events are not assigned with category, they will NOT be placed in the category view.
 Type: `string`    
 Default value: `'uncategorized'`    
-* `dayviewDefaultCategoryPlacement` (version: 2.2+)    
-Determines whether to display the default category or not or where to place if it shows    
-Type: `'left' | 'right' | 'collapse'`    
-Default value: `'left'`    
 * formatDay    
 The format of the date displayed in the month view.    
 Default value: 'dd'

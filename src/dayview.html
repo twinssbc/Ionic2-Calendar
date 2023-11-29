@@ -92,7 +92,7 @@
                       <tr>
                         <ng-container *ngIf="sliderIndex === currentViewIndex">
                           <ng-container *ngFor="let allDayEventsCategory of views[sliderIndex].categorizedAllDayEvents">
-                            <td *ngIf="allDayEventsCategory[0]?.event?.categoryId === category.categoryId"
+                            <td *ngIf="allDayEventsCategory[0]?.event?.category === category"
                               class="calendar-cell" [ngClass]="{'calendar-event-wrap': allDayEventsCategory.length > 0}"
                               [ngStyle]="{height: 25 * allDayEventsCategory.length + 'px'}">
                               <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
@@ -133,7 +133,7 @@
                 <td *ngFor="let category of views[sliderIndex].categories" class="calendar-cell"
                   (click)="select(row, category)" tappable>
                   <ng-container *ngFor="let categorizedEvents of row.eventsGroupByCategory | keyvalue">
-                    <ng-template *ngIf="categorizedEvents.key === category.categoryId"
+                    <ng-template *ngIf="categorizedEvents.key === category"
                       [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
                       [ngTemplateOutletContext]="{tm: { events: categorizedEvents.value, time: row.time }, hourParts, category, eventTemplate: dayviewNormalEventTemplate}">
                     </ng-template>

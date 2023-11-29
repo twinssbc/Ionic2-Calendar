@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe } from "@angular/common";
 import {
     AfterViewInit,
     Component,
@@ -14,16 +14,15 @@ import {
     SimpleChanges,
     TemplateRef,
     ViewEncapsulation,
-} from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Swiper } from 'swiper';
-import { SwiperOptions } from 'swiper/types';
+} from "@angular/core";
+import { Subscription } from "rxjs";
+import { Swiper } from "swiper";
+import { SwiperOptions } from "swiper/types";
 
 import {
     CalendarMode,
     DefaultCategoryPlacement,
     ICalendarComponent,
-    ICategory,
     IDateFormatter,
     IDayView,
     IDayViewAllDayEventSectionTemplateContext,
@@ -35,13 +34,13 @@ import {
     IEvent,
     IRange,
     ITimeSelected,
-} from './calendar.interface';
-import { CalendarService } from './calendar.service';
+} from "./calendar.interface";
+import { CalendarService } from "./calendar.service";
 
 @Component({
-    selector: 'dayview',
-    templateUrl: './dayview.html',
-    styleUrls: ['./dayview.css'],
+    selector: "dayview",
+    templateUrl: "./dayview.html",
+    styleUrls: ["./dayview.css"],
     encapsulation: ViewEncapsulation.None,
 })
 export class DayViewComponent
@@ -55,9 +54,10 @@ export class DayViewComponent
 
     private slider!: Swiper;
 
-    @HostBinding('class.dayview') class = true;
+    @HostBinding("class.dayview") class = true;
 
-    @Input() dayviewCategoryItemTemplate!: TemplateRef<IDayViewCategoryItemTemplateContext>;
+    @Input()
+    dayviewCategoryItemTemplate!: TemplateRef<IDayViewCategoryItemTemplateContext>;
     @Input() dayviewAllDayEventTemplate!: TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate!: TemplateRef<IDisplayEvent>;
     @Input()
@@ -77,7 +77,7 @@ export class DayViewComponent
     @Input() markDisabled?: (date: Date) => boolean;
     @Input() locale!: string;
     @Input() dateFormatter?: IDateFormatter;
-    @Input() dir = '';
+    @Input() dir = "";
     @Input() scrollToHour = 0;
     @Input() preserveScrollPosition?: boolean;
     @Input() lockSwipeToPrev?: boolean = false;
@@ -87,7 +87,7 @@ export class DayViewComponent
     @Input() endHour!: number;
     @Input() sliderOptions?: SwiperOptions;
     @Input() hourSegments!: number;
-    @Input() dayviewDefaultCategoryName?: string;
+    @Input() dayviewCategorySource?: string[];
     @Input() dayviewDefaultCategoryPlacement?: DefaultCategoryPlacement;
     @Input() dayviewShowCategoryView?: boolean;
 
@@ -100,7 +100,7 @@ export class DayViewComponent
     public views: IDayView[] = [];
     public currentViewIndex = 0;
     public direction = 0;
-    public mode: CalendarMode = 'day';
+    public mode: CalendarMode = "day";
     public range!: IRange;
 
     private inited = false;
@@ -239,7 +239,7 @@ export class DayViewComponent
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatTitle = function (date: Date) {
-                return datePipe.transform(date, this.formatDayTitle) || '';
+                return datePipe.transform(date, this.formatDayTitle) || "";
             };
         }
 
@@ -249,7 +249,7 @@ export class DayViewComponent
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatHourColumnLabel = function (date: Date) {
-                return datePipe.transform(date, this.formatHourColumn) || '';
+                return datePipe.transform(date, this.formatHourColumn) || "";
             };
         }
 
@@ -286,18 +286,18 @@ export class DayViewComponent
     }
 
     ngAfterViewInit() {
-        this.slider = new Swiper('.dayview-swiper', this.sliderOptions);
+        this.slider = new Swiper(".dayview-swiper", this.sliderOptions);
         let me = this;
-        this.slider.on('slideNextTransitionEnd', function () {
+        this.slider.on("slideNextTransitionEnd", function () {
             me.onSlideChanged(1);
         });
 
-        this.slider.on('slidePrevTransitionEnd', function () {
+        this.slider.on("slidePrevTransitionEnd", function () {
             me.onSlideChanged(-1);
         });
 
-        if (this.dir === 'rtl') {
-            this.slider.changeLanguageDirection('rtl');
+        if (this.dir === "rtl") {
+            this.slider.changeLanguageDirection("rtl");
         }
 
         const title = this.getTitle();
@@ -305,8 +305,8 @@ export class DayViewComponent
 
         if (this.scrollToHour > 0) {
             const hourColumns = this.elm.nativeElement
-                .querySelector('.dayview-normal-event-container')
-                .querySelectorAll('.calendar-hour-column');
+                .querySelector(".dayview-normal-event-container")
+                .querySelectorAll(".calendar-hour-column");
             const me = this;
             setTimeout(() => {
                 me.initScrollPosition =
@@ -320,9 +320,9 @@ export class DayViewComponent
             return;
         }
         if (
-            (changes['startHour'] || changes['endHour']) &&
-            (!changes['startHour'].isFirstChange() ||
-                !changes['endHour'].isFirstChange())
+            (changes["startHour"] || changes["endHour"]) &&
+            (!changes["startHour"].isFirstChange() ||
+                !changes["endHour"].isFirstChange())
         ) {
             this.views = [];
             this.hourRange =
@@ -332,22 +332,22 @@ export class DayViewComponent
             this.hourColumnLabels = this.getHourColumnLabels();
         }
 
-        const eventSourceChange = changes['eventSource'];
+        const eventSourceChange = changes["eventSource"];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
 
-        const lockSwipeToPrev = changes['lockSwipeToPrev'];
+        const lockSwipeToPrev = changes["lockSwipeToPrev"];
         if (lockSwipeToPrev) {
             this.slider.allowSlidePrev = !lockSwipeToPrev.currentValue;
         }
 
-        const lockSwipeToNext = changes['lockSwipeToNext'];
+        const lockSwipeToNext = changes["lockSwipeToNext"];
         if (lockSwipeToPrev) {
             this.slider.allowSlideNext = !lockSwipeToNext.currentValue;
         }
 
-        const lockSwipes = changes['lockSwipes'];
+        const lockSwipes = changes["lockSwipes"];
         if (lockSwipes) {
             this.slider.allowTouchMove = !lockSwipes.currentValue;
         }
@@ -471,8 +471,6 @@ export class DayViewComponent
             eps = 0.016,
             rangeStartRowIndex = this.startHour * this.hourSegments,
             rangeEndRowIndex = this.endHour * this.hourSegments;
-        const allCategoriesMap = this.extractAllCategories(eventSource);
-        const displayCategoryMap = new Map<string, ICategory>();
         let normalEventInRange = false;
 
         for (let hour = 0; hour < this.hourRange; hour += 1) {
@@ -510,16 +508,10 @@ export class DayViewComponent
                 continue;
             }
 
-            const categoryId = event.categoryId || this.getDefaultCategoryId();
-            const category = allCategoriesMap.get(categoryId);
-
             if (event.allDay) {
                 allDayEvents.push({
                     event,
                 });
-                if (category) {
-                    displayCategoryMap.set(categoryId, category);
-                }
             } else {
                 normalEventInRange = true;
 
@@ -596,25 +588,30 @@ export class DayViewComponent
                     }
 
                     // setup eventsGroupedByCategory
-                    if (this.dayviewShowCategoryView) {
-                        let groupedEvents = rows[startIndex].eventsGroupByCategory;
-                        const categoryId =
-                            displayEvent.event.categoryId ||
-                            this.getDefaultCategoryId();
+                    if (
+                        this.dayviewShowCategoryView &&
+                        this.dayviewCategorySource &&
+                        event.category
+                    ) {
+                        let groupedEvents =
+                            rows[startIndex].eventsGroupByCategory;
                         if (groupedEvents) {
-                            if (Array.isArray(groupedEvents.get(categoryId))) {
-                                groupedEvents.get(categoryId)?.push(displayEvent);
+                            if (
+                                Array.isArray(groupedEvents.get(event.category))
+                            ) {
+                                groupedEvents
+                                    .get(event.category)
+                                    ?.push(displayEvent);
                             } else {
-                                groupedEvents.set(categoryId, [displayEvent]);
+                                groupedEvents.set(event.category, [
+                                    displayEvent,
+                                ]);
                             }
                         } else {
                             groupedEvents = new Map();
-                            groupedEvents.set(categoryId, [displayEvent]);
-                            rows[startIndex].eventsGroupByCategory = groupedEvents;
-                        }
-    
-                        if (category) {
-                            displayCategoryMap.set(categoryId, category);
+                            groupedEvents.set(event.category, [displayEvent]);
+                            rows[startIndex].eventsGroupByCategory =
+                                groupedEvents;
                         }
                     }
                 }
@@ -623,67 +620,33 @@ export class DayViewComponent
 
         // sort and place normal events by calculate display attributes
         if (normalEventInRange) {
-            for (const [,category] of allCategoriesMap) {
-                let orderedEvents: IDisplayEvent[] = [];
-                const categoryId =
-                    category.categoryId || this.getDefaultCategoryId();
+            if (this.dayviewShowCategoryView && this.dayviewCategorySource) {
+                for (const category of this.dayviewCategorySource) {
+                    let orderedEvents: IDisplayEvent[] = [];
 
-                for (let hour = 0; hour < this.hourRange; hour += 1) {
-                    let groupedEvents =
-                        rows[hour].eventsGroupByCategory?.get(categoryId);
-                    if (groupedEvents) {
-                        groupedEvents.sort(
-                            DayViewComponent.compareEventByStartOffset
-                        );
-                        orderedEvents = orderedEvents.concat(groupedEvents);
+                    for (let hour = 0; hour < this.hourRange; hour += 1) {
+                        let groupedEvents =
+                            rows[hour].eventsGroupByCategory?.get(category);
+                        if (groupedEvents) {
+                            groupedEvents.sort(
+                                DayViewComponent.compareEventByStartOffset
+                            );
+                            orderedEvents = orderedEvents.concat(groupedEvents);
+                        }
+                    }
+
+                    if (orderedEvents.length > 0) {
+                        this.placeEvents(orderedEvents);
                     }
                 }
-
-                if (orderedEvents.length > 0) {
-                    this.placeEvents(orderedEvents);
-                }
             }
         }
 
-        this.categorizeAllDayEvents(allDayEvents);
-
-        const displayCategories = Array.from(displayCategoryMap.values());
-        this.placeDefaultCategory(displayCategories);
-        this.views[this.currentViewIndex].categories = displayCategories;
-    }
-
-    private extractAllCategories(allEvents: IEvent[]): Map<string, ICategory> {
-        const categoryIdCategoryMap = new Map<string, ICategory>();
-        for (const event of allEvents) {
-            const categoryId = event.categoryId || this.getDefaultCategoryId();
-            const categoryName =
-                event.categoryName || this.dayviewDefaultCategoryName || '';
-            if (!categoryIdCategoryMap.has(categoryId)) {
-                categoryIdCategoryMap.set(categoryId, {
-                    categoryId,
-                    categoryName,
-                });
-            }
+        if (this.dayviewShowCategoryView && this.dayviewCategorySource) {
+            this.categorizeAllDayEvents(allDayEvents);
+            this.views[this.currentViewIndex].categories =
+                this.dayviewCategorySource;
         }
-        return categoryIdCategoryMap;
-    }
-
-    private placeDefaultCategory(categories: ICategory[]) {
-        const defaultCategory = categories.find(
-            (c) => c.categoryId === this.getDefaultCategoryId()
-        );
-        if (defaultCategory) {
-            categories.splice(categories.indexOf(defaultCategory), 1);
-            if (this.dayviewDefaultCategoryPlacement === 'right') {
-                categories.push(defaultCategory);
-            } else if (this.dayviewDefaultCategoryPlacement === 'left') {
-                categories.unshift(defaultCategory);
-            } else if (this.dayviewDefaultCategoryPlacement === 'collapse') {
-            } else {
-                categories.unshift(defaultCategory);
-            }
-        }
-        return categories;
     }
 
     categorizeAllDayEvents(allDayEvents: IDisplayAllDayEvent[]) {
@@ -695,20 +658,17 @@ export class DayViewComponent
         for (const event of allDayEvents.map(
             (displayEvent) => displayEvent.event
         )) {
-            const categoryId = event.categoryId || this.getDefaultCategoryId();
-            if (categoryIdAllDayEventsMap.get(categoryId)) {
-                categoryIdAllDayEventsMap.get(categoryId)?.push(event);
-            } else {
-                categoryIdAllDayEventsMap.set(categoryId, [event]);
+            if (event.category) {
+                if (categoryIdAllDayEventsMap.get(event.category)) {
+                    categoryIdAllDayEventsMap.get(event.category)?.push(event);
+                } else {
+                    categoryIdAllDayEventsMap.set(event.category, [event]);
+                }
             }
         }
         categoryIdAllDayEventsMap.forEach((events) => {
             categorizedAllDayEvents.push(events.map((event) => ({ event })));
         });
-    }
-
-    private getDefaultCategoryId(): string {
-        return this.dayviewDefaultCategoryName || 'uncategorized';
     }
 
     refreshView() {
@@ -728,13 +688,11 @@ export class DayViewComponent
         return this.formatTitle(startingDate);
     }
 
-    select(row: IDayViewRow, category?: ICategory) {
+    select(row: IDayViewRow, category?: string) {
         const selectedTime = row.time;
-        let categoryId = undefined;
         let events = row.events;
         if (category) {
-            categoryId = category.categoryId || this.getDefaultCategoryId();
-            events = row.eventsGroupByCategory?.get(categoryId!) || [];
+            events = row.eventsGroupByCategory?.get(category) || [];
         }
 
         let disabled = false;
@@ -812,7 +770,7 @@ export class DayViewComponent
             }
         }
 
-        if (this.dir === 'rtl') {
+        if (this.dir === "rtl") {
             for (let i = 0; i < len; i += 1) {
                 events[i].position = maxColumn - 1 - events[i].position;
             }

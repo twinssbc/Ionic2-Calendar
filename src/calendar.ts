@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { CalendarService } from './calendar.service';
 import SwiperCore from 'swiper';
 import { IonicSlides } from '@ionic/angular';
-import { IEvent, CalendarMode, QueryMode, Step, IMonthViewDisplayEventTemplateContext, IMonthViewEventDetailTemplateContext, IDisplayWeekViewHeader, IDisplayAllDayEvent, IDisplayEvent, IWeekViewAllDayEventSectionTemplateContext, IDayViewAllDayEventSectionTemplateContext, IWeekViewNormalEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext, IDateFormatter, IRange, ITimeSelected, DefaultCategoryPlacement, ICategory } from './calendar.interface';
+import { IEvent, CalendarMode, QueryMode, Step, IMonthViewDisplayEventTemplateContext, IMonthViewEventDetailTemplateContext, IDisplayWeekViewHeader, IDisplayAllDayEvent, IDisplayEvent, IWeekViewAllDayEventSectionTemplateContext, IDayViewAllDayEventSectionTemplateContext, IWeekViewNormalEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext, IDateFormatter, IRange, ITimeSelected, DefaultCategoryPlacement } from './calendar.interface';
 
 SwiperCore.use([IonicSlides]);
 
@@ -55,7 +55,7 @@ export class CalendarComponent implements OnInit {
     @Input() weekviewHeaderTemplate?:TemplateRef<IDisplayWeekViewHeader>;
     @Input() weekviewAllDayEventTemplate?:TemplateRef<IDisplayAllDayEvent>;
     @Input() weekviewNormalEventTemplate?:TemplateRef<IDisplayEvent>;
-    @Input() dayviewCategoryItemTemplate?: TemplateRef<ICategory>;
+    @Input() dayviewCategoryItemTemplate?: TemplateRef<string>;
     @Input() dayviewAllDayEventTemplate?:TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate?:TemplateRef<IDisplayEvent>;
     @Input() weekviewAllDayEventSectionTemplate?:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
@@ -77,7 +77,7 @@ export class CalendarComponent implements OnInit {
     @Input() startHour:number = 0;
     @Input() endHour:number = 24;
     @Input() sliderOptions:any;
-    @Input() dayviewDefaultCategoryName:string = "";
+    @Input() dayviewCategorySource:string[] = [];
     @Input() dayviewDefaultCategoryPlacement:DefaultCategoryPlacement = "left";
     @Input() dayviewShowCategoryView:boolean = false;
 
