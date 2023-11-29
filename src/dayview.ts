@@ -87,7 +87,7 @@ export class DayViewComponent
     @Input() endHour!: number;
     @Input() sliderOptions?: SwiperOptions;
     @Input() hourSegments!: number;
-    @Input() dayviewCategorySource?: string[];
+    @Input() dayviewCategorySource?: Set<string>;
     @Input() dayviewDefaultCategoryPlacement?: DefaultCategoryPlacement;
     @Input() dayviewShowCategoryView?: boolean;
 
@@ -467,6 +467,7 @@ export class DayViewComponent
             allDayEvents: IDisplayAllDayEvent[] = (this.views[
                 currentViewIndex
             ].allDayEvents = []),
+            displayCategorySet = new Set<string>(),
             oneHour = 3600000,
             eps = 0.016,
             rangeStartRowIndex = this.startHour * this.hourSegments,
@@ -512,6 +513,13 @@ export class DayViewComponent
                 allDayEvents.push({
                     event,
                 });
+                if (
+                    event.category &&
+                    this.dayviewCategorySource &&
+                    this.dayviewCategorySource.has(event.category)
+                ) {
+                    displayCategorySet.add(event.category);
+                }
             } else {
                 normalEventInRange = true;
 
@@ -613,6 +621,9 @@ export class DayViewComponent
                             rows[startIndex].eventsGroupByCategory =
                                 groupedEvents;
                         }
+                        if (this.dayviewCategorySource.has(event.category)) {
+                            displayCategorySet.add(event.category);
+                        }
                     }
                 }
             }
@@ -644,8 +655,9 @@ export class DayViewComponent
 
         if (this.dayviewShowCategoryView && this.dayviewCategorySource) {
             this.categorizeAllDayEvents(allDayEvents);
-            this.views[this.currentViewIndex].categories =
-                this.dayviewCategorySource;
+            this.views[this.currentViewIndex].categories = [
+                ...displayCategorySet,
+            ];
         }
     }
 

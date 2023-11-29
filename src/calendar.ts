@@ -77,7 +77,7 @@ export class CalendarComponent implements OnInit {
     @Input() startHour:number = 0;
     @Input() endHour:number = 24;
     @Input() sliderOptions:any;
-    @Input() dayviewCategorySource:string[] = [];
+    @Input() dayviewCategorySource:Set<string> = new Set();
     @Input() dayviewDefaultCategoryPlacement:DefaultCategoryPlacement = "left";
     @Input() dayviewShowCategoryView:boolean = false;
 
