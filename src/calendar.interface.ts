@@ -1,7 +1,5 @@
 import { EventEmitter, TemplateRef } from '@angular/core';
 
-export type DefaultCategoryPlacement = 'left' | 'right' | 'collapse';
-
 export interface IEvent  {
     allDay: boolean;
     endTime: Date;
@@ -25,7 +23,7 @@ export interface IDayView extends IView {
 }
 
 /**
- * should be renamed to IDayViewCell since row is vertically sliced into pieces of categories
+ * should be renamed to IDayViewCell since row could be vertically sliced into pieces of categories
  */
 export interface IDayViewRow {
     events: IDisplayEvent[];

@@ -1,4 +1,4 @@
-import { DatePipe } from "@angular/common";
+import { DatePipe } from '@angular/common';
 import {
     AfterViewInit,
     Component,
@@ -14,14 +14,13 @@ import {
     SimpleChanges,
     TemplateRef,
     ViewEncapsulation,
-} from "@angular/core";
-import { Subscription } from "rxjs";
-import { Swiper } from "swiper";
-import { SwiperOptions } from "swiper/types";
+} from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Swiper } from 'swiper';
+import { SwiperOptions } from 'swiper/types';
 
 import {
     CalendarMode,
-    DefaultCategoryPlacement,
     ICalendarComponent,
     IDateFormatter,
     IDayView,
@@ -34,13 +33,13 @@ import {
     IEvent,
     IRange,
     ITimeSelected,
-} from "./calendar.interface";
-import { CalendarService } from "./calendar.service";
+} from './calendar.interface';
+import { CalendarService } from './calendar.service';
 
 @Component({
-    selector: "dayview",
-    templateUrl: "./dayview.html",
-    styleUrls: ["./dayview.css"],
+    selector: 'dayview',
+    templateUrl: './dayview.html',
+    styleUrls: ['./dayview.css'],
     encapsulation: ViewEncapsulation.None,
 })
 export class DayViewComponent
@@ -54,7 +53,7 @@ export class DayViewComponent
 
     private slider!: Swiper;
 
-    @HostBinding("class.dayview") class = true;
+    @HostBinding('class.dayview') class = true;
 
     @Input()
     dayviewCategoryItemTemplate!: TemplateRef<IDayViewCategoryItemTemplateContext>;
@@ -77,7 +76,7 @@ export class DayViewComponent
     @Input() markDisabled?: (date: Date) => boolean;
     @Input() locale!: string;
     @Input() dateFormatter?: IDateFormatter;
-    @Input() dir = "";
+    @Input() dir = '';
     @Input() scrollToHour = 0;
     @Input() preserveScrollPosition?: boolean;
     @Input() lockSwipeToPrev?: boolean = false;
@@ -88,7 +87,6 @@ export class DayViewComponent
     @Input() sliderOptions?: SwiperOptions;
     @Input() hourSegments!: number;
     @Input() dayviewCategorySource?: Set<string>;
-    @Input() dayviewDefaultCategoryPlacement?: DefaultCategoryPlacement;
     @Input() dayviewShowCategoryView?: boolean;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
@@ -100,7 +98,7 @@ export class DayViewComponent
     public views: IDayView[] = [];
     public currentViewIndex = 0;
     public direction = 0;
-    public mode: CalendarMode = "day";
+    public mode: CalendarMode = 'day';
     public range!: IRange;
 
     private inited = false;
@@ -239,7 +237,7 @@ export class DayViewComponent
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatTitle = function (date: Date) {
-                return datePipe.transform(date, this.formatDayTitle) || "";
+                return datePipe.transform(date, this.formatDayTitle) || '';
             };
         }
 
@@ -249,7 +247,7 @@ export class DayViewComponent
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatHourColumnLabel = function (date: Date) {
-                return datePipe.transform(date, this.formatHourColumn) || "";
+                return datePipe.transform(date, this.formatHourColumn) || '';
             };
         }
 
@@ -286,18 +284,18 @@ export class DayViewComponent
     }
 
     ngAfterViewInit() {
-        this.slider = new Swiper(".dayview-swiper", this.sliderOptions);
+        this.slider = new Swiper('.dayview-swiper', this.sliderOptions);
         let me = this;
-        this.slider.on("slideNextTransitionEnd", function () {
+        this.slider.on('slideNextTransitionEnd', function () {
             me.onSlideChanged(1);
         });
 
-        this.slider.on("slidePrevTransitionEnd", function () {
+        this.slider.on('slidePrevTransitionEnd', function () {
             me.onSlideChanged(-1);
         });
 
-        if (this.dir === "rtl") {
-            this.slider.changeLanguageDirection("rtl");
+        if (this.dir === 'rtl') {
+            this.slider.changeLanguageDirection('rtl');
         }
 
         const title = this.getTitle();
@@ -305,8 +303,8 @@ export class DayViewComponent
 
         if (this.scrollToHour > 0) {
             const hourColumns = this.elm.nativeElement
-                .querySelector(".dayview-normal-event-container")
-                .querySelectorAll(".calendar-hour-column");
+                .querySelector('.dayview-normal-event-container')
+                .querySelectorAll('.calendar-hour-column');
             const me = this;
             setTimeout(() => {
                 me.initScrollPosition =
@@ -320,9 +318,9 @@ export class DayViewComponent
             return;
         }
         if (
-            (changes["startHour"] || changes["endHour"]) &&
-            (!changes["startHour"].isFirstChange() ||
-                !changes["endHour"].isFirstChange())
+            (changes['startHour'] || changes['endHour']) &&
+            (!changes['startHour'].isFirstChange() ||
+                !changes['endHour'].isFirstChange())
         ) {
             this.views = [];
             this.hourRange =
@@ -332,22 +330,22 @@ export class DayViewComponent
             this.hourColumnLabels = this.getHourColumnLabels();
         }
 
-        const eventSourceChange = changes["eventSource"];
+        const eventSourceChange = changes['eventSource'];
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
 
-        const lockSwipeToPrev = changes["lockSwipeToPrev"];
+        const lockSwipeToPrev = changes['lockSwipeToPrev'];
         if (lockSwipeToPrev) {
             this.slider.allowSlidePrev = !lockSwipeToPrev.currentValue;
         }
 
-        const lockSwipeToNext = changes["lockSwipeToNext"];
+        const lockSwipeToNext = changes['lockSwipeToNext'];
         if (lockSwipeToPrev) {
             this.slider.allowSlideNext = !lockSwipeToNext.currentValue;
         }
 
-        const lockSwipes = changes["lockSwipes"];
+        const lockSwipes = changes['lockSwipes'];
         if (lockSwipes) {
             this.slider.allowTouchMove = !lockSwipes.currentValue;
         }
@@ -782,7 +780,7 @@ export class DayViewComponent
             }
         }
 
-        if (this.dir === "rtl") {
+        if (this.dir === 'rtl') {
             for (let i = 0; i < len; i += 1) {
                 events[i].position = maxColumn - 1 - events[i].position;
             }

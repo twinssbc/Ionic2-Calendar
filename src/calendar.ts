@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { CalendarService } from './calendar.service';
 import SwiperCore from 'swiper';
 import { IonicSlides } from '@ionic/angular';
-import { IEvent, CalendarMode, QueryMode, Step, IMonthViewDisplayEventTemplateContext, IMonthViewEventDetailTemplateContext, IDisplayWeekViewHeader, IDisplayAllDayEvent, IDisplayEvent, IWeekViewAllDayEventSectionTemplateContext, IDayViewAllDayEventSectionTemplateContext, IWeekViewNormalEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext, IDateFormatter, IRange, ITimeSelected, DefaultCategoryPlacement } from './calendar.interface';
+import { IEvent, CalendarMode, QueryMode, Step, IMonthViewDisplayEventTemplateContext, IMonthViewEventDetailTemplateContext, IDisplayWeekViewHeader, IDisplayAllDayEvent, IDisplayEvent, IWeekViewAllDayEventSectionTemplateContext, IDayViewAllDayEventSectionTemplateContext, IWeekViewNormalEventSectionTemplateContext, IDayViewNormalEventSectionTemplateContext, IDateFormatter, IRange, ITimeSelected } from './calendar.interface';
 
 SwiperCore.use([IonicSlides]);
 
@@ -78,7 +78,6 @@ export class CalendarComponent implements OnInit {
     @Input() endHour:number = 24;
     @Input() sliderOptions:any;
     @Input() dayviewCategorySource:Set<string> = new Set();
-    @Input() dayviewDefaultCategoryPlacement:DefaultCategoryPlacement = "left";
     @Input() dayviewShowCategoryView:boolean = false;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();

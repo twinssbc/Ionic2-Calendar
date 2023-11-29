@@ -33,5 +33,8 @@
         "@angular/compiler-cli": "^17.0.2",
         "ng-packagr": "^17.0.0",
         "typescript": "~5.2.2"
+    },
+    "prettier":{
+        "singleQuote": true
     }
 }
