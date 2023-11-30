@@ -143,9 +143,9 @@ Determines if show dayview with category
 Type: `boolean`    
 Default value: `false`    
 * `dayviewCategorySource` (version: 2.2+)    
-Determines the source the category names so that events with corresponding category will display accordingly. If events are not assigned with category, they will NOT be placed in the category view.
-Type: `string`    
-Default value: `'uncategorized'`    
+Determines the source the category names so that events with corresponding category will display accordingly. If events are not assigned with category, they will NOT be placed in the category view.    
+Type: `Set<string>`    
+Default value: `null`    
 * formatDay    
 The format of the date displayed in the month view.    
 Default value: 'dd'
