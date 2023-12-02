@@ -5,6 +5,17 @@ Ionic calendar directive
 [![version](https://img.shields.io/npm/v/ionic2-calendar/latest.svg)](https://www.npmjs.com/package/ionic2-calendar)
 [![GitHub License](https://img.shields.io/npm/l/ionic2-calendar.svg)](https://raw.githubusercontent.com/twinssbc/Ionic2-Calendar/master/LICENSE)
 
+# Table of Contents
+1. [Demo](#demo)  
+2. [Dependency](#dependency)
+3. [Usage](#usage)
+4. [Options](#options)
+5. [Callback](#callback)
+6. [View Customization Option](#view-customization-option)
+7. [EventSource](#eventsource)
+8. [Performance Tuning](#performance-tuning)
+9. [Common Questions](#common-questions)
+
 # Demo
 Version 1.0    
 https://stackblitz.com/edit/ionic-calendar-demo-1-0?file=src%2Fapp%2Fexample.component.html    
