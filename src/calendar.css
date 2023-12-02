@@ -1,0 +1,40 @@
+
+:host > div { height: 100%; }
+
+.event-detail-container {
+  border-top: 2px darkgrey solid;
+}
+
+.no-events-label {
+  font-weight: bold;
+  color: darkgrey;
+  text-align: center;
+}
+
+.event-detail {
+  cursor: pointer;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.monthview-eventdetail-timecolumn {
+  width: 110px;
+  overflow: hidden;
+}
+
+.calendar-event-inner {
+  overflow: hidden;
+  background-color: #3a87ad;
+  color: white;
+  height: 100%;
+  width: 100%;
+  padding: 2px;
+  line-height: 15px;
+  text-align: initial;
+}
+
+@media (max-width: 750px) {
+  .calendar-event-inner {
+    font-size: 12px;
+  }
+}

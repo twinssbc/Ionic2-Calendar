@@ -1,0 +1,65 @@
+<div class="swiper dayview-swiper">
+    <div class="swiper-wrapper slides-container" [dir]="dir">
+        <div *ngFor="let sliderIndex of sliderIndexList" class="swiper-slide slide-container dayview-slide-container">
+            <div class="dayview-allday-table">
+                <div class="dayview-allday-label">{{allDayLabel}}</div>
+                <div class="dayview-allday-content-wrapper scroll-content">
+                    <table class="table table-bordered dayview-allday-content-table">
+                        <tbody>
+                            <tr>
+                                <td class="calendar-cell"
+                                    [ngClass]="{'calendar-event-wrap':views[0].allDayEvents.length>0}"
+                                    [ngStyle]="{height: 25*views[0].allDayEvents.length+'px'}"
+                                    *ngIf="0===currentViewIndex">
+                                    <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
+                                        [ngTemplateOutletContext]="{allDayEvents:views[0].allDayEvents,eventTemplate:dayviewAllDayEventTemplate}">
+                                    </ng-template>
+                                </td>
+                                <td class="calendar-cell" *ngIf="0!==currentViewIndex">
+                                    <ng-template [ngTemplateOutlet]="dayviewInactiveAllDayEventSectionTemplate"
+                                        [ngTemplateOutletContext]="{allDayEvents:views[0].allDayEvents}">
+                                    </ng-template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <init-position-scroll *ngIf="0===currentViewIndex" class="dayview-normal-event-container"
+                [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition"
+                (onScroll)="setScrollPosition($event)">
+                <table class="table table-bordered table-fixed dayview-normal-event-table">
+                    <tbody>
+                        <tr *ngFor="let tm of views[0].rows; let i = index">
+                            <td class="calendar-hour-column text-center">
+                                {{hourColumnLabels[i]}}
+                            </td>
+                            <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
+                                <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
+                                    [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:dayviewNormalEventTemplate}">
+                                </ng-template>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </init-position-scroll>
+            <init-position-scroll *ngIf="0!==currentViewIndex" class="dayview-normal-event-container"
+                [initPosition]="initScrollPosition">
+                <table class="table table-bordered table-fixed dayview-normal-event-table">
+                    <tbody>
+                        <tr *ngFor="let tm of views[0].rows; let i = index">
+                            <td class="calendar-hour-column text-center">
+                                {{hourColumnLabels[i]}}
+                            </td>
+                            <td class="calendar-cell">
+                                <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
+                                    [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                                </ng-template>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </init-position-scroll>
+        </div>
+    </div>
+</div>
