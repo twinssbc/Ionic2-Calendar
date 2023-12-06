@@ -631,7 +631,7 @@ export class DayViewComponent
         if (normalEventInRange) {
             if (this.dayviewShowCategoryView && this.dayviewCategorySource) {
                 for (const category of this.dayviewCategorySource) {
-                    let orderedEvents: IDisplayEvent[] = [];
+                    let displayEvents: IDisplayEvent[] = [];
 
                     for (let hour = 0; hour < this.hourRange; hour += 1) {
                         let groupedEvents =
@@ -640,12 +640,26 @@ export class DayViewComponent
                             groupedEvents.sort(
                                 DayViewComponent.compareEventByStartOffset
                             );
-                            orderedEvents = orderedEvents.concat(groupedEvents);
+                            displayEvents = displayEvents.concat(groupedEvents);
                         }
                     }
 
-                    if (orderedEvents.length > 0) {
-                        this.placeEvents(orderedEvents);
+                    if (displayEvents.length > 0) {
+                        this.placeEvents(displayEvents);
+                    }
+                }
+            } else {
+                let orderedEvents: IDisplayEvent[] = [];
+                for (let hour = 0; hour < this.hourRange; hour += 1) {
+                    if (rows[hour].events) {
+                        rows[hour].events.sort(
+                            DayViewComponent.compareEventByStartOffset
+                        );
+
+                        orderedEvents = orderedEvents.concat(rows[hour].events);
+                        if (orderedEvents.length > 0) {
+                            this.placeEvents(orderedEvents);
+                        }
                     }
                 }
             }
