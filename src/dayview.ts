@@ -225,7 +225,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         this.inited = true;
 
         this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(
-            (currentDate) => {
+            currentDate => {
                 this.refreshView();
             }
         );
@@ -234,7 +234,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
             this.onDataLoaded();
         });
 
-        this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe((direction) => {
+        this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe(direction => {
             if (direction === 1) {
                 this.slider.slideNext();
             } else if (direction === -1) {
@@ -575,7 +575,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         ].categorizedAllDayEvents = []);
         const categoryIdAllDayEventsMap = new Map<string, IEvent[]>();
 
-        for (const event of allDayEvents.map((displayEvent) => displayEvent.event)) {
+        for (const event of allDayEvents.map(displayEvent => displayEvent.event)) {
             if (event.category) {
                 if (categoryIdAllDayEventsMap.get(event.category)) {
                     categoryIdAllDayEventsMap.get(event.category)?.push(event);
@@ -584,8 +584,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                 }
             }
         }
-        categoryIdAllDayEventsMap.forEach((events) => {
-            categorizedAllDayEvents.push(events.map((event) => ({ event })));
+        categoryIdAllDayEventsMap.forEach(events => {
+            categorizedAllDayEvents.push(events.map(event => ({ event })));
         });
     }
 
@@ -621,7 +621,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         this.onTimeSelected.emit({
             selectedTime,
             category,
-            events: events.map((e) => e.event),
+            events: events.map(e => e.event),
             disabled
         });
     }
