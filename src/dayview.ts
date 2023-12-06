@@ -13,7 +13,7 @@ import {
     Output,
     SimpleChanges,
     TemplateRef,
-    ViewEncapsulation,
+    ViewEncapsulation
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Swiper } from 'swiper';
@@ -32,7 +32,7 @@ import {
     IDisplayEvent,
     IEvent,
     IRange,
-    ITimeSelected,
+    ITimeSelected
 } from './calendar.interface';
 import { CalendarService } from './calendar.service';
 
@@ -40,33 +40,22 @@ import { CalendarService } from './calendar.service';
     selector: 'dayview',
     templateUrl: './dayview.html',
     styleUrls: ['./dayview.css'],
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
-export class DayViewComponent
-    implements ICalendarComponent, OnInit, OnChanges, OnDestroy, AfterViewInit
-{
-    constructor(
-        private calendarService: CalendarService,
-        private elm: ElementRef,
-        private zone: NgZone
-    ) {}
+export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, OnDestroy, AfterViewInit {
+    constructor(private calendarService: CalendarService, private elm: ElementRef, private zone: NgZone) {}
 
     private slider!: Swiper;
 
     @HostBinding('class.dayview') class = true;
 
-    @Input()
-    dayviewCategoryItemTemplate!: TemplateRef<IDayViewCategoryItemTemplateContext>;
+    @Input() dayviewCategoryItemTemplate!: TemplateRef<IDayViewCategoryItemTemplateContext>;
     @Input() dayviewAllDayEventTemplate!: TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate!: TemplateRef<IDisplayEvent>;
-    @Input()
-    dayviewAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input()
-    dayviewNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
-    @Input()
-    dayviewInactiveAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
-    @Input()
-    dayviewInactiveNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() dayviewAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
+    @Input() dayviewInactiveAllDayEventSectionTemplate!: TemplateRef<IDayViewAllDayEventSectionTemplateContext>;
+    @Input() dayviewInactiveNormalEventSectionTemplate!: TemplateRef<IDayViewNormalEventSectionTemplateContext>;
 
     @Input() formatHourColumn?: string;
     @Input() formatDayTitle?: string;
@@ -114,12 +103,7 @@ export class DayViewComponent
     private formatHourColumnLabel!: (date: Date) => string;
     private hourRange!: number;
 
-    static createDateObjects(
-        startTime: Date,
-        startHour: number,
-        endHour: number,
-        timeInterval: number
-    ): IDayViewRow[] {
+    static createDateObjects(startTime: Date, startHour: number, endHour: number, timeInterval: number): IDayViewRow[] {
         const rows: IDayViewRow[] = [],
             currentHour = 0,
             currentDate = startTime.getDate();
@@ -141,28 +125,20 @@ export class DayViewComponent
                 rows.push({
                     time,
                     events: [],
-                    eventsGroupByCategory: new Map(),
+                    eventsGroupByCategory: new Map()
                 });
             }
         }
         return rows;
     }
 
-    private static compareEventByStartOffset(
-        eventA: IDisplayEvent,
-        eventB: IDisplayEvent
-    ) {
+    private static compareEventByStartOffset(eventA: IDisplayEvent, eventB: IDisplayEvent) {
         return eventA.startOffset - eventB.startOffset;
     }
 
-    private static calculateWidth(
-        orderedEvents: IDisplayEvent[],
-        size: number,
-        hourParts: number
-    ) {
+    private static calculateWidth(orderedEvents: IDisplayEvent[], size: number, hourParts: number) {
         const totalSize = size * hourParts,
-            cells: { calculated: boolean; events: IDisplayEvent[] }[] =
-                new Array(totalSize);
+            cells: { calculated: boolean; events: IDisplayEvent[] }[] = new Array(totalSize);
 
         // sort by position in descending order, the right most columns should be calculated first
         orderedEvents.sort((eventA, eventB) => {
@@ -171,7 +147,7 @@ export class DayViewComponent
         for (let i = 0; i < totalSize; i += 1) {
             cells[i] = {
                 calculated: false,
-                events: [],
+                events: []
             };
         }
         const len = orderedEvents.length;
@@ -192,23 +168,16 @@ export class DayViewComponent
                 event.overlapNumber = overlapNumber;
                 const eventQueue = [event];
                 while ((event = eventQueue.shift())) {
-                    let index =
-                        event.startIndex * hourParts + event.startOffset;
-                    while (
-                        index <
-                        event.endIndex * hourParts - event.endOffset
-                    ) {
+                    let index = event.startIndex * hourParts + event.startOffset;
+                    while (index < event.endIndex * hourParts - event.endOffset) {
                         if (!cells[index].calculated) {
                             cells[index].calculated = true;
                             if (cells[index].events) {
-                                const eventCountInCell =
-                                    cells[index].events.length;
+                                const eventCountInCell = cells[index].events.length;
                                 for (let j = 0; j < eventCountInCell; j += 1) {
-                                    const currentEventInCell =
-                                        cells[index].events[j];
+                                    const currentEventInCell = cells[index].events[j];
                                     if (!currentEventInCell.overlapNumber) {
-                                        currentEventInCell.overlapNumber =
-                                            overlapNumber;
+                                        currentEventInCell.overlapNumber = overlapNumber;
                                         eventQueue.push(currentEventInCell);
                                     }
                                 }
@@ -242,8 +211,7 @@ export class DayViewComponent
         }
 
         if (this.dateFormatter && this.dateFormatter.formatDayViewHourColumn) {
-            this.formatHourColumnLabel =
-                this.dateFormatter.formatDayViewHourColumn;
+            this.formatHourColumnLabel = this.dateFormatter.formatDayViewHourColumn;
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatHourColumnLabel = function (date: Date) {
@@ -256,31 +224,27 @@ export class DayViewComponent
 
         this.inited = true;
 
-        this.currentDateChangedFromParentSubscription =
-            this.calendarService.currentDateChangedFromParent$.subscribe(
-                (currentDate) => {
-                    this.refreshView();
-                }
-            );
+        this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(
+            (currentDate) => {
+                this.refreshView();
+            }
+        );
 
-        this.eventSourceChangedSubscription =
-            this.calendarService.eventSourceChanged$.subscribe(() => {
-                this.onDataLoaded();
-            });
+        this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
+            this.onDataLoaded();
+        });
 
-        this.slideChangedSubscription =
-            this.calendarService.slideChanged$.subscribe((direction) => {
-                if (direction === 1) {
-                    this.slider.slideNext();
-                } else if (direction === -1) {
-                    this.slider.slidePrev();
-                }
-            });
+        this.slideChangedSubscription = this.calendarService.slideChanged$.subscribe((direction) => {
+            if (direction === 1) {
+                this.slider.slideNext();
+            } else if (direction === -1) {
+                this.slider.slidePrev();
+            }
+        });
 
-        this.slideUpdatedSubscription =
-            this.calendarService.slideUpdated$.subscribe(() => {
-                this.slider.update();
-            });
+        this.slideUpdatedSubscription = this.calendarService.slideUpdated$.subscribe(() => {
+            this.slider.update();
+        });
     }
 
     ngAfterViewInit() {
@@ -307,8 +271,7 @@ export class DayViewComponent
                 .querySelectorAll('.calendar-hour-column');
             const me = this;
             setTimeout(() => {
-                me.initScrollPosition =
-                    hourColumns[me.scrollToHour - me.startHour].offsetTop;
+                me.initScrollPosition = hourColumns[me.scrollToHour - me.startHour].offsetTop;
             }, 50);
         }
     }
@@ -319,12 +282,10 @@ export class DayViewComponent
         }
         if (
             (changes['startHour'] || changes['endHour']) &&
-            (!changes['startHour'].isFirstChange() ||
-                !changes['endHour'].isFirstChange())
+            (!changes['startHour'].isFirstChange() || !changes['endHour'].isFirstChange())
         ) {
             this.views = [];
-            this.hourRange =
-                (this.endHour - this.startHour) * this.hourSegments;
+            this.hourRange = (this.endHour - this.startHour) * this.hourSegments;
             this.direction = 0;
             this.refreshView();
             this.hourColumnLabels = this.getHourColumnLabels();
@@ -384,10 +345,7 @@ export class DayViewComponent
         }
 
         this.direction = direction;
-        const adjacentDate = this.calendarService.getAdjacentCalendarDate(
-            this.mode,
-            direction
-        );
+        const adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
         this.calendarService.setCurrentDate(adjacentDate);
         this.refreshView();
         this.direction = 0;
@@ -395,24 +353,15 @@ export class DayViewComponent
 
     private getHourColumnLabels(): string[] {
         const hourColumnLabels: string[] = [];
-        for (
-            let hour = 0, length = this.views[0].rows.length;
-            hour < length;
-            hour += 1
-        ) {
+        for (let hour = 0, length = this.views[0].rows.length; hour < length; hour += 1) {
             // handle edge case for DST
-            if (
-                hour === 0 &&
-                this.views[0].rows[hour].time.getHours() !== this.startHour
-            ) {
+            if (hour === 0 && this.views[0].rows[hour].time.getHours() !== this.startHour) {
                 const time = new Date(this.views[0].rows[hour].time);
                 time.setDate(time.getDate() + 1);
                 time.setHours(this.startHour);
                 hourColumnLabels.push(this.formatHourColumnLabel(time));
             } else {
-                hourColumnLabels.push(
-                    this.formatHourColumnLabel(this.views[0].rows[hour].time)
-                );
+                hourColumnLabels.push(this.formatHourColumnLabel(this.views[0].rows[hour].time));
             }
         }
         return hourColumnLabels;
@@ -420,15 +369,10 @@ export class DayViewComponent
 
     getViewData(startTime: Date): IDayView {
         return {
-            rows: DayViewComponent.createDateObjects(
-                startTime,
-                this.startHour,
-                this.endHour,
-                this.hourSegments
-            ),
+            rows: DayViewComponent.createDateObjects(startTime, this.startHour, this.endHour, this.hourSegments),
             allDayEvents: [],
             categories: [],
-            categorizedAllDayEvents: [],
+            categorizedAllDayEvents: []
         };
     }
 
@@ -441,7 +385,7 @@ export class DayViewComponent
 
         return {
             startTime,
-            endTime,
+            endTime
         };
     }
 
@@ -450,21 +394,11 @@ export class DayViewComponent
             len = eventSource ? eventSource.length : 0,
             startTime = this.range.startTime,
             endTime = this.range.endTime,
-            utcStartTime = Date.UTC(
-                startTime.getFullYear(),
-                startTime.getMonth(),
-                startTime.getDate()
-            ),
-            utcEndTime = Date.UTC(
-                endTime.getFullYear(),
-                endTime.getMonth(),
-                endTime.getDate()
-            ),
+            utcStartTime = Date.UTC(startTime.getFullYear(), startTime.getMonth(), startTime.getDate()),
+            utcEndTime = Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate()),
             currentViewIndex = this.currentViewIndex,
             rows = this.views[currentViewIndex].rows,
-            allDayEvents: IDisplayAllDayEvent[] = (this.views[
-                currentViewIndex
-            ].allDayEvents = []),
+            allDayEvents: IDisplayAllDayEvent[] = (this.views[currentViewIndex].allDayEvents = []),
             displayCategorySet = new Set<string>(),
             oneHour = 3600000,
             eps = 0.016,
@@ -499,23 +433,15 @@ export class DayViewComponent
                 );
             }
 
-            if (
-                eventUTCEndTime <= utcStartTime ||
-                eventUTCStartTime >= utcEndTime ||
-                eventStartTime >= eventEndTime
-            ) {
+            if (eventUTCEndTime <= utcStartTime || eventUTCStartTime >= utcEndTime || eventStartTime >= eventEndTime) {
                 continue;
             }
 
             if (event.allDay) {
                 allDayEvents.push({
-                    event,
+                    event
                 });
-                if (
-                    event.category &&
-                    this.dayviewCategorySource &&
-                    this.dayviewCategorySource.has(event.category)
-                ) {
+                if (event.category && this.dayviewCategorySource && this.dayviewCategorySource.has(event.category)) {
                     displayCategorySet.add(event.category);
                 }
             } else {
@@ -526,21 +452,14 @@ export class DayViewComponent
                     timeDifferenceStart = 0;
                 } else {
                     timeDifferenceStart =
-                        (eventStartTime.getHours() +
-                            eventStartTime.getMinutes() / 60) *
-                        this.hourSegments;
+                        (eventStartTime.getHours() + eventStartTime.getMinutes() / 60) * this.hourSegments;
                 }
 
                 let timeDifferenceEnd: number;
                 if (eventUTCEndTime > utcEndTime) {
-                    timeDifferenceEnd =
-                        ((utcEndTime - utcStartTime) / oneHour) *
-                        this.hourSegments;
+                    timeDifferenceEnd = ((utcEndTime - utcStartTime) / oneHour) * this.hourSegments;
                 } else {
-                    timeDifferenceEnd =
-                        (eventEndTime.getHours() +
-                            eventEndTime.getMinutes() / 60) *
-                        this.hourSegments;
+                    timeDifferenceEnd = (eventEndTime.getHours() + eventEndTime.getMinutes() / 60) * this.hourSegments;
                 }
 
                 let startIndex = Math.floor(timeDifferenceStart);
@@ -551,16 +470,12 @@ export class DayViewComponent
                     if (startIndex < rangeStartRowIndex) {
                         startOffset = 0;
                     } else {
-                        startOffset = Math.floor(
-                            (timeDifferenceStart - startIndex) * this.hourParts
-                        );
+                        startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
                     }
                     if (endIndex > rangeEndRowIndex) {
                         endOffset = 0;
                     } else {
-                        endOffset = Math.floor(
-                            (endIndex - timeDifferenceEnd) * this.hourParts
-                        );
+                        endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
                     }
                 }
 
@@ -581,7 +496,7 @@ export class DayViewComponent
                         endIndex,
                         startOffset,
                         endOffset,
-                        position: 0,
+                        position: 0
                     };
 
                     let eventSet = rows[startIndex].events;
@@ -594,30 +509,18 @@ export class DayViewComponent
                     }
 
                     // setup eventsGroupedByCategory
-                    if (
-                        this.dayviewShowCategoryView &&
-                        this.dayviewCategorySource &&
-                        event.category
-                    ) {
-                        let groupedEvents =
-                            rows[startIndex].eventsGroupByCategory;
+                    if (this.dayviewShowCategoryView && this.dayviewCategorySource && event.category) {
+                        let groupedEvents = rows[startIndex].eventsGroupByCategory;
                         if (groupedEvents) {
-                            if (
-                                Array.isArray(groupedEvents.get(event.category))
-                            ) {
-                                groupedEvents
-                                    .get(event.category)
-                                    ?.push(displayEvent);
+                            if (Array.isArray(groupedEvents.get(event.category))) {
+                                groupedEvents.get(event.category)?.push(displayEvent);
                             } else {
-                                groupedEvents.set(event.category, [
-                                    displayEvent,
-                                ]);
+                                groupedEvents.set(event.category, [displayEvent]);
                             }
                         } else {
                             groupedEvents = new Map();
                             groupedEvents.set(event.category, [displayEvent]);
-                            rows[startIndex].eventsGroupByCategory =
-                                groupedEvents;
+                            rows[startIndex].eventsGroupByCategory = groupedEvents;
                         }
                         if (this.dayviewCategorySource.has(event.category)) {
                             displayCategorySet.add(event.category);
@@ -634,12 +537,9 @@ export class DayViewComponent
                     let displayEvents: IDisplayEvent[] = [];
 
                     for (let hour = 0; hour < this.hourRange; hour += 1) {
-                        let groupedEvents =
-                            rows[hour].eventsGroupByCategory?.get(category);
+                        let groupedEvents = rows[hour].eventsGroupByCategory?.get(category);
                         if (groupedEvents) {
-                            groupedEvents.sort(
-                                DayViewComponent.compareEventByStartOffset
-                            );
+                            groupedEvents.sort(DayViewComponent.compareEventByStartOffset);
                             displayEvents = displayEvents.concat(groupedEvents);
                         }
                     }
@@ -652,9 +552,7 @@ export class DayViewComponent
                 let orderedEvents: IDisplayEvent[] = [];
                 for (let hour = 0; hour < this.hourRange; hour += 1) {
                     if (rows[hour].events) {
-                        rows[hour].events.sort(
-                            DayViewComponent.compareEventByStartOffset
-                        );
+                        rows[hour].events.sort(DayViewComponent.compareEventByStartOffset);
 
                         orderedEvents = orderedEvents.concat(rows[hour].events);
                         if (orderedEvents.length > 0) {
@@ -667,9 +565,7 @@ export class DayViewComponent
 
         if (this.dayviewShowCategoryView && this.dayviewCategorySource) {
             this.categorizeAllDayEvents(allDayEvents);
-            this.views[this.currentViewIndex].categories = [
-                ...displayCategorySet,
-            ];
+            this.views[this.currentViewIndex].categories = [...displayCategorySet];
         }
     }
 
@@ -679,9 +575,7 @@ export class DayViewComponent
         ].categorizedAllDayEvents = []);
         const categoryIdAllDayEventsMap = new Map<string, IEvent[]>();
 
-        for (const event of allDayEvents.map(
-            (displayEvent) => displayEvent.event
-        )) {
+        for (const event of allDayEvents.map((displayEvent) => displayEvent.event)) {
             if (event.category) {
                 if (categoryIdAllDayEventsMap.get(event.category)) {
                     categoryIdAllDayEventsMap.get(event.category)?.push(event);
@@ -728,17 +622,13 @@ export class DayViewComponent
             selectedTime,
             category,
             events: events.map((e) => e.event),
-            disabled,
+            disabled
         });
     }
 
     placeEvents(orderedEvents: IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
-        DayViewComponent.calculateWidth(
-            orderedEvents,
-            this.hourRange,
-            this.hourParts
-        );
+        DayViewComponent.calculateWidth(orderedEvents, this.hourRange, this.hourParts);
     }
 
     placeAllDayEvents(orderedEvents: IDisplayEvent[]) {
@@ -750,8 +640,7 @@ export class DayViewComponent
             lateEvent = event2;
         if (
             event1.startIndex > event2.startIndex ||
-            (event1.startIndex === event2.startIndex &&
-                event1.startOffset > event2.startOffset)
+            (event1.startIndex === event2.startIndex && event1.startOffset > event2.startOffset)
         ) {
             earlyEvent = event2;
             lateEvent = event1;
