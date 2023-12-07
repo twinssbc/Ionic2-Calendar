@@ -530,7 +530,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
             }
         }
 
-        // sort and place normal events by calculate display attributes
         if (normalEventInRange) {
             if (this.dayviewShowCategoryView && this.dayviewCategorySource) {
                 for (const category of this.dayviewCategorySource) {
@@ -553,12 +552,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                 for (let hour = 0; hour < this.hourRange; hour += 1) {
                     if (rows[hour].events) {
                         rows[hour].events.sort(DayViewComponent.compareEventByStartOffset);
-
                         orderedEvents = orderedEvents.concat(rows[hour].events);
-                        if (orderedEvents.length > 0) {
-                            this.placeEvents(orderedEvents);
-                        }
                     }
+                }
+                if (orderedEvents.length > 0) {
+                    this.placeEvents(orderedEvents);
                 }
             }
         }
