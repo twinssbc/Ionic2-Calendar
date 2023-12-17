@@ -13,7 +13,8 @@ import {
     ElementRef,
     AfterViewInit, 
     OnDestroy,
-    NgZone
+    NgZone,
+    ViewChild
 } from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Swiper} from 'swiper';
@@ -47,6 +48,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     }
 
     private slider!: Swiper;
+    @ViewChild('dayViewSwiper') swiperElement?: ElementRef;
 
     @HostBinding('class.dayview') class = true;
 
@@ -245,7 +247,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     }
 
     ngAfterViewInit() {
-        this.slider = new Swiper('.dayview-swiper', this.sliderOptions);
+        this.slider = new Swiper(this.swiperElement?.nativeElement, this.sliderOptions);
         let me = this;
         this.slider.on('slideNextTransitionEnd', function() {
             me.onSlideChanged(1);
