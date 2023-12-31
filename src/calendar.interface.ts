@@ -19,7 +19,7 @@ export interface IDayView extends IView {
     allDayEvents: IDisplayAllDayEvent[];
     rows: IDayViewRow[];
     categories: string[];
-    categorizedAllDayEvents: IDisplayAllDayEvent[][];
+    categorizedAllDayEventsMap: Map<string, IDisplayAllDayEvent[]>;
 }
 
 /**

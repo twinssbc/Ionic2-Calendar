@@ -90,17 +90,16 @@
                   <table class="table dayview-allday-content-table">
                     <tbody>
                       <tr>
-                        <ng-container *ngIf="sliderIndex === currentViewIndex">
-                          <ng-container *ngFor="let allDayEventsCategory of views[sliderIndex].categorizedAllDayEvents">
-                            <td *ngIf="allDayEventsCategory[0]?.event?.category === category"
-                              class="calendar-cell" [ngClass]="{'calendar-event-wrap': allDayEventsCategory.length > 0}"
-                              [ngStyle]="{height: 25 * allDayEventsCategory.length + 'px'}">
-                              <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
-                                [ngTemplateOutletContext]="{allDayEvents: allDayEventsCategory, eventTemplate: dayviewAllDayEventTemplate}">
-                              </ng-template>
-                            </td>
-                          </ng-container>
-                        </ng-container>
+                        <ng-template *ngIf="sliderIndex === currentViewIndex">
+                          <td *ngIf="getCategorizedAllDayEventsOfSlide(category, currentViewIndex)"
+                            class="calendar-cell"
+                            [ngClass]="{'calendar-event-wrap': getCategorizedAllDayEventsOfSlide(category, currentViewIndex).length > 0}"
+                            [ngStyle]="{height: 25 * getCategorizedAllDayEventsOfSlide(category, currentViewIndex).length + 'px'}">
+                            <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
+                              [ngTemplateOutletContext]="{allDayEvents: getCategorizedAllDayEventsOfSlide(category, currentViewIndex), eventTemplate: dayviewAllDayEventTemplate}">
+                            </ng-template>
+                          </td>
+                        </ng-template>
                         <td class="calendar-cell" *ngIf="sliderIndex !== currentViewIndex">
                           <ng-template [ngTemplateOutlet]="dayviewInactiveAllDayEventSectionTemplate"
                             [ngTemplateOutletContext]="{allDayEvents: views[sliderIndex].allDayEvents}">

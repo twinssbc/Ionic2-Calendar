@@ -372,7 +372,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
             rows: DayViewComponent.createDateObjects(startTime, this.startHour, this.endHour, this.hourSegments),
             allDayEvents: [],
             categories: [],
-            categorizedAllDayEvents: []
+            categorizedAllDayEventsMap: new Map<string, IDisplayAllDayEvent[]>()
         };
     }
 
@@ -568,23 +568,19 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     }
 
     categorizeAllDayEvents(allDayEvents: IDisplayAllDayEvent[]) {
-        const categorizedAllDayEvents: IDisplayAllDayEvent[][] = (this.views[
+        const categoryIdAllDayEventsMap = (this.views[
             this.currentViewIndex
-        ].categorizedAllDayEvents = []);
-        const categoryIdAllDayEventsMap = new Map<string, IEvent[]>();
+        ].categorizedAllDayEventsMap = new Map<string, IDisplayAllDayEvent[]>());
 
-        for (const event of allDayEvents.map(displayEvent => displayEvent.event)) {
-            if (event.category) {
-                if (categoryIdAllDayEventsMap.get(event.category)) {
-                    categoryIdAllDayEventsMap.get(event.category)?.push(event);
+        for (const displayAllDayEvent of allDayEvents) {
+            if (displayAllDayEvent.event.category) {
+                if (categoryIdAllDayEventsMap.get(displayAllDayEvent.event.category)) {
+                    categoryIdAllDayEventsMap.get(displayAllDayEvent.event.category)?.push(displayAllDayEvent);
                 } else {
-                    categoryIdAllDayEventsMap.set(event.category, [event]);
+                    categoryIdAllDayEventsMap.set(displayAllDayEvent.event.category, [displayAllDayEvent]);
                 }
             }
         }
-        categoryIdAllDayEventsMap.forEach(events => {
-            categorizedAllDayEvents.push(events.map(event => ({ event })));
-        });
     }
 
     refreshView() {
@@ -694,5 +690,9 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
     setScrollPosition(scrollPosition: number) {
         this.initScrollPosition = scrollPosition;
+    }
+
+    getCategorizedAllDayEventsOfSlide(category: string, sliderIndex: number): IDisplayAllDayEvent[] {
+        return this.views[sliderIndex].categorizedAllDayEventsMap.get(category) || [];
     }
 }
