@@ -68,12 +68,10 @@
             <thead>
               <tr>
                 <th class="dayview-category-header-item calendar-hour-column"></th>
-                <th *ngFor="let category of views[sliderIndex].categories" class="dayview-category-header-item">
-                  <div class="dayview-category-name">
-                    <ng-template [ngTemplateOutlet]="dayviewCategoryItemTemplate"
-                      [ngTemplateOutletContext]="{category}">
-                    </ng-template>
-                  </div>
+                <th *ngFor="let category of views[sliderIndex].categories"
+                  class="dayview-category-header-item">
+                  <ng-template [ngTemplateOutlet]="dayviewCategoryItemTemplate" [ngTemplateOutletContext]="{category}">
+                  </ng-template>
                 </th>
               </tr>
             </thead>

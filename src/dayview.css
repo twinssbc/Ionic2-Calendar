@@ -100,6 +100,9 @@
   font-weight: normal;
   height: 37px;
   border-left: 1px solid #ddd;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .dayview-category-cell-container {
@@ -138,12 +141,6 @@
 
 .dayview-allday-category-table {
   border: solid 1px #ddd;
-}
-
-.dayview-category-name {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
 }
 
 .dayview-allday-category-cell {
