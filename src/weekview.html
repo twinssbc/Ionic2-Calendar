@@ -1,6 +1,6 @@
 <div class="swiper weekview-swiper" #weekViewSwiper>
-    <div *ngFor="let sliderIndex of sliderIndexList" class="swiper-wrapper slides-container" [dir]="dir">
-        <div class="swiper-slide slide-container weekview-slide-container">
+    <div class="swiper-wrapper slides-container" [dir]="dir">
+        <div *ngFor="let sliderIndex of sliderIndexList" class="swiper-slide slide-container weekview-slide-container">
             <table class="table table-bordered table-fixed weekview-header">
                 <thead>
                     <tr>
