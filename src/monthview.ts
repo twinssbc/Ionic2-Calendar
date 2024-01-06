@@ -9,7 +9,9 @@ import {
     TemplateRef,
     OnDestroy,
     AfterViewInit,
-    NgZone
+    NgZone,
+    ViewChild,
+    ElementRef
 } from '@angular/core';
 import {Subscription} from 'rxjs';
 import {DatePipe} from '@angular/common';
@@ -30,6 +32,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
     }  
 
     private slider!: Swiper;
+    @ViewChild('monthViewSwiper') swiperElement?: ElementRef;
 
     @Input() monthviewDisplayEventTemplate!: TemplateRef<IMonthViewDisplayEventTemplateContext>;
     @Input() monthviewInactiveDisplayEventTemplate!: TemplateRef<IMonthViewDisplayEventTemplateContext>;
@@ -196,7 +199,7 @@ export class MonthViewComponent implements ICalendarComponent, OnInit, OnDestroy
     }
 
     ngAfterViewInit() {
-        this.slider = new Swiper('.monthview-swiper', this.sliderOptions);
+        this.slider = new Swiper(this.swiperElement?.nativeElement, this.sliderOptions);
         let me = this;
         this.slider.on('slideNextTransitionEnd', function() {
             me.onSlideChanged(1);

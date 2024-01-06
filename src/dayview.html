@@ -1,4 +1,4 @@
-<div class="swiper dayview-swiper">
+<div class="swiper dayview-swiper" #dayViewSwiper>
   <div class="swiper-wrapper slides-container" [dir]="dir">
     <div *ngFor="let sliderIndex of sliderIndexList" class="swiper-slide slide-container dayview-slide-container">
       <ng-container *ngIf="!dayviewShowCategoryView">
