@@ -8,16 +8,18 @@
             <table class="table table-bordered dayview-allday-content-table">
               <tbody>
                 <tr>
-                  <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[sliderIndex].allDayEvents.length>0}"
-                    [ngStyle]="{height: 25*views[sliderIndex].allDayEvents.length+'px'}"
-                    *ngIf="sliderIndex===currentViewIndex">
+                  <td *ngIf="sliderIndex===currentViewIndex" class="calendar-cell"
+                    [ngClass]="{'calendar-event-wrap':views[sliderIndex].allDayEvents.length>0}"
+                    [ngStyle]="{height: 25*views[sliderIndex].allDayEvents.length+'px'}">
                     <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
                       [ngTemplateOutletContext]="{allDayEvents:views[sliderIndex].allDayEvents,eventTemplate:dayviewAllDayEventTemplate}">
                     </ng-template>
                   </td>
-                  <td class="calendar-cell" *ngIf="sliderIndex!==currentViewIndex">
+                  <td *ngIf="sliderIndex!==currentViewIndex" class="calendar-cell"
+                    [ngClass]="{'calendar-event-wrap':views[sliderIndex].allDayEvents.length>0}"
+                    [ngStyle]="{height: 25*views[sliderIndex].allDayEvents.length+'px'}">
                     <ng-template [ngTemplateOutlet]="dayviewInactiveAllDayEventSectionTemplate"
-                      [ngTemplateOutletContext]="{allDayEvents:views[sliderIndex].allDayEvents}">
+                      [ngTemplateOutletContext]="{allDayEvents:views[sliderIndex].allDayEvents,eventTemplate:dayviewAllDayEventTemplate}">
                     </ng-template>
                   </td>
                 </tr>
@@ -53,7 +55,7 @@
                 </td>
                 <td class="calendar-cell">
                   <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
-                    [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts}">
+                    [ngTemplateOutletContext]="{tm:tm, hourParts: hourParts, eventTemplate:dayviewNormalEventTemplate}">
                   </ng-template>
                 </td>
               </tr>
@@ -68,8 +70,7 @@
             <thead>
               <tr>
                 <th class="dayview-category-header-item calendar-hour-column"></th>
-                <th *ngFor="let category of views[sliderIndex].categories"
-                  class="dayview-category-header-item">
+                <th *ngFor="let category of views[sliderIndex].categories" class="dayview-category-header-item">
                   <ng-template [ngTemplateOutlet]="dayviewCategoryItemTemplate" [ngTemplateOutletContext]="{category}">
                   </ng-template>
                 </th>
@@ -88,19 +89,12 @@
                   <table class="table dayview-allday-content-table">
                     <tbody>
                       <tr>
-                        <ng-template *ngIf="sliderIndex === currentViewIndex">
-                          <td *ngIf="getCategorizedAllDayEventsOfSlide(category, currentViewIndex)"
-                            class="calendar-cell"
-                            [ngClass]="{'calendar-event-wrap': getCategorizedAllDayEventsOfSlide(category, currentViewIndex).length > 0}"
-                            [ngStyle]="{height: 25 * getCategorizedAllDayEventsOfSlide(category, currentViewIndex).length + 'px'}">
-                            <ng-template [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"
-                              [ngTemplateOutletContext]="{allDayEvents: getCategorizedAllDayEventsOfSlide(category, currentViewIndex), eventTemplate: dayviewAllDayEventTemplate}">
-                            </ng-template>
-                          </td>
-                        </ng-template>
-                        <td class="calendar-cell" *ngIf="sliderIndex !== currentViewIndex">
-                          <ng-template [ngTemplateOutlet]="dayviewInactiveAllDayEventSectionTemplate"
-                            [ngTemplateOutletContext]="{allDayEvents: views[sliderIndex].allDayEvents}">
+                        <td *ngIf="getCategorizedAllDayEventsOfSlide(category, currentViewIndex).length > 0"
+                          class="calendar-cell calendar-event-wrap"
+                          [ngStyle]="{height: 25 * getCategorizedAllDayEventsOfSlide(category, currentViewIndex).length + 'px'}">
+                          <ng-template
+                            [ngTemplateOutlet]="sliderIndex === currentViewIndex ? dayviewAllDayEventSectionTemplate: dayviewInactiveAllDayEventSectionTemplate"
+                            [ngTemplateOutletContext]="{allDayEvents: getCategorizedAllDayEventsOfSlide(category, currentViewIndex), eventTemplate: dayviewAllDayEventTemplate}">
                           </ng-template>
                         </td>
                       </tr>
@@ -140,19 +134,30 @@
             </tbody>
           </table>
         </init-position-scroll>
+
         <init-position-scroll *ngIf="sliderIndex !== currentViewIndex"
           class="dayview-normal-event-container dayview-categorized-normal-event-container"
           [initPosition]="initScrollPosition">
           <table class="table table-bordered table-fixed dayview-normal-event-table">
             <tbody>
-              <tr *ngFor="let tm of views[sliderIndex].rows; let i = index">
+              <tr *ngFor="let row of views[sliderIndex].rows; let i = index">
                 <td class="calendar-hour-column text-center">
                   {{ hourColumnLabels[i] }}
                 </td>
-                <td class="calendar-cell">
+                <td *ngIf="views[sliderIndex].categories.length === 0" class="calendar-cell" (click)="select(row)"
+                  tappable>
                   <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
-                    [ngTemplateOutletContext]="{ tm: tm, hourParts: hourParts }">
+                    [ngTemplateOutletContext]="{tm: { events: [], time: row.time }, hourParts, eventTemplate: dayviewNormalEventTemplate}">
                   </ng-template>
+                </td>
+                <td *ngFor="let category of views[sliderIndex].categories" class="calendar-cell"
+                  (click)="select(row, category)" tappable>
+                  <ng-container *ngFor="let categorizedEvents of row.eventsGroupByCategory | keyvalue">
+                    <ng-template *ngIf="categorizedEvents.key === category"
+                      [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
+                      [ngTemplateOutletContext]="{tm: { events: categorizedEvents.value, time: row.time }, hourParts, category, eventTemplate: dayviewNormalEventTemplate}">
+                    </ng-template>
+                  </ng-container>
                 </td>
               </tr>
             </tbody>
