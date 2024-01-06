@@ -139,12 +139,10 @@
                 </td>
                 <td *ngFor="let category of views[sliderIndex].categories" class="calendar-cell"
                   (click)="select(row, category)" tappable>
-                  <ng-container *ngFor="let categorizedEvents of row.eventsGroupByCategory | keyvalue">
-                    <ng-template *ngIf="row.eventsGroupByCategory?.get(category)?.length"
-                      [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
-                      [ngTemplateOutletContext]="{tm: { events: row.eventsGroupByCategory?.get(category)!, time: row.time }, hourParts, category, eventTemplate: dayviewNormalEventTemplate}">
-                    </ng-template>
-                  </ng-container>
+                  <ng-template *ngIf="row.eventsGroupByCategory?.get(category)?.length"
+                    [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
+                    [ngTemplateOutletContext]="{tm: { events: row.eventsGroupByCategory?.get(category)!, time: row.time }, hourParts, category, eventTemplate: dayviewNormalEventTemplate}">
+                  </ng-template>
                 </td>
               </tr>
             </tbody>
