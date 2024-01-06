@@ -693,8 +693,4 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
     setScrollPosition(scrollPosition: number) {
         this.initScrollPosition = scrollPosition;
     }
-
-    getCategorizedAllDayEventsOfSlide(category: string, sliderIndex: number): IDisplayAllDayEvent[] {
-        return this.views[sliderIndex].categorizedAllDayEventsMap.get(category) || [];
-    }
 }
