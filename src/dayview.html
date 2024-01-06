@@ -131,20 +131,12 @@
                 <td class="calendar-hour-column text-center">
                   {{ hourColumnLabels[i] }}
                 </td>
-                <td *ngIf="views[sliderIndex].categories.length === 0" class="calendar-cell" (click)="select(row)"
-                  tappable>
-                  <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
-                    [ngTemplateOutletContext]="{tm: { events: [], time: row.time }, hourParts, eventTemplate: dayviewNormalEventTemplate}">
-                  </ng-template>
-                </td>
                 <td *ngFor="let category of views[sliderIndex].categories" class="calendar-cell"
                   (click)="select(row, category)" tappable>
-                  <ng-container *ngFor="let categorizedEvents of row.eventsGroupByCategory | keyvalue">
-                    <ng-template *ngIf="row.eventsGroupByCategory?.get(category)?.length"
-                      [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
-                      [ngTemplateOutletContext]="{tm: { events: row.eventsGroupByCategory?.get(category)!, time: row.time }, hourParts, category, eventTemplate: dayviewNormalEventTemplate}">
-                    </ng-template>
-                  </ng-container>
+                  <ng-template *ngIf="row.eventsGroupByCategory?.get(category)?.length"
+                    [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
+                    [ngTemplateOutletContext]="{tm: { events: row.eventsGroupByCategory?.get(category)!, time: row.time }, hourParts, category, eventTemplate: dayviewNormalEventTemplate}">
+                  </ng-template>
                 </td>
               </tr>
             </tbody>
@@ -159,12 +151,6 @@
               <tr *ngFor="let row of views[sliderIndex].rows; let i = index">
                 <td class="calendar-hour-column text-center">
                   {{ hourColumnLabels[i] }}
-                </td>
-                <td *ngIf="views[sliderIndex].categories.length === 0" class="calendar-cell" (click)="select(row)"
-                  tappable>
-                  <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
-                    [ngTemplateOutletContext]="{tm: { events: [], time: row.time }, hourParts, eventTemplate: dayviewNormalEventTemplate}">
-                  </ng-template>
                 </td>
                 <td *ngFor="let category of views[sliderIndex].categories" class="calendar-cell"
                   (click)="select(row, category)" tappable>
