@@ -5,7 +5,7 @@
         <div class="dayview-allday-table">
           <div class="dayview-allday-label">{{allDayLabel}}</div>
           <div class="dayview-allday-content-wrapper scroll-content">
-            <table class="table table-bordered dayview-allday-content-table">
+            <table class="dayview-table dayview-table-bordered dayview-allday-content-table">
               <tbody>
                 <tr>
                   <td *ngIf="sliderIndex===currentViewIndex" class="calendar-cell"
@@ -30,7 +30,7 @@
         <init-position-scroll *ngIf="sliderIndex===currentViewIndex" class="dayview-normal-event-container"
           [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition"
           (onScroll)="setScrollPosition($event)">
-          <table class="table table-bordered table-fixed dayview-normal-event-table">
+          <table class="dayview-table dayview-table-bordered dayview-table-fixed dayview-normal-event-table">
             <tbody>
               <tr *ngFor="let tm of views[sliderIndex].rows; let i = index">
                 <td class="calendar-hour-column text-center">
@@ -47,7 +47,7 @@
         </init-position-scroll>
         <init-position-scroll *ngIf="sliderIndex!==currentViewIndex" class="dayview-normal-event-container"
           [initPosition]="initScrollPosition">
-          <table class="table table-bordered table-fixed dayview-normal-event-table">
+          <table class="dayview-table dayview-table-bordered dayview-table-fixed dayview-normal-event-table">
             <tbody>
               <tr *ngFor="let tm of views[sliderIndex].rows; let i = index">
                 <td class="calendar-hour-column text-center">
@@ -66,7 +66,7 @@
 
       <ng-container *ngIf="dayviewShowCategoryView">
         <div *ngIf="sliderIndex===currentViewIndex" class="dayview-category-header">
-          <table class="table table-fixed dayview-category-header-table">
+          <table class="dayview-table dayview-table-fixed dayview-category-header-table">
             <thead>
               <tr>
                 <th class="dayview-category-header-item calendar-hour-column"></th>
@@ -79,7 +79,7 @@
           </table>
         </div>
         <div *ngIf="sliderIndex!==currentViewIndex" class="dayview-inactive-category-header">
-          <table class="table table-fixed dayview-category-header-table">
+          <table class="dayview-table dayview-table-fixed dayview-category-header-table">
             <thead>
               <tr>
                 <th class="dayview-category-header-item calendar-hour-column"></th>
@@ -95,10 +95,10 @@
         <div class="dayview-allday-table">
           <div class="dayview-allday-label">{{ allDayLabel }}</div>
           <div class="dayview-allday-content-wrapper scroll-content">
-            <table class="table table-fixed dayview-allday-category-table">
+            <table class="dayview-table dayview-table-fixed dayview-allday-category-table">
               <tbody>
                 <td class="dayview-allday-category-cell" *ngFor="let category of views[sliderIndex].categories">
-                  <table class="table dayview-allday-content-table">
+                  <table class="dayview-table dayview-allday-content-table">
                     <tbody>
                       <tr>
                         <td *ngIf="views[currentViewIndex].categorizedAllDayEventsMap.get(category)?.length"
@@ -125,7 +125,7 @@
           class="dayview-normal-event-container dayview-categorized-normal-event-container"
           [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition"
           (onScroll)="setScrollPosition($event)">
-          <table class="table table-bordered table-fixed dayview-normal-event-table">
+          <table class="dayview-table dayview-table-bordered dayview-table-fixed dayview-normal-event-table">
             <tbody>
               <tr *ngFor="let row of views[sliderIndex].rows; let i = index">
                 <td class="calendar-hour-column text-center">
@@ -152,7 +152,7 @@
         <init-position-scroll *ngIf="sliderIndex !== currentViewIndex"
           class="dayview-normal-event-container dayview-categorized-normal-event-container"
           [initPosition]="initScrollPosition">
-          <table class="table table-bordered table-fixed dayview-normal-event-table">
+          <table class="dayview-table dayview-table-bordered dayview-table-fixed dayview-normal-event-table">
             <tbody>
               <tr *ngFor="let row of views[sliderIndex].rows; let i = index">
                 <td class="calendar-hour-column text-center">
