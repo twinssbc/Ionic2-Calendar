@@ -1,7 +1,12 @@
-import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import { Injectable } from "@angular/core";
+import { Observable, Subject } from "rxjs";
 
-import {ICalendarComponent, IView, CalendarMode, QueryMode} from './calendar.interface';
+import {
+    ICalendarComponent,
+    IView,
+    CalendarMode,
+    QueryMode,
+} from "./calendar.interface";
 
 @Injectable()
 export class CalendarService {
@@ -20,14 +25,16 @@ export class CalendarService {
     private slideUpdated = new Subject<void>();
 
     constructor() {
-        this.currentDateChangedFromParent$ = this.currentDateChangedFromParent.asObservable();
-        this.currentDateChangedFromChildren$ = this.currentDateChangedFromChildren.asObservable();
+        this.currentDateChangedFromParent$ =
+            this.currentDateChangedFromParent.asObservable();
+        this.currentDateChangedFromChildren$ =
+            this.currentDateChangedFromChildren.asObservable();
         this.eventSourceChanged$ = this.eventSourceChanged.asObservable();
         this.slideChanged$ = this.slideChanged.asObservable();
         this.slideUpdated$ = this.slideUpdated.asObservable();
     }
 
-    setCurrentDate(val: Date, fromParent: boolean = false) {
+    public setCurrentDate(val: Date, fromParent: boolean = false): void {
         this._currentDate = new Date(val);
         if (fromParent) {
             this.currentDateChangedFromParent.next(val);
@@ -36,16 +43,16 @@ export class CalendarService {
         }
     }
 
-    get currentDate(): Date {
+    public get currentDate(): Date {
         return this._currentDate;
     }
 
-    rangeChanged(component: ICalendarComponent) {
-        if (this.queryMode === 'local') {
+    public rangeChanged(component: ICalendarComponent): void {
+        if (this.queryMode === "local") {
             if (component.eventSource && component.onDataLoaded) {
                 component.onDataLoaded();
             }
-        } else if (this.queryMode === 'remote') {
+        } else if (this.queryMode === "remote") {
             let rangeStart = new Date(component.range.startTime.getTime()),
                 rangeEnd = new Date(component.range.endTime.getTime());
 
@@ -60,35 +67,42 @@ export class CalendarService {
             }
             component.onRangeChanged.emit({
                 startTime: rangeStart,
-                endTime: rangeEnd
+                endTime: rangeEnd,
             });
         }
     }
 
-    private getStep(mode: CalendarMode): { years: number; months: number; days: number; } {
+    private getStep(mode: CalendarMode): {
+        years: number;
+        months: number;
+        days: number;
+    } {
         switch (mode) {
-            case 'month':
+            case "month":
                 return {
                     years: 0,
                     months: 1,
-                    days: 0
+                    days: 0,
                 };
-            case 'week':
+            case "week":
                 return {
                     years: 0,
                     months: 0,
-                    days: 7
+                    days: 7,
                 };
-            case 'day':
+            case "day":
                 return {
                     years: 0,
                     months: 0,
-                    days: 1
+                    days: 1,
                 };
         }
     }
 
-    getAdjacentCalendarDate(mode: CalendarMode, direction: number): Date {
+    public getAdjacentCalendarDate(
+        mode: CalendarMode,
+        direction: number
+    ): Date {
         let calculateCalendarDate = this.currentDate;
         const step = this.getStep(mode),
             year = calculateCalendarDate.getFullYear() + direction * step.years,
@@ -97,21 +111,31 @@ export class CalendarService {
 
         calculateCalendarDate = new Date(year, month, date, 12, 0, 0);
 
-        if (mode === 'month') {
+        if (mode === "month") {
             const firstDayInNextMonth = new Date(year, month + 1, 1, 12, 0, 0);
-            if (firstDayInNextMonth.getTime() <= calculateCalendarDate.getTime()) {
-                calculateCalendarDate = new Date(firstDayInNextMonth.getTime() - 24 * 60 * 60 * 1000);
+            if (
+                firstDayInNextMonth.getTime() <= calculateCalendarDate.getTime()
+            ) {
+                calculateCalendarDate = new Date(
+                    firstDayInNextMonth.getTime() - 24 * 60 * 60 * 1000
+                );
             }
         }
         return calculateCalendarDate;
     }
 
-    getAdjacentViewStartTime(component: ICalendarComponent, direction: number): Date {
-        let adjacentCalendarDate = this.getAdjacentCalendarDate(component.mode, direction);
+    private getAdjacentViewStartTime(
+        component: ICalendarComponent,
+        direction: number
+    ): Date {
+        let adjacentCalendarDate = this.getAdjacentCalendarDate(
+            component.mode,
+            direction
+        );
         return component.getRange(adjacentCalendarDate).startTime;
     }
 
-    populateAdjacentViews(component: ICalendarComponent) {
+    public populateAdjacentViews(component: ICalendarComponent): void {
         let currentViewStartDate: Date,
             currentViewData: IView[],
             toUpdateViewIndex: number,
@@ -120,43 +144,66 @@ export class CalendarService {
         if (component.direction === 1) {
             currentViewStartDate = this.getAdjacentViewStartTime(component, 1);
             toUpdateViewIndex = (currentViewIndex + 1) % 3;
-            component.views[toUpdateViewIndex] = component.getViewData(currentViewStartDate);
+            component.views[toUpdateViewIndex] =
+                component.getViewData(currentViewStartDate);
         } else if (component.direction === -1) {
             currentViewStartDate = this.getAdjacentViewStartTime(component, -1);
             toUpdateViewIndex = (currentViewIndex + 2) % 3;
-            component.views[toUpdateViewIndex] = component.getViewData(currentViewStartDate);
+            component.views[toUpdateViewIndex] =
+                component.getViewData(currentViewStartDate);
         } else {
             if (!component.views) {
                 currentViewData = [];
                 currentViewStartDate = component.range.startTime;
-                currentViewData.push(component.getViewData(currentViewStartDate));
-                currentViewStartDate = this.getAdjacentViewStartTime(component, 1);
-                currentViewData.push(component.getViewData(currentViewStartDate));
-                currentViewStartDate = this.getAdjacentViewStartTime(component, -1);
-                currentViewData.push(component.getViewData(currentViewStartDate));
+                currentViewData.push(
+                    component.getViewData(currentViewStartDate)
+                );
+                currentViewStartDate = this.getAdjacentViewStartTime(
+                    component,
+                    1
+                );
+                currentViewData.push(
+                    component.getViewData(currentViewStartDate)
+                );
+                currentViewStartDate = this.getAdjacentViewStartTime(
+                    component,
+                    -1
+                );
+                currentViewData.push(
+                    component.getViewData(currentViewStartDate)
+                );
                 component.views = currentViewData;
             } else {
                 currentViewStartDate = component.range.startTime;
-                component.views[currentViewIndex] = component.getViewData(currentViewStartDate);
-                currentViewStartDate = this.getAdjacentViewStartTime(component, -1);
+                component.views[currentViewIndex] =
+                    component.getViewData(currentViewStartDate);
+                currentViewStartDate = this.getAdjacentViewStartTime(
+                    component,
+                    -1
+                );
                 toUpdateViewIndex = (currentViewIndex + 2) % 3;
-                component.views[toUpdateViewIndex] = component.getViewData(currentViewStartDate);
-                currentViewStartDate = this.getAdjacentViewStartTime(component, 1);
+                component.views[toUpdateViewIndex] =
+                    component.getViewData(currentViewStartDate);
+                currentViewStartDate = this.getAdjacentViewStartTime(
+                    component,
+                    1
+                );
                 toUpdateViewIndex = (currentViewIndex + 1) % 3;
-                component.views[toUpdateViewIndex] = component.getViewData(currentViewStartDate);
+                component.views[toUpdateViewIndex] =
+                    component.getViewData(currentViewStartDate);
             }
         }
     }
 
-    loadEvents() {
+    public loadEvents(): void {
         this.eventSourceChanged.next();
     }
 
-    slide(direction: number) {
+    public slide(direction: number): void {
         this.slideChanged.next(direction);
     }
 
-    update() {
+    public update(): void {
         this.slideUpdated.next();
     }
 }
