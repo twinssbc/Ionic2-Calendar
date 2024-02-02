@@ -78,7 +78,7 @@
             </thead>
           </table>
         </div>
-        <div *ngIf="sliderIndex!==currentViewIndex" class="dayview-inactive-category-header">
+        <div *ngIf="sliderIndex!==currentViewIndex" class="dayview-category-header">
           <table class="table table-fixed dayview-category-header-table">
             <thead>
               <tr>
@@ -158,7 +158,7 @@
                 <td class="calendar-hour-column text-center">
                   {{ hourColumnLabels[i] }}
                 </td>
-                <td *ngIf="dayviewCategorySource?.size" class="calendar-cell" (click)="select(row)"
+                <td *ngIf="dayviewCategorySource?.size === 0" class="calendar-cell" (click)="select(row)"
                   tappable>
                   <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
                     [ngTemplateOutletContext]="{tm: { events: [], time: row.time }, hourParts, eventTemplate: dayviewNormalEventTemplate}">
