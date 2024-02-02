@@ -1,7 +1,7 @@
 <div class="swiper weekview-swiper" #weekViewSwiper>
     <div class="swiper-wrapper slides-container" [dir]="dir">
         <div *ngFor="let sliderIndex of sliderIndexList" class="swiper-slide slide-container weekview-slide-container">
-            <table class="weekview-table weekview-table-bordered weekview-table-fixed weekview-header">
+            <table class="table table-bordered table-fixed weekview-header">
                 <thead>
                     <tr>
                         <th class="calendar-hour-column"></th>
@@ -18,7 +18,7 @@
                 <div class="weekview-allday-table">
                     <div class="weekview-allday-label">{{allDayLabel}}</div>
                     <div class="weekview-allday-content-wrapper scroll-content">
-                        <table class="weekview-table weekview-table-fixed weekview-allday-content-table">
+                        <table class="table table-fixed weekview-allday-content-table">
                             <tbody>
                                 <tr>
                                     <td *ngFor="let day of views[sliderIndex].dates" class="calendar-cell">
@@ -33,7 +33,7 @@
                 </div>
                 <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition"
                     [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
-                    <table class="weekview-table weekview-table-bordered weekview-table-fixed weekview-normal-event-table">
+                    <table class="table table-bordered table-fixed weekview-normal-event-table">
                         <tbody>
                             <tr *ngFor="let row of views[sliderIndex].rows; let i = index">
                                 <td class="calendar-hour-column text-center">
@@ -56,7 +56,7 @@
                 <div class="weekview-allday-table">
                     <div class="weekview-allday-label">{{allDayLabel}}</div>
                     <div class="weekview-allday-content-wrapper scroll-content">
-                        <table class="weekview-table weekview-table-fixed weekview-allday-content-table">
+                        <table class="table table-fixed weekview-allday-content-table">
                             <tbody>
                                 <tr>
                                     <td *ngFor="let day of views[sliderIndex].dates" class="calendar-cell">
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <init-position-scroll class="weekview-normal-event-container" [initPosition]="initScrollPosition">
-                    <table class="weekview-table weekview-table-bordered weekview-table-fixed weekview-normal-event-table">
+                    <table class="table table-bordered table-fixed weekview-normal-event-table">
                         <tbody>
                             <tr *ngFor="let row of views[sliderIndex].rows; let i = index">
                                 <td class="calendar-hour-column text-center">
