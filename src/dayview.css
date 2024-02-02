@@ -1,58 +1,58 @@
-.table-fixed {
+.dayview-slide-container > .table-fixed {
   table-layout: fixed;
 }
 
-.table {
+.dayview-slide-container > .table {
   width: 100%;
   max-width: 100%;
   height: 100%;
   background-color: transparent;
 }
 
-.table > thead > tr > th,
-.table > tbody > tr > th,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > tbody > tr > td,
-.table > tfoot > tr > td {
+.dayview-slide-container > .table > thead > tr > th,
+.dayview-slide-container > .table > tbody > tr > th,
+.dayview-slide-container > .table > tfoot > tr > th,
+.dayview-slide-container > .table > thead > tr > td,
+.dayview-slide-container > .table > tbody > tr > td,
+.dayview-slide-container > .table > tfoot > tr > td {
   padding: 8px;
   line-height: 20px;
   vertical-align: top;
 }
 
-.table > thead > tr > th {
+.dayview-slide-container > .table > thead > tr > th {
   vertical-align: bottom;
 }
 
-.table > thead:first-child > tr:first-child > th,
-.table > thead:first-child > tr:first-child > td {
+.dayview-slide-container > .table > thead:first-child > tr:first-child > th,
+.dayview-slide-container > .table > thead:first-child > tr:first-child > td {
   border-top: 0;
 }
 
-.table > tbody + tbody {
+.dayview-slide-container > .table > tbody + tbody {
   border-top: 2px solid #ddd;
 }
 
-.table-bordered {
+.dayview-slide-container > .table-bordered {
   border: 1px solid #ddd;
 }
 
-.table-bordered > thead > tr > th,
-.table-bordered > tbody > tr > th,
-.table-bordered > tfoot > tr > th,
-.table-bordered > thead > tr > td,
-.table-bordered > tbody > tr > td,
-.table-bordered > tfoot > tr > td {
+.dayview-slide-container > .table-bordered > thead > tr > th,
+.dayview-slide-container > .table-bordered > tbody > tr > th,
+.dayview-slide-container > .table-bordered > tfoot > tr > th,
+.dayview-slide-container > .table-bordered > thead > tr > td,
+.dayview-slide-container > .table-bordered > tbody > tr > td,
+.dayview-slide-container > .table-bordered > tfoot > tr > td {
   border: 1px solid #ddd;
 }
 
-.table-bordered > thead > tr > th,
-.table-bordered > thead > tr > td {
+.dayview-slide-container > .table-bordered > thead > tr > th,
+.dayview-slide-container > .table-bordered > thead > tr > td {
   border-bottom-width: 2px;
 }
 
-.table-striped > tbody > tr:nth-child(odd) > td,
-.table-striped > tbody > tr:nth-child(odd) > th {
+.dayview-slide-container > .table-striped > tbody > tr:nth-child(odd) > td,
+.dayview-slide-container > .table-striped > tbody > tr:nth-child(odd) > th {
   background-color: #f9f9f9;
 }
 
@@ -183,7 +183,7 @@
   display: none;
 }
 
-.table > tbody > tr > td.calendar-hour-column {
+.dayview-slide-container > .table > tbody > tr > td.calendar-hour-column {
   padding-left: 0;
   padding-right: 0;
   vertical-align: middle;
@@ -200,7 +200,7 @@
     padding-top: 4px;
   }
 
-  .table > tbody > tr > td.calendar-hour-column {
+  .dayview-slide-container > .table > tbody > tr > td.calendar-hour-column {
     padding-left: 0;
     padding-right: 0;
     vertical-align: middle;
