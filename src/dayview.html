@@ -70,7 +70,7 @@
             <thead>
               <tr>
                 <th class="dayview-category-header-item calendar-hour-column"></th>
-                <th *ngFor="let category of views[sliderIndex].categories" class="dayview-category-header-item">
+                <th *ngFor="let category of dayviewCategorySource" class="dayview-category-header-item">
                   <ng-template [ngTemplateOutlet]="dayviewCategoryItemTemplate" [ngTemplateOutletContext]="{category}">
                   </ng-template>
                 </th>
@@ -83,7 +83,7 @@
             <thead>
               <tr>
                 <th class="dayview-category-header-item calendar-hour-column"></th>
-                <th *ngFor="let category of views[sliderIndex].categories" class="dayview-category-header-item">
+                <th *ngFor="let category of dayviewCategorySource" class="dayview-category-header-item">
                   <ng-template [ngTemplateOutlet]="dayviewCategoryItemTemplate" [ngTemplateOutletContext]="{category}">
                   </ng-template>
                 </th>
@@ -97,7 +97,7 @@
           <div class="dayview-allday-content-wrapper scroll-content">
             <table class="dayview-table dayview-table-fixed dayview-allday-category-table">
               <tbody>
-                <td class="dayview-allday-category-cell" *ngFor="let category of views[sliderIndex].categories">
+                <td class="dayview-allday-category-cell" *ngFor="let category of dayviewCategorySource">
                   <table class="dayview-table dayview-allday-content-table">
                     <tbody>
                       <tr>
@@ -131,13 +131,13 @@
                 <td class="calendar-hour-column text-center">
                   {{ hourColumnLabels[i] }}
                 </td>
-                <td *ngIf="views[sliderIndex].categories.length === 0" class="calendar-cell" (click)="select(row)"
+                <td *ngIf="dayviewCategorySource?.size === 0" class="calendar-cell" (click)="select(row)"
                   tappable>
                   <ng-template [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
                     [ngTemplateOutletContext]="{tm: { events: [], time: row.time }, hourParts, eventTemplate: dayviewNormalEventTemplate}">
                   </ng-template>
                 </td>
-                <td *ngFor="let category of views[sliderIndex].categories" class="calendar-cell"
+                <td *ngFor="let category of dayviewCategorySource" class="calendar-cell"
                   (click)="select(row, category)" tappable>
                   <ng-template *ngIf="row.eventsGroupByCategory?.get(category)?.length"
                     [ngTemplateOutlet]="dayviewNormalEventSectionTemplate"
@@ -158,13 +158,13 @@
                 <td class="calendar-hour-column text-center">
                   {{ hourColumnLabels[i] }}
                 </td>
-                <td *ngIf="views[sliderIndex].categories.length === 0" class="calendar-cell" (click)="select(row)"
+                <td *ngIf="dayviewCategorySource?.size" class="calendar-cell" (click)="select(row)"
                   tappable>
                   <ng-template [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"
                     [ngTemplateOutletContext]="{tm: { events: [], time: row.time }, hourParts, eventTemplate: dayviewNormalEventTemplate}">
                   </ng-template>
                 </td>
-                <td *ngFor="let category of views[sliderIndex].categories" class="calendar-cell"
+                <td *ngFor="let category of dayviewCategorySource" class="calendar-cell"
                   (click)="select(row, category)" tappable>
                   <ng-template *ngIf="row.eventsGroupByCategory?.get(category)?.length"
                     [ngTemplateOutlet]="dayviewInactiveNormalEventSectionTemplate"

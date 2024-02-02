@@ -373,7 +373,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
         return {
             rows: DayViewComponent.createDateObjects(startTime, this.startHour, this.endHour, this.hourSegments),
             allDayEvents: [],
-            categories: [],
             categorizedAllDayEventsMap: new Map<string, IDisplayAllDayEvent[]>()
         };
     }
@@ -401,7 +400,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
             currentViewIndex = this.currentViewIndex,
             rows = this.views[currentViewIndex].rows,
             allDayEvents: IDisplayAllDayEvent[] = (this.views[currentViewIndex].allDayEvents = []),
-            displayCategorySet = new Set<string>(),
             oneHour = 3600000,
             eps = 0.016,
             rangeStartRowIndex = this.startHour * this.hourSegments,
@@ -443,9 +441,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                 allDayEvents.push({
                     event
                 });
-                if (event.category && this.dayviewCategorySource && this.dayviewCategorySource.has(event.category)) {
-                    displayCategorySet.add(event.category);
-                }
             } else {
                 normalEventInRange = true;
 
@@ -524,9 +519,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
                             groupedEvents.set(event.category, [displayEvent]);
                             rows[startIndex].eventsGroupByCategory = groupedEvents;
                         }
-                        if (this.dayviewCategorySource.has(event.category)) {
-                            displayCategorySet.add(event.category);
-                        }
                     }
                 }
             }
@@ -565,7 +557,6 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         if (this.dayviewShowCategoryView && this.dayviewCategorySource) {
             this.categorizeAllDayEvents(allDayEvents);
-            this.views[this.currentViewIndex].categories = [...displayCategorySet];
         }
     }
 
