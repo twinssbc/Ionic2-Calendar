@@ -150,11 +150,11 @@ export class MyPageModule {}
 
 # Options
 
-* `dayviewShowCategoryView` (version: 2.2+)    
+* `dayviewShowCategoryView` (version: 2.4+)    
 Determines if show dayview with category    
 Type: `boolean`    
 Default value: `false`    
-* `dayviewCategorySource` (version: 2.2+)    
+* `dayviewCategorySource` (version: 2.4+)    
 Determines the source the category names so that events with corresponding category will display accordingly. If events are not assigned with category, they will NOT be placed in the category view.    
 Type: `Set<string>`    
 Default value: `null`    
@@ -536,13 +536,13 @@ Applied to the all day label in day view
 * calendar-hour-column  
 Applied to the hour column in both weekview and day view
 
-* dayview-category-header (version: 2.2+)  
+* dayview-category-header (version: 2.4+)  
 Applied to the category section in day view  
 
-* dayview-category-header-item (version: 2.2+)  
+* dayview-category-header-item (version: 2.4+)  
 Applied to the category header item in day view  
 
-* dayview-category-cell-item (version: 2.2+)  
+* dayview-category-cell-item (version: 2.4+)  
 Applied to the category cell item in day view  
 
 
@@ -612,7 +612,7 @@ The template provides customized view for normal event in the weekview
     <calendar ... [weekviewNormalEventTemplate]="weekviewNormalEventTemplate"></calendar>
 ```
 
-* dayviewCategoryItemTemplate (version: 2.2+)  
+* dayviewCategoryItemTemplate (version: 2.4+)  
 The template provides customized view for category item with categoryId and categoryName in the day view  
 ``` html
     <ng-template #dayviewCategoryItemTemplate let-category="category">
