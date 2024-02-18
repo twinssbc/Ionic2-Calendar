@@ -115,8 +115,8 @@
   line-height: 50px;
   text-align: center;
   width: 50px;
-  border-right: 1px solid #ddd;
   border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
 }
 
 [dir="rtl"] .dayview-allday-label {
@@ -135,6 +135,11 @@
   margin-right: 50px;
 }
 
+.dayview-allday-category-wrapper {
+  height: 50px;
+  margin-top: -1px;
+}
+
 .dayview-allday-category-table {
   border: solid 1px #ddd;
 }
@@ -150,7 +155,7 @@
 .dayview-allday-table {
   height: 50px;
   position: relative;
-  border: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
   font-size: 14px;
 }
 
