@@ -542,10 +542,6 @@ Applied to the category section in day view
 * dayview-category-header-item (version: 2.4+)  
 Applied to the category header item in day view  
 
-* dayview-category-cell-item (version: 2.4+)  
-Applied to the category cell item in day view  
-
-
 ## Template Customization  
 
 Note: For any css class appear in the customized template, you need to specify the styles by yourself. The styles defined in the calendar component won’t be applied because of the view encapsulation. You could refer to calendar.ts to get the definition of context types.   
