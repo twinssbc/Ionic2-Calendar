@@ -82,10 +82,10 @@
         <div class="dayview-allday-table">
           <div class="dayview-allday-label">{{ allDayLabel }}</div>
           <div class="dayview-allday-content-wrapper dayview-allday-category-wrapper scroll-content">
-            <table class="table table-fixed table-bordered dayview-allday-category-table">
+            <table class="table table-fixed table-bordered">
               <tbody>
                 <tr>
-                  <td class="dayview-allday-category-cell calendar-cell" *ngFor="let category of dayviewCategorySource">
+                  <td class="calendar-cell" *ngFor="let category of dayviewCategorySource">
                     <div class="calendar-event-wrap">
                       <ng-template *ngIf="sliderIndex === currentViewIndex"
                         [ngTemplateOutlet]="dayviewAllDayEventSectionTemplate"

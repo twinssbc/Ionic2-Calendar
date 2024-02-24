@@ -95,7 +95,6 @@
 .dayview-category-header-item {
   font-weight: normal;
   height: 37px;
-  border-left: 1px solid #ddd;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -130,14 +129,6 @@
 .dayview-allday-category-wrapper {
   height: 50px;
   margin-top: -1px;
-}
-
-.dayview-allday-category-table {
-  border: solid 1px #ddd;
-}
-
-.dayview-allday-category-cell {
-  border: solid 1px #ddd;
 }
 
 .dayview-allday-content-table {
