@@ -111,6 +111,7 @@
 }
 
 [dir="rtl"] .dayview-allday-label {
+  border-left: none;
   border-right: 1px solid #ddd;
   float: right;
 }
