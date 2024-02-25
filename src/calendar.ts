@@ -55,6 +55,7 @@ export class CalendarComponent implements OnInit {
     @Input() weekviewHeaderTemplate?:TemplateRef<IDisplayWeekViewHeader>;
     @Input() weekviewAllDayEventTemplate?:TemplateRef<IDisplayAllDayEvent>;
     @Input() weekviewNormalEventTemplate?:TemplateRef<IDisplayEvent>;
+    @Input() dayviewCategoryItemTemplate?: TemplateRef<string>;
     @Input() dayviewAllDayEventTemplate?:TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate?:TemplateRef<IDisplayEvent>;
     @Input() weekviewAllDayEventSectionTemplate?:TemplateRef<IWeekViewAllDayEventSectionTemplateContext>;
@@ -76,6 +77,8 @@ export class CalendarComponent implements OnInit {
     @Input() startHour:number = 0;
     @Input() endHour:number = 24;
     @Input() sliderOptions:any;
+    @Input() dayviewCategorySource?:Set<string>;
+    @Input() dayviewShowCategoryView:boolean = false;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();
