@@ -33,6 +33,9 @@ https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html
 ## Day View    
 ![Day View](https://github.com/twinssbc/ionic-calendar-demo/blob/main/images/day-view.png)
 
+## Day View - Categorized    
+![Day View Categorized](https://github.com/twinssbc/ionic-calendar-demo/blob/main/images/day-view-categorized.png)
+
 # Dependency
 Version 2.3.x depends on Ionic (>=7.0.0), Angular (>=17.0.0) and Swiper (>=11.0.0).   
 Version 2.2.x depends on Ionic (>=7.0.0), Angular (>=17.0.0) and Swiper (>=10.1.0).   
