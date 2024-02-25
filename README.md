@@ -24,7 +24,14 @@ https://stackblitz.com/edit/ionic-calendar-demo-1-0?file=src%2Fapp%2Fexample.com
 Version 0.x    
 https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html   
 
+## Month View    
+![Month View](https://github.com/twinssbc/ionic-calendar-demo/blob/main/images/month-view.png)
 
+## Week View    
+![Week View](https://github.com/twinssbc/ionic-calendar-demo/blob/main/images/week-view.png)
+
+## Day View    
+![Day View](https://github.com/twinssbc/ionic-calendar-demo/blob/main/images/day-view.png)
 
 # Dependency
 Version 2.3.x depends on Ionic (>=7.0.0), Angular (>=17.0.0) and Swiper (>=11.0.0).   
