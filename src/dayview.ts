@@ -44,7 +44,7 @@ import { CalendarService } from './calendar.service';
     encapsulation: ViewEncapsulation.None
 })
 export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, OnDestroy, AfterViewInit {
-    constructor(private calendarService: CalendarService, private elm: ElementRef, private zone: NgZone) {}
+    constructor(private calendarService: CalendarService, private elm: ElementRef, private zone: NgZone) { }
 
     private slider!: Swiper;
     @ViewChild('dayViewSwiper') swiperElement?: ElementRef;
@@ -413,111 +413,95 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges, 
 
         for (let i = 0; i < len; i += 1) {
             const event = eventSource[i];
-            const eventStartTime = event.startTime;
-            const eventEndTime = event.endTime;
-            let eventUTCStartTime: number, eventUTCEndTime: number;
+            for (let occurence of this.calendarService.getEventOccurences(event, utcStartTime, utcEndTime)) {
+                let eventUTCStartTime = occurence.eventUTCStartTime
+                let eventUTCEndTime = occurence.eventUTCEndTime
 
-            if (event.allDay) {
-                eventUTCStartTime = eventStartTime.getTime();
-                eventUTCEndTime = eventEndTime.getTime();
-            } else {
-                eventUTCStartTime = Date.UTC(
-                    eventStartTime.getFullYear(),
-                    eventStartTime.getMonth(),
-                    eventStartTime.getDate()
-                );
-                eventUTCEndTime = Date.UTC(
-                    eventEndTime.getFullYear(),
-                    eventEndTime.getMonth(),
-                    eventEndTime.getDate() + 1
-                );
-            }
+                const eventStartTime = event.startTime;
+                const eventEndTime = event.endTime;
 
-            if (eventUTCEndTime <= utcStartTime || eventUTCStartTime >= utcEndTime || eventStartTime >= eventEndTime) {
-                continue;
-            }
-
-            if (event.allDay) {
-                allDayEvents.push({
-                    event
-                });
-            } else {
-                normalEventInRange = true;
-
-                let timeDifferenceStart: number;
-                if (eventUTCStartTime < utcStartTime) {
-                    timeDifferenceStart = 0;
+                if (event.allDay) {
+                    allDayEvents.push({
+                        event
+                    });
                 } else {
-                    timeDifferenceStart =
-                        (eventStartTime.getHours() + eventStartTime.getMinutes() / 60) * this.hourSegments;
-                }
+                    normalEventInRange = true;
 
-                let timeDifferenceEnd: number;
-                if (eventUTCEndTime > utcEndTime) {
-                    timeDifferenceEnd = ((utcEndTime - utcStartTime) / oneHour) * this.hourSegments;
-                } else {
-                    timeDifferenceEnd = (eventEndTime.getHours() + eventEndTime.getMinutes() / 60) * this.hourSegments;
-                }
-
-                let startIndex = Math.floor(timeDifferenceStart);
-                let endIndex = Math.ceil(timeDifferenceEnd - eps);
-                let startOffset = 0;
-                let endOffset = 0;
-                if (this.hourParts !== 1) {
-                    if (startIndex < rangeStartRowIndex) {
-                        startOffset = 0;
+                    let timeDifferenceStart: number;
+                    if (eventUTCStartTime < utcStartTime) {
+                        timeDifferenceStart = 0;
                     } else {
-                        startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
+                        timeDifferenceStart =
+                            (eventStartTime.getHours() + eventStartTime.getMinutes() / 60) * this.hourSegments;
+                    }
+
+                    let timeDifferenceEnd: number;
+                    if (eventUTCEndTime > utcEndTime) {
+                        timeDifferenceEnd = ((utcEndTime - utcStartTime) / oneHour) * this.hourSegments;
+                    } else {
+                        timeDifferenceEnd = (eventEndTime.getHours() + eventEndTime.getMinutes() / 60) * this.hourSegments;
+                    }
+
+                    let startIndex = Math.floor(timeDifferenceStart);
+                    let endIndex = Math.ceil(timeDifferenceEnd - eps);
+                    let startOffset = 0;
+                    let endOffset = 0;
+                    if (this.hourParts !== 1) {
+                        if (startIndex < rangeStartRowIndex) {
+                            startOffset = 0;
+                        } else {
+                            startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
+                        }
+                        if (endIndex > rangeEndRowIndex) {
+                            endOffset = 0;
+                        } else {
+                            endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
+                        }
+                    }
+
+                    if (startIndex < rangeStartRowIndex) {
+                        startIndex = 0;
+                    } else {
+                        startIndex -= rangeStartRowIndex;
                     }
                     if (endIndex > rangeEndRowIndex) {
-                        endOffset = 0;
-                    } else {
-                        endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
+                        endIndex = rangeEndRowIndex;
                     }
-                }
+                    endIndex -= rangeStartRowIndex;
 
-                if (startIndex < rangeStartRowIndex) {
-                    startIndex = 0;
-                } else {
-                    startIndex -= rangeStartRowIndex;
-                }
-                if (endIndex > rangeEndRowIndex) {
-                    endIndex = rangeEndRowIndex;
-                }
-                endIndex -= rangeStartRowIndex;
+                    if (startIndex < endIndex) {
+                        const displayEvent: IDisplayEvent = {
+                            event,
+                            startIndex,
+                            endIndex,
+                            startOffset,
+                            endOffset,
+                            position: 0
+                        };
 
-                if (startIndex < endIndex) {
-                    const displayEvent: IDisplayEvent = {
-                        event,
-                        startIndex,
-                        endIndex,
-                        startOffset,
-                        endOffset,
-                        position: 0
-                    };
-
-                    let eventSet = rows[startIndex].events;
-                    if (eventSet) {
-                        eventSet.push(displayEvent);
-                    } else {
-                        eventSet = [];
-                        eventSet.push(displayEvent);
-                        rows[startIndex].events = eventSet;
-                    }
-
-                    // setup eventsGroupedByCategory
-                    if (this.dayviewShowCategoryView && this.dayviewCategorySource && event.category) {
-                        let groupedEvents = rows[startIndex].eventsGroupByCategory;
-                        if (groupedEvents) {
-                            if (Array.isArray(groupedEvents.get(event.category))) {
-                                groupedEvents.get(event.category)?.push(displayEvent);
-                            } else {
-                                groupedEvents.set(event.category, [displayEvent]);
-                            }
+                        let eventSet = rows[startIndex].events;
+                        if (eventSet) {
+                            eventSet.push(displayEvent);
                         } else {
-                            groupedEvents = new Map();
-                            groupedEvents.set(event.category, [displayEvent]);
-                            rows[startIndex].eventsGroupByCategory = groupedEvents;
+                            eventSet = [];
+                            eventSet.push(displayEvent);
+                            rows[startIndex].events = eventSet;
+                        }
+
+                        // setup eventsGroupedByCategory
+                        if (this.dayviewShowCategoryView && this.dayviewCategorySource && event.category) {
+                            let groupedEvents = rows[startIndex].eventsGroupByCategory;
+                            if (groupedEvents) {
+                                if (Array.isArray(groupedEvents.get(event.category))) {
+                                    groupedEvents.get(event.category)?.push(displayEvent);
+                                } else {
+                                    groupedEvents.set(event.category, [displayEvent]);
+                                }
+                            } else {
+                                groupedEvents = new Map();
+                                groupedEvents.set(event.category, [displayEvent]);
+                                rows[startIndex].eventsGroupByCategory = groupedEvents;
+                            }
                         }
                     }
                 }

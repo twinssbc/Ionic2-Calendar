@@ -1,4 +1,4 @@
-import {DatePipe} from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
     Component,
     OnInit,
@@ -11,14 +11,14 @@ import {
     ViewEncapsulation,
     TemplateRef,
     ElementRef,
-    OnDestroy, 
+    OnDestroy,
     AfterViewInit,
     NgZone,
     ViewChild
 } from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Swiper} from 'swiper';
-import {SwiperOptions} from 'swiper/types';
+import { Subscription } from 'rxjs';
+import { Swiper } from 'swiper';
+import { SwiperOptions } from 'swiper/types';
 
 import type {
     ICalendarComponent,
@@ -36,7 +36,7 @@ import type {
     IWeekViewAllDayEventSectionTemplateContext,
     IWeekViewNormalEventSectionTemplateContext
 } from './calendar.interface';
-import {CalendarService} from './calendar.service';
+import { CalendarService } from './calendar.service';
 
 @Component({
     selector: 'weekview',
@@ -188,12 +188,12 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
 
         let i = 0;
         while (i < len) {
-            let event:IDisplayEvent|undefined = orderedEvents[i];
+            let event: IDisplayEvent | undefined = orderedEvents[i];
             if (!event.overlapNumber) {
                 const overlapNumber = event.position + 1;
                 event.overlapNumber = overlapNumber;
                 const eventQueue = [event];
-                while (event = eventQueue.shift()) {                    
+                while (event = eventQueue.shift()) {
                     let index = event.startIndex * hourParts + event.startOffset;
                     while (index < event.endIndex * hourParts - event.endOffset) {
                         if (!cells[index].calculated) {
@@ -232,7 +232,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatDayHeader = function (date: Date) {
-                return datePipe.transform(date, this.formatWeekViewDayHeader)||'';
+                return datePipe.transform(date, this.formatWeekViewDayHeader) || '';
             };
         }
 
@@ -241,7 +241,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatTitle = function (date: Date) {
-                return datePipe.transform(date, this.formatWeekTitle)||'';
+                return datePipe.transform(date, this.formatWeekTitle) || '';
             };
         }
 
@@ -250,7 +250,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
         } else {
             const datePipe = new DatePipe(this.locale);
             this.formatHourColumnLabel = function (date: Date) {
-                return datePipe.transform(date, this.formatHourColumn)||'';
+                return datePipe.transform(date, this.formatHourColumn) || '';
             };
         }
 
@@ -282,15 +282,15 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
     ngAfterViewInit() {
         this.slider = new Swiper(this.swiperElement?.nativeElement, this.sliderOptions);
         let me = this;
-        this.slider.on('slideNextTransitionEnd', function() {
+        this.slider.on('slideNextTransitionEnd', function () {
             me.onSlideChanged(1);
         });
 
-        this.slider.on('slidePrevTransitionEnd', function() {
+        this.slider.on('slidePrevTransitionEnd', function () {
             me.onSlideChanged(-1);
         });
 
-        if(this.dir === 'rtl') {
+        if (this.dir === 'rtl') {
             this.slider.changeLanguageDirection('rtl');
         }
 
@@ -459,144 +459,131 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
         }
         for (let i = 0; i < len; i += 1) {
             const event = eventSource[i];
-            const eventStartTime = event.startTime;
-            const eventEndTime = event.endTime;
+            for (let occurence of this.calendarService.getEventOccurences(event, utcStartTime, utcEndTime)) {
+                let eventUTCStartTime = occurence.eventUTCStartTime
+                let eventUTCEndTime = occurence.eventUTCEndTime
 
-            let eventUTCStartTime: number,
-                eventUTCEndTime: number;
+                if (event.allDay) {
+                    allDayEventInRange = true;
 
-            if (event.allDay) {
-                eventUTCStartTime = eventStartTime.getTime();
-                eventUTCEndTime = eventEndTime.getTime();
-            } else {
-                eventUTCStartTime = Date.UTC(eventStartTime.getFullYear(), eventStartTime.getMonth(), eventStartTime.getDate());
-                eventUTCEndTime = Date.UTC(eventEndTime.getFullYear(), eventEndTime.getMonth(), eventEndTime.getDate() + 1);
-            }
-
-            if (eventUTCEndTime <= utcStartTime || eventUTCStartTime >= utcEndTime || eventStartTime >= eventEndTime) {
-                continue;
-            }
-
-            if (event.allDay) {
-                allDayEventInRange = true;
-
-                let allDayStartIndex: number;
-                if (eventUTCStartTime <= utcStartTime) {
-                    allDayStartIndex = 0;
-                } else {
-                    allDayStartIndex = Math.round((eventUTCStartTime - utcStartTime) / oneDay);
-                }
-
-                let allDayEndIndex: number;
-                if (eventUTCEndTime >= utcEndTime) {
-                    allDayEndIndex = Math.round((utcEndTime - utcStartTime) / oneDay);
-                } else {
-                    allDayEndIndex = Math.round((eventUTCEndTime - utcStartTime) / oneDay);
-                }
-
-                const displayAllDayEvent: IDisplayEvent = {
-                    event,
-                    startIndex: allDayStartIndex,
-                    endIndex: allDayEndIndex,
-                    startOffset: 0,
-                    endOffset: 0,
-                    position: 0
-                };
-
-                let eventSet = dates[allDayStartIndex].events;
-                if (eventSet) {
-                    eventSet.push(displayAllDayEvent);
-                } else {
-                    eventSet = [];
-                    eventSet.push(displayAllDayEvent);
-                    dates[allDayStartIndex].events = eventSet;
-                }
-                dates[allDayStartIndex].hasEvent = true;
-            } else {
-                normalEventInRange = true;
-
-                let timeDifferenceStart: number;
-                if (eventUTCStartTime < utcStartTime) {
-                    timeDifferenceStart = 0;
-                } else {
-                    timeDifferenceStart = (eventUTCStartTime - utcStartTime) / oneHour * this.hourSegments + (eventStartTime.getHours() + eventStartTime.getMinutes() / 60) * this.hourSegments;
-                }
-
-                let timeDifferenceEnd: number;
-                if (eventUTCEndTime > utcEndTime) {
-                    timeDifferenceEnd = (utcEndTime - utcStartTime) / oneHour * this.hourSegments;
-                } else {
-                    timeDifferenceEnd = (eventUTCEndTime - oneDay - utcStartTime) / oneHour * this.hourSegments + (eventEndTime.getHours() + eventEndTime.getMinutes() / 60) * this.hourSegments;
-                }
-
-                const startIndex = Math.floor(timeDifferenceStart),
-                    endIndex = Math.ceil(timeDifferenceEnd - eps);
-                let startRowIndex = startIndex % allRows,
-                    dayIndex = Math.floor(startIndex / allRows),
-                    endOfDay = dayIndex * allRows,
-                    startOffset = 0,
-                    endOffset = 0;
-
-                if (this.hourParts !== 1) {
-                    if (startRowIndex < rangeStartRowIndex) {
-                        startOffset = 0;
+                    let allDayStartIndex: number;
+                    if (eventUTCStartTime <= utcStartTime) {
+                        allDayStartIndex = 0;
                     } else {
-                        startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
+                        allDayStartIndex = Math.round((eventUTCStartTime - utcStartTime) / oneDay);
                     }
-                }
 
-                do {
-                    endOfDay += allRows;
-                    let endRowIndex: number;
-                    if (endOfDay < endIndex) {
-                        endRowIndex = allRows;
+                    let allDayEndIndex: number;
+                    if (eventUTCEndTime >= utcEndTime) {
+                        allDayEndIndex = Math.round((utcEndTime - utcStartTime) / oneDay);
                     } else {
-                        if (endOfDay === endIndex) {
+                        allDayEndIndex = Math.round((eventUTCEndTime - utcStartTime) / oneDay);
+                    }
+
+                    const displayAllDayEvent: IDisplayEvent = {
+                        event,
+                        startIndex: allDayStartIndex,
+                        endIndex: allDayEndIndex,
+                        startOffset: 0,
+                        endOffset: 0,
+                        position: 0
+                    };
+
+                    let eventSet = dates[allDayStartIndex].events;
+                    if (eventSet) {
+                        eventSet.push(displayAllDayEvent);
+                    } else {
+                        eventSet = [];
+                        eventSet.push(displayAllDayEvent);
+                        dates[allDayStartIndex].events = eventSet;
+                    }
+                    dates[allDayStartIndex].hasEvent = true;
+                } else {
+                    normalEventInRange = true;
+
+                    let timeDifferenceStart: number;
+                    if (eventUTCStartTime < utcStartTime) {
+                        timeDifferenceStart = 0;
+                    } else {
+                        timeDifferenceStart = (eventUTCStartTime - utcStartTime) / oneHour * this.hourSegments + (event.startTime.getHours() + event.startTime.getMinutes() / 60) * this.hourSegments;
+                    }
+
+                    let timeDifferenceEnd: number;
+                    if (eventUTCEndTime > utcEndTime) {
+                        timeDifferenceEnd = (utcEndTime - utcStartTime) / oneHour * this.hourSegments;
+                    } else {
+                        timeDifferenceEnd = (eventUTCEndTime - oneDay - utcStartTime) / oneHour * this.hourSegments + (event.endTime.getHours() + event.endTime.getMinutes() / 60) * this.hourSegments;
+                    }
+
+                    const startIndex = Math.floor(timeDifferenceStart),
+                        endIndex = Math.ceil(timeDifferenceEnd - eps);
+                    let startRowIndex = startIndex % allRows,
+                        dayIndex = Math.floor(startIndex / allRows),
+                        endOfDay = dayIndex * allRows,
+                        startOffset = 0,
+                        endOffset = 0;
+
+                    if (this.hourParts !== 1) {
+                        if (startRowIndex < rangeStartRowIndex) {
+                            startOffset = 0;
+                        } else {
+                            startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
+                        }
+                    }
+
+                    do {
+                        endOfDay += allRows;
+                        let endRowIndex: number;
+                        if (endOfDay < endIndex) {
                             endRowIndex = allRows;
                         } else {
-                            endRowIndex = endIndex % allRows;
-                        }
-                        if (this.hourParts !== 1) {
-                            if (endRowIndex > rangeEndRowIndex) {
-                                endOffset = 0;
+                            if (endOfDay === endIndex) {
+                                endRowIndex = allRows;
                             } else {
-                                endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
+                                endRowIndex = endIndex % allRows;
+                            }
+                            if (this.hourParts !== 1) {
+                                if (endRowIndex > rangeEndRowIndex) {
+                                    endOffset = 0;
+                                } else {
+                                    endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
+                                }
                             }
                         }
-                    }
-                    if (startRowIndex < rangeStartRowIndex) {
-                        startRowIndex = 0;
-                    } else {
-                        startRowIndex -= rangeStartRowIndex;
-                    }
-                    if (endRowIndex > rangeEndRowIndex) {
-                        endRowIndex = rangeEndRowIndex;
-                    }
-                    endRowIndex -= rangeStartRowIndex;
-
-                    if (startRowIndex < endRowIndex) {
-                        const displayEvent = {
-                            event,
-                            startIndex: startRowIndex,
-                            endIndex: endRowIndex,
-                            startOffset,
-                            endOffset,
-                            position: 0
-                        };
-                        let eventSet = rows[startRowIndex][dayIndex].events;
-                        if (eventSet) {
-                            eventSet.push(displayEvent);
+                        if (startRowIndex < rangeStartRowIndex) {
+                            startRowIndex = 0;
                         } else {
-                            eventSet = [];
-                            eventSet.push(displayEvent);
-                            rows[startRowIndex][dayIndex].events = eventSet;
+                            startRowIndex -= rangeStartRowIndex;
                         }
-                        dates[dayIndex].hasEvent = true;
-                    }
-                    startRowIndex = 0;
-                    startOffset = 0;
-                    dayIndex += 1;
-                } while (endOfDay < endIndex);
+                        if (endRowIndex > rangeEndRowIndex) {
+                            endRowIndex = rangeEndRowIndex;
+                        }
+                        endRowIndex -= rangeStartRowIndex;
+
+                        if (startRowIndex < endRowIndex) {
+                            const displayEvent = {
+                                event,
+                                startIndex: startRowIndex,
+                                endIndex: endRowIndex,
+                                startOffset,
+                                endOffset,
+                                position: 0
+                            };
+                            let eventSet = rows[startRowIndex][dayIndex].events;
+                            if (eventSet) {
+                                eventSet.push(displayEvent);
+                            } else {
+                                eventSet = [];
+                                eventSet.push(displayEvent);
+                                rows[startRowIndex][dayIndex].events = eventSet;
+                            }
+                            dates[dayIndex].hasEvent = true;
+                        }
+                        startRowIndex = 0;
+                        startOffset = 0;
+                        dayIndex += 1;
+                    } while (endOfDay < endIndex);
+                }
             }
         }
 
@@ -809,7 +796,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges,
             disabled = this.markDisabled(selectedDate);
         }
 
-        this.onDayHeaderSelected.emit({selectedTime: selectedDate, events: viewDate.events.map(e => e.event), disabled});
+        this.onDayHeaderSelected.emit({ selectedTime: selectedDate, events: viewDate.events.map(e => e.event), disabled });
     }
 
     setScrollPosition(scrollPosition: number) {

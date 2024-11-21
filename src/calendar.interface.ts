@@ -1,11 +1,24 @@
 import { EventEmitter, TemplateRef } from '@angular/core';
+import 'moment-recur-ts'
+import { Rule } from 'moment-recur-ts';
 
+export interface IOccurence {
+    eventUTCStartTime: number;
+    eventUTCEndTime: number;
+}
+
+export interface IOccurences {
+
+}
 export interface IEvent  {
     allDay: boolean;
     endTime: Date;
     startTime: Date;
     title: string;
     category?: string;
+    rruleFreq?: Rule.MeasureInput;
+    rruleInterval?: Rule.UnitsInput;
+    rruleUntil?: Date;
 }
 
 export interface IRange {
