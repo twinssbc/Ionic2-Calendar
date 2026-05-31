@@ -31,6 +31,7 @@ https://stackblitz.com/edit/ionic-calendar-demo?file=pages%2Fhome%2Fhome.html
 # Dependency
 | Calendar Version | Ionic Version | Angular Version | Swiper Version |
 | ------------- | ------------- | ------------- | ------------- |
+| 2.8.x | >=8.0.0 | >=20.0.0 | >=12.0.0 |
 | 2.7.x | >=8.0.0 | >=20.0.0 | >=11.0.0 |
 | 2.6.x | >=8.0.0 | >=19.0.0 | >=11.0.0 |
 | 2.5.x | >=8.0.0 | >=18.0.0 | >=11.0.0 |
@@ -74,7 +75,7 @@ version 2.5.+ is also published as Ionic8-Calendar package name. So could also r
 ```
 
 ## 2. Import the Calendar module
-If using version 1.0.x, could use both ionic2-calendar or ionic6-calendar, ionic7-calendar.
+If using version 1.0.x, could use both ionic2-calendar or ionic6-calendar, ionic7-calendar, ionic8-calendar.
 
 - version 0.5.x onwards
 ``` typescript
